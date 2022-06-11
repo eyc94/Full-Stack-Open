@@ -118,3 +118,4 @@ xhttp.send();
 - The JavaScript code above uses the DOM API.
 
 
+## Manipulating The Document-Object From Console
