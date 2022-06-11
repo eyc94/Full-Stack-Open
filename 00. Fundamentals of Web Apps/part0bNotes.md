@@ -110,3 +110,11 @@ xhttp.send();
     - The browser invokes the function at an appropriate time.
 
 
+## Document Object Model or DOM
+- HTML pages are implicit tree structures.
+- Elements tab in console show this tree-like structure.
+- `Document Object Model`, or `DOM`, is an `Application Programming Interface (API)`.
+    - Enables modification of element trees corresponding to web pages.
+- The JavaScript code above uses the DOM API.
+
+
