@@ -100,3 +100,13 @@ xhttp.send();
     - Forms a bullet-point list from the note contents.
 
 
+## Event Handlers and Callback Functions
+- Structure of code is weird.
+    - Notice we send the GET request last and handle the request first.
+- Notice the callback function attached to the `xhttp` object.
+    - When state of the object changes, the event handler is called.
+    - This checks ready state and status code.
+- Event handlers are called `callback` functions.
+    - The browser invokes the function at an appropriate time.
+
+
