@@ -290,3 +290,13 @@ var sendToServer = function(note) {
 - The most popular tool for implementing browser-side logic of web-apps is Facebook's `React` library.
     - We will be familiar with React and `Redux` library.
 - Newcomer called `VueJS` is capturing interest.
+
+
+## Full Stack Web Development
+- Browser is frontend.
+    - JavaScript that runs on the browser is frontend code.
+- Server is backend.
+- Database is usually below the server layer.
+- Code the backend with JavaScript using `Ndoe.js` runtime environment.
+
+
