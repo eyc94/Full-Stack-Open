@@ -166,3 +166,14 @@ list.appendChild(newElement);
 - Can experiment with styling in console, but it won't be permanent.
 
 
+## Loading A Page Containing JavaScript - Review
+- Review what happens when you visit `https://studies.cs.helsinki.fi/exampleapp/notes`.
+- Browser gets HTML using HTTP GET.
+- Links in HTML cause browser to fetch CSS style sheet and JavaScript code.
+- Browser executes JavaScript code.
+    - Code makes HTTP GET request to URL for JSON data.
+    - The URL returns JSON data.
+- When data is fetched, the browser executes an event handler.
+    - This renders the notes to the page using the DOM API.
+
+
