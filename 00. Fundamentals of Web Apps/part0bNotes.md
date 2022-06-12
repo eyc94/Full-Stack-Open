@@ -221,3 +221,58 @@ app.post("/new_note", (req, res) => {
 - Now it's not acceptable. Need to be `RESTful APIs`.
 
 
+## Single Page App
+- Example app works like a traditional web page.
+    - Logic on server.
+    - Browser renders the HTML as told to.
+- Notes page gives some responsibility, like generating HTML code for existing notes, to the browser.
+    - Browser does this by running JavaScript code fetched from the server.
+    - Code fetches notes from server as JSON and adds HTML elements for displaying it using the DOM.
+- SPA style web pages emerged.
+    - Comprise only ONE HTML page fetched from the server.
+    - Contents are changed with JavaScript that runs in the browser.
+- In SPA version of the example app, the `form` tag has no `action` or `method` attributes.
+    - Creating new note means making POST request.
+    - This request contains the new note as JSON with content and date.
+    - The `Content-Type` tells the server what data to expect.
+    - Server responds with status 201 created.
+    - This time, server does not ask for a redirect.
+    - Browser stays on same page and no further HTTP requests are made.
+- SPA version does not send data like the traditional way.
+    - Uses JavaScript code fetched from the server.
+```javascript
+var form = document.getElementById("notes_form");
+form.onSubmit = function(e) {
+    e.preventDefault();
+
+    var note = {
+        content: e.target.elements[0].value,
+        date: new Date()
+    };
+
+    notes.push(note);
+    e.target.elements[0].value = "";
+    redrawNotes();
+    sendToServer(note);
+};
+```
+- First, we get the form element by ID and assign an event handler to handle form submit event.
+- Event handler calls the `e.preventDefault()` to prevent the default event of form submit.
+    - Default event sends data to the server and causes a new GET request.
+- Then, it creates a new note and adds to list of notes.
+- It rerenders the note list and sends new note to the server.
+- Code for sending note to server:
+```javascript
+var sendToServer = function(note) {
+    var xhttpForPost = new XMLHttpRequest();
+    // ...
+
+    xhttpForPost.open("POST", "/new_note_spa", true);
+    xhttpForPost.setRequestHeader(
+        "Content-Type", "application/json"
+    );
+    xhttpForPost.send(JSON.stringify(note));
+};
+```
+
+
