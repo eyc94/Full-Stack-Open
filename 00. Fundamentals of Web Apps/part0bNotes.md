@@ -119,3 +119,25 @@ xhttp.send();
 
 
 ## Manipulating The Document-Object From Console
+- Topmost node is called `document`.
+- Add new note from console to page.
+- Get list of notes from the page.
+    - First ul-element of the page.
+```javascript
+list = document.getElementByTagName("ul")[0];
+```
+- Create new `li` element and add text to it.
+```javascript
+newElement = document.createElement("li");
+newElement.textContent = "Page manipulation from console is easy";
+```
+- Add new `li` element to the list:
+```javascript
+list.appendChild(newElement);
+```
+- Changes are not permanent.
+    - Reload the page and new note will disappear.
+    - Changes not pushed to the server.
+- The JavaScript code the browser fetches always creates the list of notes based on JSON data from address with `data.json`.
+
+
