@@ -141,3 +141,28 @@ list.appendChild(newElement);
 - The JavaScript code the browser fetches always creates the list of notes based on JSON data from address with `data.json`.
 
 
+## CSS
+- The `head` element of HTML code contains `link` tag for a CSS page.
+- `Cascading Style Sheets`, or `CSS`, is a style sheet language for appearance.
+- It looks like this:
+```css
+.container {
+    padding: 10px;
+    border: 1px solid;
+}
+
+.notes {
+    color: blue;
+}
+```
+- Defines two classes.
+    - Defines styling rules to them.
+- Class selectors start with a period and contains the name of the class.
+- Classes are attributes which are added to HTML elements.
+- CSS attributes are found in the Elements tab of the console.
+- The container class should have a 10px padding with a border that is 1px and solid.
+- The notes class should be blue.
+- Can also have the `id` attribute.
+- Can experiment with styling in console, but it won't be permanent.
+
+
