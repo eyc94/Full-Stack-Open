@@ -276,3 +276,17 @@ var sendToServer = function(note) {
 ```
 
 
+# JavaScript Libraries
+- The sample app is done with `vanilla JavaScript`.
+    - Uses only DOM API and JavaScript to manipulate the structure of the pages.
+- Different libraries can be used to help.
+- One of these is `jQuery`.
+    - Now it's not as prevalent.
+- Going to SPA.
+    - First came `BackboneJS`.
+    - Google announced `AngularJS` which became the de facto standard.
+        - Angular not popular when they announced support for version 1 is ending.
+        - Angular 2 will not be backwards compatible with the first version.
+- The most popular tool for implementing browser-side logic of web-apps is Facebook's `React` library.
+    - We will be familiar with React and `Redux` library.
+- Newcomer called `VueJS` is capturing interest.
