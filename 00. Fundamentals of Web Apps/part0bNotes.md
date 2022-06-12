@@ -300,3 +300,6 @@ var sendToServer = function(note) {
 - Code the backend with JavaScript using `Ndoe.js` runtime environment.
 
 
+## JavaScript Fatigue
+- Too much change to catch up on.
+
