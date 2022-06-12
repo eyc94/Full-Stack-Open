@@ -177,3 +177,34 @@ list.appendChild(newElement);
     - This renders the notes to the page using the DOM API.
 
 
+## Forms and HTTP POST
+- See how adding a new note is done.
+- The example application notes page has a `form` element.
+- When the button is clicked, the browser sends the user input to the server.
+    - It is an HTTP POST request to the server address `new_note`.
+    - Server responds with status code 302.
+        - This is a URL redirect.
+        - Server tells browser to do new HTTP GET request to new location.
+    - Reloads page requesting the resources again.
+- Can also see form data that was submitted.
+- The `form` tag has the `action` and `method` attributes.
+    - Defines that submitting form is done with HTTP POST to the new address.
+- Code on server responsible for POST request is simple.
+- Code below is on the server. It is not the JavaScript on the browser.
+```javascript
+app.post("/new_note", (req, res) => {
+    notes.push({
+        content: req.body.note,
+        date: new Date()
+    });
+
+    return res.redirect("/notes");
+});
+```
+- Data is sent as the body of the post request.
+- Server can access data by accessing `req.body` field of the `req` body.
+- Server creates a new note object and adds it to an array called `notes`.
+- `Note` objects have `content` and `date` fields.
+- Server does not save the note to the database, so it disappears when the server is restarted.
+
+
