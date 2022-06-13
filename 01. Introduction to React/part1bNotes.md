@@ -42,3 +42,61 @@ x = 4;                  // Causes an error.
         - YouTube [var, let and const - What, why and how - ES6 JavaScript Features]: `https://www.youtube.com/watch?v=sjyJBL5fkp8`
 
 
+## Arrays
+- Example of array:
+```javascript
+const t = [1, -1, 3];
+
+t.push(5);
+
+console.log(t.length);  // 4 is printed.
+console.log(t[1]);      // -1 is printed.
+
+t.forEach(value => {
+    console.log(value); // numbers 1, -1, 3, 5 are printed, each to own line.
+});
+```
+- Contents of array can be changed even though array is a constant.
+    - This just means the variable always points to the same object.
+    - Contents can be changed.
+- One way of iterating through an array is to use `forEach`.
+    - `forEach` receives a function defined using the arrow syntax.
+```javascript
+value => {
+    console.log(value);
+}
+```
+- `forEach` calls the function *for each* item in the array.
+    - It passes the individual item as an argument.
+    - The function as the argument of `forEach` may also have its own parameters.
+- Add new item to array using `push` method.
+- Preferable to use the method `concat`.
+    - This creates a new array in which the contents of the old array and the new item are both included.
+- There are many methods for an array.
+- Look at the `map` method.
+```javascript
+const t = [1, 2, 3];
+
+const m1 = t.map(value => value * 2);
+console.log(m1);        // [2, 4, 6] is printed.
+```
+- The `map` method creates a new array.
+    - The function given is used as a map to create the new array from the old array values.
+    - In the case of the above, we multiply every value of the array by 2.
+- The `map` method can also transform the array into something different:
+```javascript
+const m2 = t.map(value => "<li>" + value + "</li>);
+console.log(m2);
+// [ "<li>1</li>", "<li>2</li>", "<li>2</li>" ] is printed.
+```
+- Items of the array can be assigned to variables with the help of `destructuring assignment`.
+```javascript
+const t = [1, 2, 3, 4, 5];
+
+const [first, second, ...rest] = t;
+
+console.log(first, second);     // 1, 2 is printed.
+console.log(rest);              // [3, 4, 5] is printed.
+```
+
+
