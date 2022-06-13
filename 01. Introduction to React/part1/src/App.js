@@ -11,6 +11,8 @@ const App = () => {
         <div>
             <p>Greetings</p>
             <Hello />
+            <Hello />
+            <Hello />
         </div>
     );
 };
