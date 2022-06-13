@@ -48,3 +48,61 @@ ReactDOM.render(<App />, document.getElementById("root"));
 ```
 
 
+## Component
+- The `App.js` is a `React component` with the name `App`.
+- The last line of `index.js` basically renders the contents of `App` into the `div` element with the id of `root` in the file `public/index.html`.
+- The `index.html` file does not have any HTML visible to us in the browser.
+    - All content that needs to be rendered is defined as React components.
+- Take a look at code defining component:
+```javascript
+const App = () => (
+    <div>
+        <p>Hello world</p>
+    </div>
+);
+```
+- Component rendered as a `div` element.
+    - This wraps a `p` element that contains text.
+- Component is defined as a JavaScript function.
+- Following is a function that does not receive any parameters:
+```javascript
+() => (
+    <div>
+        <p>Hello world</p>
+    </div>
+)
+```
+- The function is then assigned to a constant variable `App`.
+```javascript
+const App = ...
+```
+- Few ways to define functions.
+- We use `arrow functions` defined in ECMAScript 6 or ES6.
+- Our function consists of only a single expression, so we use the shorthand below:
+```javascript
+const App = () => (
+    <div>
+        <p>Hello world</p>
+    </div>
+);
+```
+- Can also render dynamic content inside components:
+```javascript
+const App = () => {
+    const now = new Date();
+    const a = 10;
+    const b = 20;
+
+    return (
+        <div>
+            <p>Hello world, it is {now.toString()}</p>
+            <p>
+                {a} plus {b} is {a + b}
+            </p>
+        </div>
+    );
+};
+```
+- Any JavaScript code in curly braces is evaluated and placed in the HTML at that location.
+
+
