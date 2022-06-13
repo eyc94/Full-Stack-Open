@@ -176,3 +176,61 @@ const App = () => {
 - Having a `root` component called `App` is also a core idea of React.
 
 
+## props: Passing Data To Components
+- Can pass data to components using `props`.
+- Modify `Hello` as follows:
+```javascript
+const Hello = (props) => {
+    return (
+        <div>
+            <p>Hello {props.name}</p>
+        </div>
+    );
+};
+```
+- We see the function defining component has a parameter `props`.
+    - Parameter receives an object.
+    - This object has fields corresponding to all the "props" the user of the component defines.
+- The `props` are defined like so:
+```javascript
+const App = () => {
+    return (
+        <div>
+            <h1>Greetings</h1>
+            <Hello name="George" />
+            <Hello name="Daisy" />
+        </div>
+    );
+};
+```
+- There can be as many props.
+    - Their values can be hard-coded strings or results of JS expressions.
+        - JS expressions must be written in curly braces.
+- Modify `Hello` component to use two props:
+```javascript
+const Hello = (props) => {
+    return (
+        <div>
+            <p>
+                Hello {props.name}, you are {props.age} years old
+            </p>
+        </div>
+    );
+};
+
+const App = () => {
+    const name = "Peter";
+    const age = 10;
+
+    return (
+        <div>
+            <h1>Greetings</h1>
+            <Hello name="Maya" age={26 + 10} />
+            <Hello name={name} age={age} />
+        </div>
+    );
+};
+```
+- The props sent by the `App` component are the values of the variables, result of expression, and hard-coded string.
+
+
