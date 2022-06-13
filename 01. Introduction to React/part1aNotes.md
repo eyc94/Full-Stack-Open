@@ -234,3 +234,28 @@ const App = () => {
 - The props sent by the `App` component are the values of the variables, result of expression, and hard-coded string.
 
 
+## Some Notes
+- React gives clear error messages.
+- Open dev console.
+- Write `console.log()` to see values.
+- React components **must** be capitalized.
+- React component needs to contain **one root element**.
+    - An array of components is also a valid return option.
+    - We can use `fragments` by wrapping elements to be returned by the empty element `<>` and `</>`.
+        - This prevents that extra `div` element if we care about that.
+```javascript
+const App = () => {
+    const name = "Peter";
+    const age = 10;
+
+    return (
+        <>
+            <h1>Greetings</h1>
+            <Hello name="Maya" age={26 + 10} />
+            <Hello name={name} age={age} />
+            <Footer />
+        </>
+    );
+};
+```
+
