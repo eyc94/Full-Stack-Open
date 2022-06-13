@@ -137,3 +137,42 @@ const App = () => {
     - When writing JSX, the tag needs to be closed like `<br />`.
 
 
+## Multiple Components
+- Modify `App.js`:
+    - The export statement is left out for more space, but pretend it is there.
+```javascript
+const Hello = () => {
+    return (
+        <div>
+            <p>Hello world</p>
+        </div>
+    );
+};
+
+const App = () => {
+    return (
+        <div>
+            <h1>Greetings</h1>
+            <Hello />
+        </div>
+    );
+};
+```
+- Defined a component `Hello` and used it inside `App`.
+- We can use it multiple times.
+```javascript
+const App = () => {
+    return (
+        <div>
+            <h1>Greetings</h1>
+            <Hello />
+            <Hello />
+            <Hello />
+        </div>
+    );
+};
+```
+- Reusing components is a core idea of React.
+- Having a `root` component called `App` is also a core idea of React.
+
+
