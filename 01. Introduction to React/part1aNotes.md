@@ -106,3 +106,34 @@ const App = () => {
 - Any JavaScript code in curly braces is evaluated and placed in the HTML at that location.
 
 
+## JSX
+- Layout of React components is written using `JSX`.
+- We are dealing with a way to write JavaScript.
+- JSX returned by React components is compiled into JavaScript.
+- After compiling, our application looks like this:
+```javascript
+const App = () => {
+    const now = new Date();
+    const a = 10;
+    const b = 20;
+
+    return React.createElement(
+        "div",
+        null,
+        React.createElement(
+            "p", null, "Hello world, it is ", now.toString()
+        ),
+        React.createElement(
+            "p", null, a, " plus ", b, " is ", a + b
+        )
+    );
+};
+```
+- Compiling is handled by `Babel`.
+    - Projects created with `create-react-app` are configured to compile automatically.
+- JSX is similar to many templating languages.
+- Every tag needs to be closed.
+    - A new line is an empty element which is written in HTML like `<br>`.
+    - When writing JSX, the tag needs to be closed like `<br />`.
+
+
