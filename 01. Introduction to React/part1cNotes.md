@@ -118,3 +118,59 @@ const Hello = ({ name, age }) => {
 - We don't need to assign the values anymore to variables.
 
 
+## Page Re-rendering
+- Appearance remains same after initial rendering of a page.
+- What if we wanted a counter where value increases as a function of time or a click of a button?
+- Start with `App.js`:
+```javascript
+const App = (props) => {
+    const {counter} = props;
+    return (
+        <div>{counter}</div>
+    );
+};
+
+export default App;
+```
+- Then `index.js`:
+```javascript
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+import App from "./App";
+
+let counter = 1;
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+    <App counter={counter} />
+);
+```
+- Notice the `App` component is given the value of the counter.
+- Even if we tried to update the value of `counter`, it won't re-render.
+    - Need to call `render` function again.
+```javascript
+let counter = 1;
+
+const refresh = () => {
+    ReactDOM.createRoot(document.getElementById("root")).render(
+        <App counter={counter} />
+    );
+};
+
+refresh();
+counter += 1;
+refresh();
+counter += 1;
+refresh();
+```
+- Should use `setInterval` to be able to see the numbers being rendered.
+```javascript
+setInterval(() => {
+    refresh();
+    counter += 1;
+}, 1000);
+```
+- Not recommended to call `refresh` multiple times like this.
+- There's a better way.
+
+
