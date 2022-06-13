@@ -138,3 +138,58 @@ object1["secret number"] = 12341;
 ```
 
 
+## Functions
+- The complete process of defining functions is:
+```javascript
+const sum = (p1, p2) => {
+    console.log(p1);
+    console.log(p2);
+    return p1 + p2;
+};
+```
+- Function is called as expected:
+```javascript
+const result = sum(1, 5);
+console.log(result);
+```
+- If there is a single parameter, we can exclude the parentheses:
+```javascript
+const square = p => {
+    console.log(p);
+    return p * p;
+};
+```
+- If function contains only a single expression, the braces are not needed.
+- Remove the console printing:
+```javascript
+const square = p => p * p;
+```
+- Form is handy when manipulating arrays with the `map` method:
+```javascript
+const t = [1, 2, 3];
+const tSquared = t.map(p => p * p);
+// tSquared is now [1, 4, 9]
+```
+- Before, you had to use the `function` keyword to create a function.
+    - Now, you can use arrow functions.
+- Two ways to reference the function:
+- One is giving a name in a `function declaration`.
+```javascript
+function product(a, b) {
+    return a * b;
+};
+
+const result = product(2, 6);
+// Result is now 12.
+```
+- The other is to define the function using a `function expression`.
+    - No need to give the function a name.
+```javascript
+const average = function(a, b) {
+    return (a + b) / 2;
+};
+
+const result = average(2, 5);
+// result is now 3.5.
+```
+
