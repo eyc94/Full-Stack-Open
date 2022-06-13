@@ -52,3 +52,69 @@ const Hello = (props) => {
     - This is common in JavaScript.
 
 
+## Destructuring
+- Can `destructure` values from objects and arrays.
+- We had to reference data as `props.name` and `props.age`.
+- We repeated `props.age` twice in our code.
+    - We know `props` is an object.
+```javascript
+props = {
+    name: "Arto Hellas",
+    age: 35
+};
+```
+- Streamline our component by assigning values of properties directly into two variables `name` and `age`.
+```javascript
+const Hello = (props) => {
+    const name = props.name;
+    const age = props.age;
+
+    const bornYear = () => new Date().getFullYear() - age;
+
+    return (
+        <div>
+            <p>Hello {name}, you are {age} years old</p>
+            <p>So you were probably born in {bornYear()}</p>
+        </div>
+    );
+};
+```
+- Used compact arrow syntax for function.
+- The two below are the same:
+```javascript
+const bornYear = () => new Date.getFullYear() - age;
+
+const bornYear = () => {
+    return new Date().getFullYear() - age;
+};
+```
+- Destructuring is more useful.
+```javascript
+const Hello = (props) => {
+    const { name, age } = props;
+    const bornYear = () => new Date().getFullYear() - age;
+
+    return (
+        <div>
+            <p>Hello {name}, you are {age} years old</p>
+            <p>So you were probably born in {bornYear()}</p>
+        </div>
+    );
+};
+```
+- Take it a step further.
+```javascript
+const Hello = ({ name, age }) => {
+    const bornYear = () => new Date().getFullYear() - age;
+
+    return (
+        <div>
+            <p>Hello {name}, you are {age} years old</p>
+            <p>So you were probably born in {bornYear()}</p>
+        </div>
+    );
+};
+```
+- We don't need to assign the values anymore to variables.
+
+
