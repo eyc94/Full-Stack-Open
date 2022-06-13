@@ -1,7 +1,7 @@
-const Hello = () => {
+const Hello = (props) => {
     return (
         <div>
-            <p>Hello world</p>
+            <p>Hello {props.name}</p>
         </div>
     )
 };
@@ -10,9 +10,8 @@ const App = () => {
     return (
         <div>
             <p>Greetings</p>
-            <Hello />
-            <Hello />
-            <Hello />
+            <Hello name="George" />
+            <Hello name="Daisy" />
         </div>
     );
 };
