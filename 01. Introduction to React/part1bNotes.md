@@ -303,3 +303,8 @@ janja.greet();
 - JavaScript only defines the types `Boolean`, `Null`, `Undefined`, `Number`, `String`, `Symbol`, `BigInt`, and `Object`.
 
 
+## JavaScript Materials
+- Can view Mozilla's JavaScript Guide.
+- There are plenty of other resources as well.
+
+
