@@ -3,3 +3,6 @@
 
 # VSCode
 .vscode
+
+# NPM
+/node_modules
