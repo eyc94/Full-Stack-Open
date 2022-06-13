@@ -193,3 +193,113 @@ const result = average(2, 5);
 // result is now 3.5.
 ```
 
+
+## Object Methods and "this"
+- No need to define objects for methods because of React Hooks.
+- Can assign methods to an object by defining the properties that are functions:
+```javascript
+const arto = {
+    name: "Arto Hellas",
+    age: 35,
+    education: "PhD",
+    greet: function() {
+        console.log("Hello, my name is " + this.name);
+    }
+};
+
+arto.greet()        // "Hello, my name is Arto Hellas" gets printed.
+```
+- Methods can be assigned to objects even after creation of the object.
+```javascript
+const arto = {
+    name: "Arto Hellas",
+    age: 35,
+    education: "PhD",
+    greet: function() {
+        console.log("Hello, my name is " + this.name);
+    }
+};
+
+arto.growOlder = function() {
+    this.age += 1;
+};
+
+console.log(arto.age);  // 35 is printed.
+arto.growOlder();
+console.log(arto.age);  // 36 is printed.
+```
+- Modify object slightly.
+```javascript
+const arto = {
+    name: "Arto Hellas",
+    age: 35,
+    education: "PhD",
+    greet: function() {
+        console.log("Hello, my name is " + this.name);
+    },
+    doAddition: function(a, b) {
+        console.log(a + b);
+    }
+};
+
+arto.doAddition(1, 4);      // 5 is printed.
+
+const referenceToAddition = arto.doAddition;
+referenceToAddition(10, 15) // 25 is printed.
+```
+- Notice that we can call the method from the object or we can provide a reference to the method and call it.
+- If we try to do it with the method `greet()`.
+```javascript
+arto.greet();       // "Hello, my name is Arto Hellas" gets printed.
+
+const referenceToGreet = arto.greet;
+referenceToGreet(); // Prints "Hello, my name is undefined".
+```
+- When calling the method through a reference, we lose track of what "this" is.
+- When calling a method through a reference, "this" is the global object.
+- If you set a timeout to call `greet` function, `this` disappears too.
+```javascript
+const arto = {
+    name: "Arto Hellas",
+    greet: function() {
+        console.log("Hello, my name is " + this.name);
+    }
+};
+
+setTimeout(arto.greet, 1000);
+```
+- When `setTimeout` is called, it is the JS engine that calls the method, so "this" is the global object.
+- Can preserve "this" with `bind` method.
+```javascript
+setTimeout(arto.greet.bind(arto), 1000);
+```
+- This creates a new function where `this` is bound to point to Arto.
+    - Doesn't matter where the function is called.
+
+
+## Classes
+- Not really any class mechanisms.
+- Look at the class syntax introduced in ES6.
+- Define a class called Person and two Person objects.
+```javascript
+class Person {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    };
+
+    greet() {
+        console.log("Hello, my name is " + this.name);
+    };
+};
+
+const adam = new Person("Adam Ondra", 35);
+adam.greet();
+
+const janja = new Person("Janja Garnbret", 22);
+janja.greet();
+```
+- The object's type is `Object`.
+- JavaScript only defines the types `Boolean`, `Null`, `Undefined`, `Number`, `String`, `Symbol`, `BigInt`, and `Object`.
+
+
