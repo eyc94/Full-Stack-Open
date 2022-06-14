@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 
-const Display = (props) => {
+const Display = ({ counter }) => {
     return (
-        <div>{props.counter}</div>
+        <div>{counter}</div>
     );
 };
 
-const Button = (props) => {
+const Button = ({ onClick, text }) => {
     return (
-        <button onClick={props.onClick}>
-            {props.text}
+        <button onClick={onClick}>
+            {text}
         </button>
     );
 };
