@@ -174,3 +174,47 @@ setInterval(() => {
 - There's a better way.
 
 
+## Stateful Component
+- Components have not had any state that can change.
+- Add state to our `App` component with React's `state hook`.
+- Change `index.js`:
+```javascript
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+import App from "./App";
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+```
+- Change `App.js`:
+```javascript
+import { useState } from "react";
+
+const App = () => {
+    const [ counter, setCounter ] = useState(0);
+
+    setTimeout(
+        () => setCounter(counter + 1),
+        1000
+    );
+
+    return (
+        <div>{counter}</div>
+    );
+};
+```
+- We see that that we add state.
+    - The initial value is 0.
+- The function returns an array that contains two items.
+    - We assign the items to the variables `counter` and `setCounter`.
+        - Done by destructuring syntax.
+    - The `setCounter` is assigned to a function that modifies state.
+- Use of `setTimeout` by passing two parameters.
+    - THe first is a function to increment the counter state.
+    - THe second is a timeout of 1 second.
+- When `setCounter` is called, React re-renders the component.
+    - This means the function body gets re-executed.
+- This happens for as long as the application is running.
+- Can debug if you want to see when it's rendering.
+
+
