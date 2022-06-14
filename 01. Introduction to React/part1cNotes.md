@@ -218,3 +218,72 @@ const App = () => {
 - Can debug if you want to see when it's rendering.
 
 
+## Event Handling
+- Increase counter when user clicks a button.
+- Button elements support mouse events.
+    - Most common is the `click` event.
+    - Clicking can be from a keyboard or touch screen as well.
+- Registering an event handler looks like this:
+```javascript
+const App = () => {
+    const [ counter, setCounter ] = useState(0);
+
+    const handleClick = () => {
+        console.log("clicked");
+    };
+
+    return (
+        <div>
+            <div>{counter}</div>
+            <button onClick={handleClick}>
+                plus
+            </button>
+        </div>
+    );
+};
+```
+- We set the `onClick` attribute of the `button` element to the `handleClick` function.
+- Every time we click the button, the function is called.
+- Every click will log a message to the console.
+- Event handler can also be defined directly in the value assignment.
+```javascript
+const App = () => {
+    const [ counter, setCounter ] = useState(0);
+
+    return (
+        <div>
+            <div>{counter}</div>
+            <button onClick={() => console.log("clicked")}>
+                plus
+            </button>
+        </div>
+    );
+};
+```
+- Change the event handler to this:
+```javascript
+<button onClick={() => setCounter(counter + 1)}>
+    plus
+</button>
+```
+- The value of `counter` gets increased by one and component is re-rendered.
+- Add a button for resetting counter:
+```javascript
+const App = () => {
+    const [ counter, setCounter ] = useState(0);
+
+    return (
+        <div>
+            <div>{counter}</div>
+            <button onClick={() => setCounter(counter + 1)}>
+                plus
+            </button>
+            <button onClick={() => setCounter(0)}>
+                zero
+            </button>
+        </div>
+    );
+};
+```
+
+
