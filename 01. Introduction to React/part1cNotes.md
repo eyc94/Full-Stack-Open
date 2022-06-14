@@ -425,3 +425,25 @@ const App = () => {
     - This causes subcomponents to also be re-rendered.
 
 
+## Refactoring The Components
+- We only use the `counter` field of `props`, so we can destructure like so:
+```javascript
+const Display = ({ counter }) => {
+    return (
+        <div>{counter}</div>
+    );
+};
+```
+- Function defining component only has one return statement, so:
+```javascript
+const Display = ({ counter }) => <div>{counter}</div>;
+```
+- Simplify `Button` component as well by destructuring and using compact arrow syntax form.
+```javascript
+const Button = ({ onClick, text }) => (
+    <button onClick={onClick}>
+        {text}
+    </button>
+);
+```
+
