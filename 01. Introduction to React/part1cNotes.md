@@ -287,3 +287,48 @@ const App = () => {
 ```
 
 
+## Event Handler Is A Function
+- So we defined the event handler in the `onClick` attribute.
+- What if we tried to call the function in the `onClick` attribute.
+```javascript
+<button onClick={setCounter(counter + 1)}>
+    plus
+</button>
+```
+- This breaks application.
+- This is because the event handler is supposed to be a `function` or a `function reference`.
+- What we did is a `function call`.
+- This will just cause an infinite re-render of the component and the state will keep changing.
+- Define event handlers like before:
+```javascript
+<button onClick={() => setCounter(counter + 1)}>
+    plus
+</button>
+```
+- Function called when user clicks the button.
+- Defining event handlers in JSX templates is not a good idea.
+    - It's ok here because it is simple.
+- Separate the event handlers into separate functions anyway:
+```javascript
+const App = () => {
+    const [ counter, setCounter ] = useState(0);
+
+    const increaseByOne = () => setCounter(counter + 1);
+
+    const setToZero = () => setCounter(0);
+
+    return (
+        <div>
+            <div>{counter}</div>
+            <button onClick={increaseByOne}>
+                plus
+            </button>
+            <button onClick={setToZero}>
+                zero
+            </button>
+        </div>
+    );
+};
+```
+
+
