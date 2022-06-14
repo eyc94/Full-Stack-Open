@@ -413,3 +413,15 @@ const App = () => {
 - React tutorial recommends using `onClick` as the prop name for `onClick` attribute for buttons.
 
 
+## Changes In State Cause Rerendering
+- When app starts, code in `App` is run.
+    - Code uses a `useState` hook to set a `counter` variable to 0.
+    - The `App` component contains the `Display` component that renders the display of 0 for the counter.
+    - Also has three `Button` components.
+        - The buttons have event handlers used to change state of the counter.
+- When one button is clicked, an event handler is called.
+    - This changes the state of `App`.
+    - This then causes the component to re-render.
+    - This causes subcomponents to also be re-rendered.
+
+
