@@ -332,3 +332,84 @@ const App = () => {
 ```
 
 
+## Passing State To Child Components
+- Write React components that are small and reusable.
+- Refactor app to have three smaller components.
+    - One for displaying counter.
+    - Two for buttons.
+- Implement `Display` for displaying value of counter.
+- Best practice is to `lift the state up` in the component hierarchy.
+    - **Often, several components need to reflect the same changing data. We recommend lifting the shared state up to their closest common ancestor.**
+- Place app state in `App` component and pass it down to `Display` component with `props`.
+```javascript
+const Display = (props) => {
+    return (
+        <div>{props.counter}</div>
+    );
+};
+```
+- Only pass state of `counter` to the component:
+```javascript
+const App = () => {
+    const [ counter, setCounter ] = useState(0);
+
+    const increaseByOne = () => setCounter(counter + 1);
+    const setToZero = () => setCounter(0);
+
+    return (
+        <div>
+            <Display counter={counter} />
+            <button onClick={increaseByOne}>
+                plus
+            </button>
+            <button onClick={setToZero}>
+                zero
+            </button>
+        </div>
+    );
+};
+```
+- When button clicked, `App` is re-rendered, then its children are re-rendered as well.
+- Make a `Button` component.
+    - Pass event handler and title of button.
+```javascript
+const Button = (props) => {
+    return (
+        <button onClick={props.onClick}>
+            {props.text}
+        </button>
+    );
+};
+```
+- Our `App` component now is:
+```javascript
+const App = () => {
+    const [ counter, setCounter ] = useState(0);
+
+    const increaseByOne = () => setCounter(counter + 1);
+    const decreaseByOne = () => setCounter(counter - 1);
+    const setToZero = () => setCounter(0);
+
+    return (
+        <div>
+            <Display counter={counter} />
+            <Button
+                onClick={increaseByOne}
+                text="plus"
+            />
+            <Button
+                onClick={setToZero}
+                text="zero"
+            />
+            <Button
+                onClick={decreaseByOne}
+                text="minus"
+            />
+        </div>
+    );
+};
+```
+- Notice that the `Button` component is reusable, so we created another button for decrementing counter.
+- React tutorial recommends using `onClick` as the prop name for `onClick` attribute for buttons.
+
+
