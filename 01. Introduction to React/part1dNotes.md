@@ -38,3 +38,10 @@ ReactDom.createRoot(document.getElementById("root")).render(<App />);
 ```
 
 
+## Complex State
+- What if app requires more complex state?
+    - Can create multiple `useState` functions to create pieces of state.
+- Below we create `left` and `right` state with initial value of 0.
+```javascript
+
+```
