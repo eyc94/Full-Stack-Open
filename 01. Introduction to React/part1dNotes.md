@@ -311,3 +311,54 @@ const App = () => {
 ```
 
 
+## Event Handling Revisited
+- Develop a simple application with the following `App`:
+```javascript
+const App = () => {
+    const [value, setValue] = useState(10);
+
+    return (
+        <div>
+            {value}
+            <button>reset to zero</button>
+        </div>
+    );
+};
+```
+- We want clicking of the button to reset the state of `value`.
+- We need to add an event handler to the button to respond to a click event.
+    - Must be a function or a reference to a function.
+    - Cannot be a function call or any other thing.
+- Event handler is accomplished like this:
+```javascript
+<button onClick={() => console.log("Clicked the button")}>
+    button
+</button>
+```
+- Event handler is a function defined with the arrow function syntax.
+- When component is rendered, the event handler is just set to the function and no function is called.
+    - Calling the function only happens when the button is clicked.
+- Implement resetting value:
+```javascript
+<button onClick={() => setValue(0)}>button</button>
+```
+- Often the event handler definitions are defined in a separate place.
+- Define a function that gets assigned to `handleClick` variable name.
+```javascript
+const App = () => {
+    const [value, setValue] = useState(10);
+
+    const handleClick = () => console.log("Clicked the button");
+
+    return (
+        <div>
+            {value}
+            <button onClick={handleClick}>reset to zero</button>
+        </div>
+    );
+};
+```
+- The reference to the function is passed to the `onClick` attribute.
+- If event handler function needs multiple commands, use curly braces.
+
+
