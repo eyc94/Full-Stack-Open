@@ -259,3 +259,11 @@ const App = () => {
 ```
 
 
+## Old React
+- Before hooks, there was no way to add state to functional components.
+- Components that needed state had to be defined as `class` components.
+    - JavaScript class syntax.
+- Still important to learn class syntax.
+    - Because of legacy code.
+
+
