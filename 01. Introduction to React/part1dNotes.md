@@ -43,5 +43,93 @@ ReactDom.createRoot(document.getElementById("root")).render(<App />);
     - Can create multiple `useState` functions to create pieces of state.
 - Below we create `left` and `right` state with initial value of 0.
 ```javascript
+const App = () => {
+    const [left, setLeft] = useState(0);
+    const [right, setRight] = useState(0);
 
+    return (
+        <div>
+            {left}
+            <button onClick={() => setLeft(left + 1)}>
+                left
+            </button>
+            <button onClick={() => setRight(right + 1)}>
+                right
+            </button>
+            {right}
+        </div>
+    );
+};
 ```
+- Can update pieces of state with `setLeft` and `setRight` functions.
+- Can also save both states into a single object, as states can be of any type.
+```javascript
+{
+    left: 0,
+    right: 0
+}
+```
+- In this case, application looks like:
+```javascript
+const App = () => {
+    const [clicks, setClicks] = useState({
+        left: 0, right: 0
+    });
+
+    const handleLeftClick = () => {
+        const newClicks = {
+            left: clicks.left + 1,
+            right: clicks.right
+        };
+        setClicks(newClicks);
+    };
+
+    const handleRightClick = () => {
+        const newClicks = {
+            left: clicks.left,
+            right: clicks.right + 1
+        };
+        setClicks(newClicks);
+    };
+
+    return (
+        <div>
+            {clicks.left}
+            <button onClick={() => setLeft(left + 1)}>left</button>
+            <button onClick={() => setRight(right + 1)}>right</button>
+            {clicks.right}
+        </div>
+    );
+};
+```
+- Now it's just one state.
+- Event handlers change entire app state.
+    - Event handlers look messy.
+    - Notice the `left` and `right` properties are changed by adding 1 to the old values.
+- Can use `object spread` syntax to make it more neat.
+```javascript
+const handleLeftClick = () => {
+    const newClicks = {
+        ...clicks,
+        left: clicks.left + 1
+    };
+    setClicks(newClicks);
+};
+
+const handleRightClick = () => {
+    const newClicks = {
+        ...clicks,
+        right: clicks.right + 1
+    };
+    setClicks(newClicks);
+};
+```
+- The `...clicks` creates a new object with properties of the `clicks` object.
+- Specify property after this to overwrite that specific value.
+- Some might wonder why we didn't just increment the `left` or `right` property of the object.
+    - NEVER mutate state directly.
+    - Changing state must be done by setting the state to a new object.
+    - If state is not changed, they just need to be copied over.
+- Better to store state separately than in an object in this case.
+
+
