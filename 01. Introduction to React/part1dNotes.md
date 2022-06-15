@@ -171,3 +171,91 @@ const App = () => {
     - This is joined into a single string.
 
 
+## Conditional Rendering
+- Modify so rendering of clicking history is handled by new `History` component:
+```javascript
+const History = (props) => {
+    if (props.allClicks.length === 0) {
+        return (
+            <div>
+                The app is used by pressing the buttons
+            </div>
+        );
+    }
+    return (
+        <div>
+            Button press history: {props.allClicks.join(" ")}
+        </div>
+    );
+};
+
+const App = () => {
+    // ...
+
+    return (
+        <div>
+            {left}
+            <button onClick={handleLeftClick}>left</button>
+            <button onClick={handleRightClick}>right</button>
+            {right}
+            <History allClicks={allClicks} />
+        </div>
+    );
+};
+```
+- If any button is not clicked, a message with instructions is displayed.
+- Otherwise, the `allClicks` array is shown.
+- Content of the render depends on the state of the component.
+    - This is called `conditional rendering`.
+    - Many ways to do this.
+- Refactor app to use `Button` component defined earlier:
+```javascript
+const History = (props) => {
+    if (props.allClicks.length === 0) {
+        return (
+            <div>
+                The app is used by pressing the buttons
+            </div>
+        );
+    }
+    return (
+        <div>
+            Button press history: {props.allClicks.join(" ")}
+        </div>
+    );
+};
+
+const Button = ({ handleClick, text }) => {
+    <button onClick={handleClick}>
+        {text}
+    </button>
+};
+
+const App = () => {
+    const [left, setLeft] = useState(0);
+    const [right, setRight] = useState(0);
+    const [allClicks, setAll] = useState([]);
+
+    const handleLeftClick = () => {
+        setAll(allClicks.concat("L"));
+        setLeft(left + 1);
+    };
+
+    const handleRightClick = () => {
+        setAll(allClicks.concat("R"));
+        setRight(right + 1);
+    };
+
+    return (
+        <div>
+            {left}
+            <Button handleClick={handleLeftClick} text="left" />
+            <Button handleClick={handleRightClick} text="right" />
+            {right}
+            <History allClicks={allClicks} />
+        </div>
+    );
+};
+```
+
+
