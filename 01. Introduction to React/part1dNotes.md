@@ -267,3 +267,17 @@ const App = () => {
     - Because of legacy code.
 
 
+## Debugging React Applications
+- Great to understand how to debug applications.
+- Keep dev console open at all times.
+- Print based debugging is always a good idea.
+    - Print the `props`.
+    - Separate things you want printed in the same `console.log()` with a comma.
+- The console also has a debugger which you can use to stop code.
+    - Type `debugger` anywhere in your code.
+    - Code will pause at this point.
+- Recommended to add `React developer tools` to Chrome.
+    - This adds `Components` tab.
+
+
+
