@@ -280,4 +280,34 @@ const App = () => {
     - This adds `Components` tab.
 
 
+## Rules of Hooks
+- The `useState` and `useEffect` functions must not be called inside a loop, conditional expression, or any place that is not a function defining a component.
+    - Done to make sure hooks are placed in same order.
+```javascript
+const App = () => {
+    // These are OK.
+    const [age, setAge] = useState(0);
+    const [name, setName] = useState("Juha Tauriainen");
+
+    if (age > 10) {
+        // This does NOT work.
+        const [foobar, setFoobar] = useState(null);
+    }
+
+    for (let i = 0; i < age; i++) {
+        // This is also NOT ok.
+        const [rightWay, setRightWay] = useState(false);
+    }
+
+    const notGood = () => {
+        // This is NOT ok.
+        const [x, setX] = useState(-1000);
+    };
+
+    return (
+        // ...
+    );
+};
+```
+
 
