@@ -133,3 +133,41 @@ const handleRightClick = () => {
 - Better to store state separately than in an object in this case.
 
 
+## Handling Arrays
+- Add state containing an array `allClicks` that holds every click that happened in app.
+```javascript
+const App = () => {
+    const [left, setLeft] = useState(0);
+    const [right, setRight] = useState(0);
+    const [allClicks, setAll] = useState([]);
+
+    const handleLeftClick = () => {
+        setAll(allClicks.concat("L"));
+        setLeft(left + 1);
+    };
+
+    const handleRightClick = () => {
+        setAll(allClicks.concat("R"));
+        setRight(right + 1);
+    };
+
+    return (
+        <div>
+            {left}
+            <button onClick={handleLeftClick}>left</button>
+            <button onClick={handleRightClick}>right</button>
+            {right}
+            <p>{allClicks.join(" ")}</p>
+        </div>
+    );
+};
+```
+- Each click stores a letter inside the `allClicks` array.
+    - Letter "L" for left button.
+    - Letter "R" for the right button.
+- Notice we use concat to create a new copy of the old array plus the item to add.
+    - Do not use the `push` array method.
+- The `join` method is called to join all elements of the array separated by a space.
+    - This is joined into a single string.
+
+
