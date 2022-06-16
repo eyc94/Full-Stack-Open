@@ -503,3 +503,41 @@ const Button = (props) => {
     - Make sure the names of the functions and the attributes match.
 
 
+## Do Not Define Components Within Components
+- Start displaying value of app into its own `Display` component.
+- Change the application by defining new component inside `App`.
+```javascript
+// This is the right place to define a component.
+const Button = (props) => (
+    <button onClick={props.handleClick}>
+        {props.text}
+    </button>
+);
+
+const App = () => {
+    const [value, setValue] = useState(10);
+
+    const setToValue = newValue => {
+        console.log("Value now", newValue);
+        setValue(newValue);
+    };
+
+    // Do not define components inside another component.
+    const Display = props => <div>{props.value}</div>
+
+    return (
+        <div>
+            <Display value={value} />
+            <Button handleClick={() => setToValue(1000)} text="thousand" />
+            <Button handleClick={() => setToValue(0)} text="reset" />
+            <Button handleClick={() => setToValue(value + 1)} text="increment" />
+        </div>
+    );
+};
+```
+- Do not define components in components.
+- React treats a component defined in another component as a new component in every render.
+    - Impossible to optimize.
+- Move `Display` outside.
+
+
