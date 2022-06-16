@@ -362,3 +362,129 @@ const App = () => {
 - If event handler function needs multiple commands, use curly braces.
 
 
+## Function That Returns A Function
+- Another way to define an event handler is to define a function that returns a function.
+- Make the changes below:
+```javascript
+const App = () => {
+    const [value, setValue] = useState(10);
+
+    const hello = () => {
+        const handler = () => console.log("Hello world");
+        return handler;
+    };
+
+    return (
+        <div>
+            {value}
+            <button onClick={hello()}>button</button>
+        </div>
+    );
+};
+```
+- Remember earlier we stated that event handlers may not be function calls.
+- Why does it work here?
+    - When the component is rendered, the function gets executed and a function reference takes its spot.
+- It essentially gets transformed back to the proper form.
+- So what's the point?
+    - Transform code:
+```javascript
+const App = () => {
+    const [value, setValue] = useState(10);
+
+    const hello = (who) => {
+        const handler = () => {
+            console.log("Hello", who);
+        };
+        return handler;
+    };
+
+    return (
+        <div>
+            {value}
+            <button onClick={hello("world")}>button</button>
+            <button onClick={hello("react")}>button</button>
+            <button onClick={hello("function")}>button</button>
+        </div>
+    );
+};
+```
+- The `hello()` function here can be thought of as a factory that makes custom handlers for greeting users.
+- The function is verbose, so refactor:
+```javascript
+const hello = (who) => {
+    return () => {
+        console.log("Hello", who);
+    };
+};
+```
+- Can also omit the curly braces because there's only one statement.
+```javascript
+const hello = (who) =>
+    () => {
+        console.log("Hello", who);
+    };
+```
+- Write all arrows on the same line:
+```javascript
+const hello = (who) => () => {
+    console.log("Hello", who);
+};
+```
+- Can use the same trick to define event handlers that set state of component to a given value.
+```javascript
+const App = () => {
+    const [value, setValue] = useState(10);
+
+    const setToValue = (newValue) => () => {
+        console.log("Value now", newValue);     // Print the new value to console.
+        setValue(newValue);
+    };
+
+    return (
+        <div>
+            {value}
+            <button onClick={setToValue(1000)}>thousand</button>
+            <button onClick={setToValue(0)}>reset</button>
+            <button onClick={setToValue(value + 1)}>increment</button>
+        </div>
+    );
+};
+```
+- When component is rendered, the `thousand` button is created.
+    - The event handler is set to the return value of `setToValue(1000)`.
+```javascript
+() => {
+    console.log("Value now", 1000);
+    setValue(1000);
+}
+```
+- However, let's just return to the normal ways.
+```javascript
+const App = () => {
+    const [value, setValue] = useState(10);
+
+    const setToValue = (newValue) => {
+        console.log("Value now", newValue);
+        setValue(newValue);
+    };
+
+    return (
+        <div>
+            {value}
+            <button onClick={() => setToValue(1000)}>
+                thousand
+            </button>
+            <button onClick={() => setToValue(0)}>
+                reset
+            </button>
+            <button onClick={() => setToValue(value + 1)}>
+                increment
+            </button>
+        </div>
+    );
+};
+```
+- Choosing between the two is a matter of taste.
+
+
