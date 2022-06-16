@@ -488,3 +488,18 @@ const App = () => {
 - Choosing between the two is a matter of taste.
 
 
+## Passing Event Handlers To Child Components
+- Extract button to its own component.
+```javascript
+const Button = (props) => {
+    <button onClick={props.handleClick}>
+        {props.text}
+    </button>
+};
+```
+- The component gets event handler from `handleClick` prop.
+- It gets the text from the `text` prop.
+- Define the event handler in the `App` component and pass this event handler into the `Button` component inside `App`.
+    - Make sure the names of the functions and the attributes match.
+
+
