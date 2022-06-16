@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const App = () => {
     // Save clicks of each button to its own state.
@@ -8,7 +8,15 @@ const App = () => {
 
     return (
         <div>
-            code here
+            <h2>Give Feedback</h2>
+            <button>good</button>
+            <button>neutral</button>
+            <button>bad</button>
+
+            <h2>Statistics</h2>
+            <div>good {good}</div>
+            <div>neutral {neutral}</div>
+            <div>bad {bad}</div>
         </div>
     );
 };
