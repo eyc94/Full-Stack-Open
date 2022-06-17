@@ -38,4 +38,8 @@
     - Reduce basics.
 
 
+## Event Handlers Revisited
+- It's worth going back to read about event handlers as it has proven to be difficult.
+
+
 
