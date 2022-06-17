@@ -28,6 +28,15 @@ const Total = (props) => {
     );
 };
 
+const Course = (props) => {
+    return (
+        <div>
+            <Header course={props.course} />
+            <Content course={props.course} />
+        </div>
+    );
+};
+
 const App = () => {
     const course = {
         id: 1,
