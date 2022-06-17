@@ -23,6 +23,14 @@ const Statistics = ({ good, neutral, bad }) => {
     );
 };
 
+const Button = ({ handleClick, text }) => {
+    return (
+        <button onClick={handleClick}>
+            {text}
+        </button>
+    );
+};
+
 const App = () => {
     const [good, setGood] = useState(0);
     const [neutral, setNeutral] = useState(0);
@@ -43,9 +51,9 @@ const App = () => {
     return (
         <div>
             <h2>Give Feedback</h2>
-            <button onClick={handleGoodClick}>good</button>
-            <button onClick={handleNeutralClick}>neutral</button>
-            <button onClick={handleBadClick}>bad</button>
+            <Button handleClick={handleGoodClick} text="good" />
+            <Button handleClick={handleNeutralClick} text="neutral" />
+            <Button handleClick={handleBadClick} text="bad" />
             <Statistics good={good} neutral={neutral} bad={bad} />
         </div>
     );
