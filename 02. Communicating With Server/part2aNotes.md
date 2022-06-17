@@ -28,3 +28,14 @@
     - Type `log` and hit tab to autocomplete.
 
 
+## JavaScript Arrays
+- We will use functional programming methods of `array`.
+    - `find`, `filter`, and `map`.
+- Can watch first three parts of YouTube series `Functional Programming in JavaScript`.
+    - `https://www.youtube.com/playlist?list=PL0zVEGEvSaeEd9hlmCXrk5yUyqUag-n84`
+    - Higher-order functions.
+    - Map.
+    - Reduce basics.
+
+
+
