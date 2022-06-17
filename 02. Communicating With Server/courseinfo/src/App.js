@@ -23,13 +23,14 @@ const Part = (props) => {
 };
 
 const Total = (props) => {
-    let sum = 0;
-    props.course.parts.forEach(part => {
-        sum += part.exercises;
-    });
+    const initialValue = 0;
+    const sumWithInitialValue = props.course.parts.reduce(
+        (previousValue, currentValue) => previousValue + currentValue.exercises,
+        initialValue
+    );
 
     return (
-        <p><strong>Total of {sum}</strong></p>
+        <p><strong>Total of {sumWithInitialValue}</strong></p>
     );
 };
 
