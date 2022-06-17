@@ -235,3 +235,23 @@ notes.map(note =>
 - This needs to be in curly braces.
 
 
+## Anti-Pattern: Array Indexes As Keys
+- We can use the array indexes as keys as well.
+- Indexes can be retrieved by passing a second parameter to the callback function of the `map` method.
+```javascript
+notes.map((note, i) => ...);
+```
+- The value `i` is the index of the position in the array where the note is.
+- One way to define row generation is:
+```javascript
+<ul>
+    {notes.map((note, i) =>
+        <li key={i}>
+            {note.content}
+        </li>
+    )}
+</ul>
+```
+- This method is not recommended.
+
+
