@@ -340,3 +340,6 @@ const App = ({ notes }) => {
 - Extension of the file can be omitted.
 
 
+## When The Application Breaks
+- Use `console.log()`.
+
