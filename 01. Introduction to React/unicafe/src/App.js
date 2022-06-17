@@ -1,5 +1,21 @@
 import React, { useState } from "react";
 
+const StatisticLine = ({ text, value }) => {
+    if (text === "positive") {
+        return (
+            <div>
+                {text} {value} %
+            </div>
+        );
+    }
+
+    return (
+        <div>
+            {text} {value}
+        </div>
+    );
+};
+
 const Statistics = ({ good, neutral, bad }) => {
     const total = good + neutral + bad;
     if (good === 0 && neutral === 0 && bad === 0) {
@@ -13,12 +29,12 @@ const Statistics = ({ good, neutral, bad }) => {
     return (
         <>
             <h2>Statistics</h2>
-            <div>good {good}</div>
-            <div>neutral {neutral}</div>
-            <div>bad {bad}</div>
-            <div>all {total}</div>
-            <div>average {(good - bad) / total}</div>
-            <div>positive {(good / total) * 100} %</div>
+            <StatisticLine text="good" value={good} />
+            <StatisticLine text="neutral" value={neutral} />
+            <StatisticLine text="bad" value={bad} />
+            <StatisticLine text="all" value={total} />
+            <StatisticLine text="average" value={(good - bad) / total} />
+            <StatisticLine text="positive" value={(good / total) * 100} />
         </>
     );
 };
