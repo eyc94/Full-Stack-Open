@@ -325,3 +325,106 @@ axios.get("http://localhost:3001/notes").then(response => {
 - Where should we place the `axios.get` command in the component?
 
 
+## Effect-Hooks
+- We have already used `state hooks`.
+- We also have `effect hooks`.
+    - **The Effect Hook lets your perform side effects on function components. Data fetching, setting up a subscription, and manually changing the DOM in React components are all examples of side effects.**
+- Effect hooks are right when fetching data.
+- Remove fetching of data from `index.js`.
+    - No need to pass props to `App`.
+    - Simplify `index.js`.
+```javascript
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+```
+- Change `App.js`:
+```javascript
+import { useState, useEffect } from "react";
+import axios from "axios";
+import Note from "./components/Note";
+
+const App = () => {
+    const [notes, setNotes] = useState([]);
+    const [newNote, setNewNote] = useState("");
+    const [showAll, setShowAll] = useState(true);
+
+    useEffect(() => {
+        console.log("effect");
+        axios
+            .get("http://localhost:3001/notes")
+            .then(response => {
+                console.log("promise fulfilled");
+                setNotes(response.data);
+            });
+    }, []);
+    console.log("render", notes.length, "notes");
+
+    //
+};
+```
+- The prints are below:
+```
+render 0 notes
+effect
+promise fulfilled
+render 3 notes
+```
+- Body of function defining component is executed and component rendered for the first time.
+- The `render 0 notes` is printed.
+- Then, the function defined in `useEffect` is called immediately.
+- Then, `effect` is printed.
+- The command `axios.get()` gets called and starts fetching from server.
+- Registers the attached event handler.
+- When data comes from the server, JS calls the function event handler.
+- The `promise fulfilled` prints and stores the notes retrieved into the `notes` state.
+    - This triggers a re-render because we changed the state.
+- Then, `render 3 notes` is printed.
+- Write the `useEffect` code above a bit differently.
+```javascript
+const hook = () => {
+    console.log("effect");
+    axios
+        .get("http://localhost:3001/notes")
+        .then(response => {
+            console.log(response.data);
+            setNotes(response.data);
+        });
+};
+
+useEffect(hook, []);
+```
+- It's now more clear.
+    - The `useEffect` function takes two parameters.
+    - The first is a function, the `effect` itself.
+        - **By default, effects run after every completed render, but you can choose to fire it only when certain values have changed**.
+    - The `effect` is always run after every render.
+    - If the second parameter is an empty array, `[]`, then `effect` is run only after the first render.
+- Could also write code like this:
+```javascript
+useEffect(() => {
+    console.log("effect");
+
+    const eventHandler = response => {
+        console.log("promise fulfilled");
+        setNotes(response.data);
+    };
+
+    const promise = axios.get("http://localhost:3001/notes");
+    promise.then(eventHandler);
+}, []);
+```
+- A more compact representation is recommended:
+```javascript
+useEffect(() => {
+    console.log("effect");
+    axios
+        .get("http://localhost:3001/notes")
+        .then(response => {
+            console.log("promise fulfilled");
+            setNotes(response.data);
+        });
+}, []);
+```
+- Still have a problem.
+    - When adding new notes, they are not stored on the server.
+
+
