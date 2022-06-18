@@ -428,3 +428,18 @@ useEffect(() => {
     - When adding new notes, they are not stored on the server.
 
 
+## The Development Runtime Environment
+- The whole system got more complex.
+- Review what happens and where.
+    - The JS code making up React app runs in the browser.
+    - Browser gets JS from `React dev server` (when you run `npm start`).
+        - The dev server transforms JS into format understood by browser.
+        - It stitches together JS from different files into one file.
+        - Discussed more in Part 7.
+    - The React app running in browser fetches JSON data from `json-server` on port 3001.
+        - `json-server` gets its data from `db.json` file.
+    - All parts of the app happen to reside on developer's machine (localhost).
+        - Situation changes when app is deployed to internet.
+        - Doing this in Part 3.
+
+    
