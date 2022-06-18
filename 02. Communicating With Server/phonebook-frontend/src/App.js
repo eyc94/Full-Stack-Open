@@ -11,6 +11,14 @@ const App = () => {
     const [newNumber, setNewNumber] = useState("");
     const [newFilter, setNewFilter] = useState("");
 
+    useEffect(() => {
+        axios
+            .get("http://localhost:3001/persons")
+            .then(response => {
+                setPersons(response.data);
+            });
+    }, []);
+
     const addPerson = (event) => {
         event.preventDefault();
 
