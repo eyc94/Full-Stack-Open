@@ -178,3 +178,84 @@ const addNote = (event) => {
 - Event handler also resets value of controlled input element.
 
 
+## Filtering Displayed Elements
+- Allow only important notes to be displayed.
+- Add piece of state to `App` that keeps track of which notes to be displayed.
+```javascript
+const App = (props) => {
+    const [notes, setNotes] = useState(props.notes);
+    const [newNote, setNewNote] = useState("");
+    const [showAll, setShowAll] = useState(true);
+
+    // ...
+};
+```
+- Change component to store list of notes to be displayed in `notesToShow` variable.
+    - Items of list depend on state of component.
+```javascript
+const App = (props) => {
+    const [notes, setNotes] = useState(props.notes);
+    const [newNote, setNewNote] = useState("");
+    const [showAll, setShowAll] = useState (true);
+
+    // ...
+
+    const notesToShow = showAll
+        ? notes
+        : notes.filter(note => note.important === true);
+
+    return (
+        <div>
+            <h1>Notes</h1>
+            <ul>
+                {notesToShow.map(note =>
+                    <Note key={note.id} note={note} />
+                )}
+            </ul>
+            <form onSubmit={addNote}>
+            // ...
+        </div>
+    );
+};
+```
+- We use conditional operator to get `notesToShow` variable.
+- We use the `filter` method to filer the notes.
+- The comparison is redundant. We can shorten it:
+```javascript
+notes.filter(note => note.important);
+```
+- Triple equal is more safe.
+- Let's allow the user to toggle the `showAll` state.
+```javascript
+import { useState } from "react";
+import Note from "./components/Note";
+
+const App = (props) => {
+    const [notes, setNotes] = useState(props.notes);
+    const [newNote, setNewNote] = useState("");
+    const [showAll, setShowAll] = useState (true);
+
+    // ...
+
+    return (
+        <div>
+            <h1>Notes</h1>
+            <div>
+                <button onClick={() => setShowAll(!showAll)}>
+                    show {showAll ? "important" : "all"}
+                </button>
+            </div>
+            <ul>
+                {notesToShow.map(note =>
+                    <Note key={note.id} note={note} />
+                )}
+            </ul>
+            <form onSubmit={addNote}>
+            // ...
+        </div>
+    );
+};
+```
+- The button just changes the state `showAll` back and forth from true to false.
+
+
