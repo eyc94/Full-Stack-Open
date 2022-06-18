@@ -50,13 +50,13 @@ const App = () => {
         <div>
             <h2>Phonebook</h2>
             <div>Filter shown with <input value={newFilter} onChange={handleFilterChange} /></div>
-            <h2>Add New</h2>
+            <h3>Add New</h3>
             <form onSubmit={addPerson}>
                 <div>Name: <input value={newName} onChange={handleNameChange} /></div>
                 <div>Number: <input value={newNumber} onChange={handleNumberChange} /></div>
                 <div><button type="submit">Add</button></div>
             </form>
-            <h2>Numbers</h2>
+            <h3>Numbers</h3>
             <Persons persons={personsToShow} />
         </div>
     );
