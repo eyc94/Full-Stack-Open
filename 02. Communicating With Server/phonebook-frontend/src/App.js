@@ -13,7 +13,12 @@ const App = () => {
             name: newName
         };
 
-        setPersons(persons.concat(personObject));
+        if (persons.filter(person => person.name.toLowerCase() === newName.toLowerCase()).length > 0) {
+            alert(`${newName} is already added to the phonebook!`);
+        } else {
+            setPersons(persons.concat(personObject));
+        }
+
         setNewName("");
     }
 
