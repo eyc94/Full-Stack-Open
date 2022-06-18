@@ -42,10 +42,12 @@ const App = () => {
         setNewFilter(event.target.value);
     }
 
+    const personsToShow = persons.filter(person => person.name.toLowerCase().includes(newFilter));
+
     return (
         <div>
             <h2>Phonebook</h2>
-            <div>Filter shown with<input value={newFilter} onChange={handleFilterChange} /></div>
+            <div>Filter shown with <input value={newFilter} onChange={handleFilterChange} /></div>
             <h2>Add New</h2>
             <form onSubmit={addPerson}>
                 <div>Name: <input value={newName} onChange={handleNameChange} /></div>
@@ -53,7 +55,7 @@ const App = () => {
                 <div><button type="submit">Add</button></div>
             </form>
             <h2>Numbers</h2>
-            {persons.map(person =>
+            {personsToShow.map(person =>
                 <div key={person.name}>{person.name} {person.number}</div>
             )}
         </div>
