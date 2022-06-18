@@ -74,3 +74,107 @@ const App = (props) => {
     - How do we access data in the form's `input` element?
 
 
+## Controlled Component
+- Many ways to access form's `input` element.
+- First way is through `controlled components`.
+- Add new piece of state called `newNote`.
+    - Store user-submitted input.
+    - Set as `input` element's `value` attribute.
+```javascript
+const App = (props) => {
+    const [notes, setNotes] = useState(props.notes);
+    const [newNote, setNewNote] = useState(
+        "a new note..."
+    );
+
+    const addNote = (event) => {
+        event.preventDefault();
+        console.log("Button Clicked", event.target);
+    };
+
+    return (
+        <div>
+            <h1>Notes</h1>
+            <ul>
+                {notes.map(note =>
+                    <Note key={note.id} note={note} />
+                )}
+            </ul>
+            <form onSubmit={addNote}>
+                <input value={newNote} />
+                <button type="submit">save</button>
+            </form>
+        </div>
+    );
+};
+```
+- It sets a placeholder text for the `input` element.
+- The value of this placeholder is the value of `newNote`.
+    - Notice how you cannot change this value.
+    - Console gives a hint as to why.
+- To enable editing of this `input` element, register an event handler.
+    - This synchronizes changes made to the input with the component's state.
+```javascript
+const App = (props) => {
+    const [notes, setNotes] = useState(props.notes);
+    const [newNote, setNewNote] = useState(
+        "a new note..."
+    );
+
+    // ...
+
+    const handleNoteChange = (event) => {
+        console.log(event.target.value);
+        setNewNote(event.target.value);
+    };
+
+    return (
+        <div>
+            <h1>Notes</h1>
+            <ul>
+                {notes.map(note =>
+                    <Note key={note.id} note={note} />
+                )}
+            </ul>
+            <form onSubmit={addNote}>
+                <input
+                    value={newNote}
+                    onChange={handleNoteChange}
+                />
+                <button type="submit">save</button>
+            </form>
+        </div>
+    );
+};
+```
+- An event handler is registered to the `onChange` attribute of the `input` element.
+    - Every time a change happens in the `input` element, the event handler is called.
+    - Event handler receives event object as its `event` parameter.
+- The `target` property refers to the controlled `input` element.
+- The `event.target.value` refers to the value of that element.
+- We did not need `event.preventDefault()` because there is no default action in input change.
+- The `App` component's `newNote` state reflects value in `input` element.
+    - Use this value to complete `addNote` function.
+```javascript
+const addNote = (event) => {
+    event.preventDefault();
+    const noteObject = {
+        content: newNote,
+        date: new Date().toISOString(),
+        important: Math.random() < 0.5,
+        id: notes.length + 1
+    };
+
+    setNotes(notes.concat(noteObject));
+    setNewNote("");
+};
+```
+- Create new note object called `noteObject`.
+    - Contents received from `newNote` state.
+    - The `id` is made based on the current total notes.
+    - The `important` property has a 50% chance of being true or false.
+- New note added to list of `notes` using `concat()` method.
+    - This creates a new copy of the original `notes` array with the new item added at the end.
+- Event handler also resets value of controlled input element.
+
+
