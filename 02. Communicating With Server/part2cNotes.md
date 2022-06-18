@@ -55,3 +55,65 @@ $ npx json-server --port 3001 --watch db.json
     - We will do more of this in Part 3.
 
 
+## The Browser As A Runtime Environment
+- First task is fetching data the notes to the React app from `http://localhost:3001/notes`.
+- We learned to fetch data in Part 0 using `XMLHttpRequest`.
+    - This is HTTP request made using an XHR object.
+    - Introduced in 1999.
+    - No longer recommended.
+- Browsers support the `fetch` method.
+    - Based on `promises` instead of event-driven model used by XHR.
+- Example of fetching data using XHR:
+```javascript
+const xhttp = new XMLHttpRequest();
+
+xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        const data = JSON.parse(this.responseText);
+        // Handle the response that is saved in variable data.
+    }
+};
+
+xhttp.open("GET", "/data.json", true);
+xhttp.send();
+```
+- When state of `xhttp` object changes, the event handler is called.
+    - This represents the HTTP request.
+    - If change in state is the response that arrived, then data is handled accordingly.
+- Notice the code in event handler is defined before the request is sent to the server.
+    - The code in event handler executes later in time.
+    - Code does not execute top-to-bottom.
+    - So code does not execute `synchronously`. It executes `asynchronously`.
+- There's Java code that's similar to what's happening.
+    - Basically, the program waits for `request.get(...)` to finish.
+    - Notes then stored in variable.
+    - Then notes are processed.
+- JavaScript engines follow `asynchronous model`.
+    - Requires that all `IO-operations` execute as non-blocking.
+    - Means that code execution happens immediately after calling IO function without waiting for it to return.
+- When asynchronous operation is done at some point after its completion.
+    - JavaScript engine calls the event handler registered to operation.
+- JS engines are `single-threaded`.
+    - Cannot execute code in parallel.
+    - Requirement to use non-blocking model for executing IO operation.
+    - Else, the browser will "freeze" during the fetching of data from a server.
+- Another consequence of being single-threaded:
+    - If some code execution takes up a lot of time, browser will be stuck during the duration.
+- If we ran this code:
+```javascript
+setTimeout(() => {
+    console.log("loop...");
+    let i = 0;
+    while (i < 50000000000) {
+        i++;
+    }
+    console.log("end");
+}, 5000);
+```
+- Everything works normally for 5 seconds.
+- When function defined is run, the browser will be stuck during the execution of the loop.
+- In order to remain responsive, code shouldn't be too long doing one task.
+- In today's browsers, it is possible to run parallelized code with the help of `web workers`.
+    - Event loop of a single browser is handled only by a single thread.
+
+
