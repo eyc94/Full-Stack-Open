@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import Persons from "./components/Persons";
+import Filter from "./components/Filter";
 
 const App = () => {
     const [persons, setPersons] = useState([
@@ -49,7 +50,7 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
-            <div>Filter shown with <input value={newFilter} onChange={handleFilterChange} /></div>
+            <Filter filterVal={newFilter} filterHandler={handleFilterChange} />
             <h3>Add New</h3>
             <form onSubmit={addPerson}>
                 <div>Name: <input value={newName} onChange={handleNameChange} /></div>
