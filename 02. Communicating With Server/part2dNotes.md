@@ -9,3 +9,17 @@
 
 
 ## REST
+- In REST terminology, the individual data objects (like notes) are called `resources`.
+    - Every resource has a unique address to it (URL).
+    - General convention of `json-server` is that to locate a note of `id` of 3 we go to URL `notes/3`.
+    - The `notes` URL would point to a collection containing all the notes.
+- Resources fetched using HTTP GET requests.
+    - HTTP GET request to `notes/3` returns a note with `id` of 3.
+    - HTTP GET request to `notes` returns all notes.
+- Creating new resource for storing a note is done by making HTTP POST request to the `notes` URL.
+    - Data of new note is sent in the body of the request object.
+- `json-server` requires all data be sent in JSON format.
+    - Data must be a correctly formatted string.
+    - The request must contain the `Content-Type` request header with the value of `application/json`.
+
+
