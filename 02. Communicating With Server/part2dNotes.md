@@ -184,3 +184,188 @@ axios.put(url, note).then(response => {
     - If the note IS the note we are updating, use the object returned by the server to add to the array.
 
 
+## Extracting Communication With The Backend Into A Separate Module
+- `App` is now bloated.
+    - We have code for communicating with the backend.
+- Implement the `single responsibility principle`.
+    - Extract communication to its own module.
+- Create a `src/services` folder.
+    - Add a file called `notes.js`.
+```javascript
+import axios from "axios";
+const baseUrl = "http://localhost:3001/notes";
+
+const getAll = () => {
+    return axios.get(baseUrl);
+};
+
+const create = newObject => {
+    return axios.post(baseUrl, newObject);
+};
+
+const update = (id newObject) => {
+    return axios.put(`${baseUrl}/${id}`, newObject);
+};
+
+export default {
+    getAll: getAll,
+    create: create,
+    update: update
+};
+```
+- Module returns object with three functions.
+- The functions directly return the promises returned by the axios methods.
+- The `App` component uses `import` to get access to the module.
+```javascript
+import noteService from "./services/note";
+
+const App = () => {
+```
+- Functions of module can be used with imported variable `noteService`:
+```javascript
+const App = () => {
+    // ...
+
+    useEffect(() => {
+        noteService
+            .getAll()
+            .then(response => {
+                setNotes(response.data);
+            });
+    }, []);
+
+    const toggleImportanceOf = id => {
+        const note = notes.find(n => n.id === id);
+        const changedNote = { ...note, important: !note.important };
+
+        noteService
+            .update(id, changedNote)
+            .then(response => {
+                setNotes(notes.map(note => note.id !== id ? note : response.data));
+            });
+    };
+
+    const addNote = (event) => {
+        event.preventDefault();
+        const noteObject = {
+            content: newNote,
+            date: newDate().toISOString(),
+            important: Math.random() > 0.5
+        };
+
+        noteService
+            .create(noteObject)
+            .then(response => {
+                setNotes(notes.concat(response.data));
+                setNewNote("");
+            });
+    };
+
+    // ...
+};
+
+export default App;
+```
+- Take implementation a step further.
+- When `App` uses the functions, it receives an object that contains entire response.
+    - We only need `response.data`.
+- What if we only get back from the server what we need?
+```javascript
+noteService
+    .getAll()
+    .then(initialNotes => {
+        setNotes(initialNotes);
+    });
+```
+- This works if we change our server module like so:
+```javascript
+import axios from "axios";
+const baseUrl = "http://localhost:3001/notes";
+
+const getAll = () => {
+    const request = axios.get(baseUrl);
+    return request.then(response => response.data);
+};
+
+const create = newObject => {
+    const request = axios.post(baseUrl, newObject);
+    return request.then(response => response.data);
+};
+
+const update = (id newObject) => {
+    const request = axios.put(`${baseUrl}/${id}`, newObject);
+    return request.then(response => response.data);
+};
+
+export default {
+    getAll: getAll,
+    create: create,
+    update: update
+};
+```
+- We no longer return the promise from the axios method.
+- We assign promise to the `request` variable and call its `then` method.
+- It might be better visually if we use:
+```javascript
+const getAll = () => {
+    const request = axios.get(baseUrl);
+    return request.then(response => {
+        return response.data;
+    });
+};
+```
+- The `getAll` method returns a promise because the `then` method returns a promise.
+- We directly define the `then` method to return `response.data`.
+- Update `App` to work with the changes made to our module.
+    - Fix callbacks given as parameters to `noteService` object's methods.
+    - They need to use the returned response data directly.
+```javascript
+const App = () => {
+    // ...
+
+    useEffect(() => {
+        noteService
+            .getAll()
+            .then(initialNotes => {
+                setNotes(initialNotes);
+            });
+    }, []);
+
+    const toggleImportanceOf = id => {
+        const note = notes.find(n => n.id === id);
+        const changedNote = { ...note, important: !note.important };
+
+        noteService
+            .update(id, changedNote)
+            .then(returnedNote => {
+                setNotes(notes.map(note => note.id !== id ? note : returnedNote));
+            });
+    };
+
+    const addNote = (event) => {
+        event.preventDefault();
+        const noteObject = {
+            content: newNote,
+            date: newDate().toISOString(),
+            important: Math.random() > 0.5
+        };
+
+        noteService
+            .create(noteObject)
+            .then(returnedNote => {
+                setNotes(notes.concat(returnedNote));
+                setNewNote("");
+            });
+    };
+
+    // ...
+};
+```
+- Promises are central to modern JavaScript development.
+    - Should invest time in learning and understanding them.
+- Resources:
+    - Promises Chaining: `https://javascript.info/promise-chaining`
+    - You Don't Know JS - 1st Edition: `https://github.com/getify/You-Dont-Know-JS/tree/1st-ed`
+    - You Don't Know JS - Async & Performance: `https://github.com/getify/You-Dont-Know-JS/blob/1st-ed/async%20%26%20performance/ch3.md`
+
+
