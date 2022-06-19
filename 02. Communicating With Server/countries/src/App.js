@@ -9,6 +9,7 @@ const App = () => {
         axios
             .get("https://restcountries.com/v3.1/all")
             .then(response => {
+                console.log(response.data);
                 setCountries(response.data);
             });
     }, []);
@@ -21,6 +22,42 @@ const App = () => {
         country.name.common.toLowerCase().includes(countryFilter.toLowerCase())
     );
 
+    if (countryFilter === "") {
+        return (
+            <div>
+                Find Countries <input value={countryFilter} onChange={handleFilterChange} />
+            </div>
+        );
+    }
+
+    if (countriesToShow.length > 10) {
+        return (
+            <div>
+                Find Countries <input value={countryFilter} onChange={handleFilterChange} />
+                <div>Too many matches! Specify another filter.</div>
+            </div>
+        );
+    }
+
+    const keys = Object.keys(countriesToShow[0].languages);
+    if (countriesToShow.length === 1) {
+        return (
+            <div>
+                Find Countries <input value={countryFilter} onChange={handleFilterChange} />
+                <h2>{countriesToShow[0].name.common}</h2>
+                <div>Capital: {countriesToShow[0].capital[0]}</div>
+                <div>Area: {countriesToShow[0].area}</div>
+                <h3>Languages:</h3>
+                <ul>
+                    {keys.map(key =>
+                        <li key={key}>{countriesToShow[0].languages[key]}</li>
+                    )}
+                </ul>
+                <img src={countriesToShow[0].flags.png}></img>
+            </div>
+        );
+    }
+
     return (
         <div>
             Find Countries <input value={countryFilter} onChange={handleFilterChange} />
@@ -29,7 +66,6 @@ const App = () => {
             )}
         </div>
     );
-
 };
 
 export default App;
