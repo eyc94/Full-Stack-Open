@@ -401,3 +401,81 @@ const person = { name, age };
 ```
 
 
+## Promises And Errors
+- What if a user tries to change the importance of a note that is already deleted?
+- Test this.
+    - Have `getAll` return a hard-coded note that does not exist on the backend server.
+```javascript
+const getAll = () => {
+    const request = axios.get(baseUrl);
+    const nonExisting = {
+        id: 10000,
+        content: "This note is note saved to server",
+        date: "2019-05-30T17:30:31.098Z",
+        important: true
+    };
+    return request.then(repsonse => response.data.concat(nonExisting));
+};
+```
+- When trying to change importance of hard-coded note.
+    - We get 404 not found.
+    - App should handle these errors gracefully.
+- A promise can be in three states.
+- Need to handle the rejection of a promise.
+    - This is done by providing the `then` method with a second callback function.
+    - This is called when the promise is rejected.
+    - Use the `catch` method.
+```javascript
+axios
+    .get("http://example.com/probably_will_fail")
+    .then(response => {
+        console.log("success");
+    })
+    .catch(error => {
+        console.log("fail");
+    });
+```
+- If request fails, event handler registered to `catch` is called.
+- The `catch` is placed deeper in the promise chain.
+- When app makes HTTP request, we are making promise chain.
+```javascript
+axios
+    .put(`${baseUrl}/${id}`, newObject)
+    .then(response => response.data)
+    .then(changedNote => {
+        // ...
+    });
+```
+- The `catch` is used at the end to catch an error.
+```javascript
+axios
+    .put(`${baseUrl}/${id}`, newObject)
+    .then(response => response.data)
+    .then(changedNote => {
+        // ...
+    })
+    .catch(error => {
+        console.log("fail");
+    });
+```
+- Register an error handler in `App` component:
+```javascript
+const toggleImportanceOf = id => {
+    const note = notes.find(n => n.id === id);
+    const changedNote = { ...note, important: !note.imporant };
+
+    noteService
+        .update(id, changedNote).then(returnedNote => {
+            setNotes(notes.map(note => note.id !== id ? note : returnedNote));
+        })
+        .catch(error => {
+            alert(
+                `The note '${note.content}' was already deleted from the server`
+            );
+            setNotes(notes.filter(n => n.id !== id));
+        });
+};
+```
+- The alert pops up and the deleted note gets filtered out from the state.
+
+
