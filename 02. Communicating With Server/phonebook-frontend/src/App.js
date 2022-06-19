@@ -40,7 +40,18 @@ const App = () => {
 
         setNewName("");
         setNewNumber("");
-    }
+    };
+
+    const deleteHandler = (id, name) => {
+        const message = `Delete ${name}?`
+        if (window.confirm(message)) {
+            personService
+                .remove(id)
+                .then(returnedObject => {
+                    setPersons(persons.filter(person => person.id !== id));
+                });
+        }
+    };
 
     const handleNameChange = (event) => {
         setNewName(event.target.value);
@@ -69,7 +80,7 @@ const App = () => {
                 numberHandler={handleNumberChange}
             />
             <h3>Numbers</h3>
-            <Persons persons={personsToShow} />
+            <Persons persons={personsToShow} deleteHandler={deleteHandler} />
         </div>
     );
 };
