@@ -4,7 +4,7 @@ import Note from "./components/Note";
 
 import noteService from "./services/notes";
 
-const App = (props) => {
+const App = () => {
     const [notes, setNotes] = useState([]);
     const [newNote, setNewNote] = useState("");
     const [showAll, setShowAll] = useState(true);
@@ -12,8 +12,8 @@ const App = (props) => {
     useEffect(() => {
         noteService
             .getAll()
-            .then(response => {
-                setNotes(response.data);
+            .then(initialNotes => {
+                setNotes(initialNotes);
             });
     }, []);
 
@@ -29,8 +29,8 @@ const App = (props) => {
 
         noteService
             .create(noteObject)
-            .then(response => {
-                setNotes(notes.concat(response.data));
+            .then(returnedNote => {
+                setNotes(notes.concat(returnedNote));
                 setNewNote("");
             });
     };
@@ -46,8 +46,8 @@ const App = (props) => {
 
         noteService
             .update(id, changedNote)
-            .then(response => {
-                setNotes(notes.map(note => note.id !== id ? note : response.data));
+            .then(returnedNote => {
+                setNotes(notes.map(note => note.id !== id ? note : returnedNote));
             });
     };
 
