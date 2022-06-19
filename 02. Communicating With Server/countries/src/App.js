@@ -18,10 +18,6 @@ const App = () => {
         setCountryFilter(event.target.value);
     };
 
-    const showHandler = (event) => {
-        console.log(event);
-    };
-
     const countriesToShow = countries.filter(country =>
         country.name.common.toLowerCase().includes(countryFilter.toLowerCase())
     );
@@ -77,7 +73,7 @@ const App = () => {
             {countriesToShow.map(country =>
                 <div key={country.name.common}>
                     {country.name.common}
-                    <button onClick={showHandler}>show</button>
+                    <button>Show</button>
                 </div>
             )}
         </div>
