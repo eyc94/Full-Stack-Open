@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+import Button from "./components/Button";
+
 const App = () => {
     const [countryFilter, setCountryFilter] = useState("");
     const [countries, setCountries] = useState([]);
@@ -73,7 +75,7 @@ const App = () => {
             {countriesToShow.map(country =>
                 <div key={country.name.common}>
                     {country.name.common}
-                    <button>Show</button>
+                    <Button country={country} />
                 </div>
             )}
         </div>
