@@ -2,14 +2,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Note from "./components/Note";
 
+import noteService from "./services/notes";
+
 const App = (props) => {
     const [notes, setNotes] = useState([]);
     const [newNote, setNewNote] = useState("");
     const [showAll, setShowAll] = useState(true);
 
     useEffect(() => {
-        axios
-            .get("http://localhost:3001/notes")
+        noteService
+            .getAll()
             .then(response => {
                 setNotes(response.data);
             });
@@ -25,8 +27,8 @@ const App = (props) => {
             id: notes.length + 1
         };
 
-        axios
-            .post("http://localhost:3001/notes", noteObject)
+        noteService
+            .create(noteObject)
             .then(response => {
                 setNotes(notes.concat(response.data));
                 setNewNote("");
@@ -42,9 +44,11 @@ const App = (props) => {
         const note = notes.find(n => n.id === id);
         const changedNote = { ...note, important: !note.important };
 
-        axios.put(url, changedNote).then(response => {
-            setNotes(notes.map(note => note.id !== id ? note : response.data));
-        });
+        noteService
+            .update(id, changedNote)
+            .then(response => {
+                setNotes(notes.map(note => note.id !== id ? note : response.data));
+            });
     };
 
     const notesToShow = showAll
