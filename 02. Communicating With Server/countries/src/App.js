@@ -17,9 +17,16 @@ const App = () => {
         setCountryFilter(event.target.value);
     };
 
+    const countriesToShow = countries.filter(country =>
+        country.name.common.toLowerCase().includes(countryFilter.toLowerCase())
+    );
+
     return (
         <div>
             Find Countries <input value={countryFilter} onChange={handleFilterChange} />
+            {countriesToShow.map(country =>
+                <div key={country.name.common}>{country.name.common}</div>
+            )}
         </div>
     );
 
