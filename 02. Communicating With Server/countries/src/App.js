@@ -18,6 +18,10 @@ const App = () => {
         setCountryFilter(event.target.value);
     };
 
+    const showHandler = (event) => {
+        console.log(event);
+    };
+
     const countriesToShow = countries.filter(country =>
         country.name.common.toLowerCase().includes(countryFilter.toLowerCase())
     );
@@ -26,6 +30,15 @@ const App = () => {
         return (
             <div>
                 Find Countries <input value={countryFilter} onChange={handleFilterChange} />
+            </div>
+        );
+    }
+
+    if (countriesToShow.length === 0) {
+        return (
+            <div>
+                Find Countries <input value={countryFilter} onChange={handleFilterChange} />
+                <div>No Matches!</div>
             </div>
         );
     }
@@ -62,7 +75,10 @@ const App = () => {
         <div>
             Find Countries <input value={countryFilter} onChange={handleFilterChange} />
             {countriesToShow.map(country =>
-                <div key={country.name.common}>{country.name.common}</div>
+                <div key={country.name.common}>
+                    {country.name.common}
+                    <button onClick={showHandler}>show</button>
+                </div>
             )}
         </div>
     );
