@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 import Button from "./components/Button";
+import Weather from "./components/Weather";
 
 const App = () => {
     const [countryFilter, setCountryFilter] = useState("");
@@ -11,7 +12,6 @@ const App = () => {
         axios
             .get("https://restcountries.com/v3.1/all")
             .then(response => {
-                console.log(response.data);
                 setCountries(response.data);
             });
     }, []);
@@ -65,6 +65,8 @@ const App = () => {
                     )}
                 </ul>
                 <img src={countriesToShow[0].flags.png}></img>
+                <h3>Weather in {countriesToShow[0].name.common}</h3>
+                <Weather country={countriesToShow[0]} />
             </div>
         );
     }
