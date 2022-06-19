@@ -25,8 +25,12 @@ const App = (props) => {
             id: notes.length + 1
         };
 
-        setNotes(notes.concat(noteObject));
-        setNewNote("");
+        axios
+            .post("http://localhost:3001/notes", noteObject)
+            .then(response => {
+                setNotes(notes.concat(response.data));
+                setNewNote("");
+            });
     };
 
     const handleNoteChange = (event) => {
