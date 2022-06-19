@@ -369,3 +369,35 @@ const App = () => {
     - You Don't Know JS - Async & Performance: `https://github.com/getify/You-Dont-Know-JS/blob/1st-ed/async%20%26%20performance/ch3.md`
 
 
+## Cleaner Syntax For Defining Object Literals
+- The export in the module is kind of weird looking.
+- Notice the keys and values of the object are the same.
+    - We can write it more compactly.
+```javascript
+{
+    getAll,
+    create,
+    update
+}
+```
+- So simplify:
+```javascript
+export default { getAll, create, update };
+```
+- This was newly introduced.
+- For example:
+```javascript
+const name = "Leevi";
+const age = 0;
+
+const person = {
+    name: name,
+    age: age
+};
+```
+- New way:
+```javascript
+const person = { name, age };
+```
+
+
