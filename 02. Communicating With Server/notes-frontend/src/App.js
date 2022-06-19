@@ -38,7 +38,7 @@ const App = (props) => {
     };
 
     const toggleImportanceOf = (id) => {
-        console.log("Importance of " + id + " needs to be toggled");
+        console.log(`Importance of ${id} needs to be toggled`);
     };
 
     const notesToShow = showAll
