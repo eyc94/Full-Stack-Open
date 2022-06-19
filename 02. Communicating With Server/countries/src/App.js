@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+import Button from "./components/Button";
+
 const App = () => {
     const [countryFilter, setCountryFilter] = useState("");
     const [countries, setCountries] = useState([]);
@@ -26,6 +28,15 @@ const App = () => {
         return (
             <div>
                 Find Countries <input value={countryFilter} onChange={handleFilterChange} />
+            </div>
+        );
+    }
+
+    if (countriesToShow.length === 0) {
+        return (
+            <div>
+                Find Countries <input value={countryFilter} onChange={handleFilterChange} />
+                <div>No Matches!</div>
             </div>
         );
     }
@@ -62,7 +73,10 @@ const App = () => {
         <div>
             Find Countries <input value={countryFilter} onChange={handleFilterChange} />
             {countriesToShow.map(country =>
-                <div key={country.name.common}>{country.name.common}</div>
+                <div key={country.name.common}>
+                    {country.name.common}
+                    <Button country={country} />
+                </div>
             )}
         </div>
     );
