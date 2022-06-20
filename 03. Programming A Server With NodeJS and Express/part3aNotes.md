@@ -172,3 +172,67 @@ $ npm install
     - If the future version was 5.0.0 express may contain changes that would cause our application not to work.
 
 
+## Web and Express
+- Go back to our application and make the following changes.
+```javascript
+const express = require("express");
+const app = express();
+
+let notes = [
+    // ...
+];
+
+app.get("/", (request, response) => {
+    response.send("<h1>Hello World!</h1>");
+});
+
+app.get("/api/notes", (request, response) => {
+    response.json(notes);
+});
+
+const PORT = 3001;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+```
+- We are importing `express`.
+    - This is a function used to create an express application stored inside `app` variable.
+- Define two routes:
+    - The first one defines an event handler.
+        - Used to handle HTTP GET requests to the application's root `/`.
+        - Event handler accepts two parameters.
+            - The first `request` parameter contains all information of HTTP request.
+            - The second `response` parameter defines how the request is responded to.
+        - The request above is answered by using `send` method of `response` object.
+            - Calling the `send` method, makes server respond by sending response containing string.
+            - Parameter is string, so express sets value of `Content-Type` to `text/html`.
+            - Status code of response defaults to 200.
+    - The second defines an event handler that handles HTTP GET requests made to `notes` path of the app.
+        - Responded with the `json` method of the `response` object.
+        - Sends the `notes` array as a JSON formatted string.
+- In earlier version using Node, we had to transform the data.
+```javascript
+response.end(JSON.stringify(notes));
+```
+- With express, it's not needed. Happens automatically.
+- Note that `JSON` is a string.
+    - This is NOT a JavaScript object like the value assigned to `notes`.
+    - Experiment below shows:
+```
+> person
+{ name: "Arto", age: 35 }
+> const json = JSON.stringify(person)
+undefined
+> json
+'{"name":"Arto","age":35}'
+> typeof person
+'object'
+> typeof json
+'string'
+>
+```
+- Experiment in `node-repl`.
+    - Start by typing `node` in the command line.
+    - Useful for testing commands.
+
+
