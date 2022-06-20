@@ -36,7 +36,7 @@ const App = () => {
                 personService
                     .update(personToChange.id, changedPerson)
                     .then(returnedPerson => {
-                        setPersons(persons.map(persons => person.name.toLowerCase() !== newName.toLowerCase() ? person : returnedPerson));
+                        setPersons(persons.map(person => person.name.toLowerCase() !== newName.toLowerCase() ? person : returnedPerson));
                     });
             }
         } else {
