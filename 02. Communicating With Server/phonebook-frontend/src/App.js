@@ -13,6 +13,7 @@ const App = () => {
     const [newNumber, setNewNumber] = useState("");
     const [newFilter, setNewFilter] = useState("");
     const [message, setMessage] = useState(null);
+    const [messageStatus, setMessageStatus] = useState("");
 
     useEffect(() => {
         personService
@@ -40,6 +41,7 @@ const App = () => {
                     .then(returnedPerson => {
                         setPersons(persons.map(person => person.name.toLowerCase() !== newName.toLowerCase() ? person : returnedPerson));
                         setMessage(`Updated ${newName}'s information`);
+                        setMessageStatus("success");
                         setTimeout(() => {
                             setMessage(null);
                         }, 5000);
@@ -51,6 +53,7 @@ const App = () => {
                 .then(returnedPerson => {
                     setPersons(persons.concat(returnedPerson));
                     setMessage(`Added ${newName}`);
+                    setMessageStatus("success");
                     setTimeout(() => {
                         setMessage(null);
                     }, 5000);
@@ -68,6 +71,14 @@ const App = () => {
                 .remove(id)
                 .then(returnedObject => {
                     setPersons(persons.filter(person => person.id !== id));
+                })
+                .catch(error => {
+                    setMessage(`Information on ${name} has already been removed from the server!`);
+                    setMessageStatus("failure");
+                    setTimeout(() => {
+                        setMessage(null);
+                    }, 5000);
+                    setPersons(persons.filter(p => p.id !== id));
                 });
         }
     };
@@ -89,7 +100,7 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
-            <Notification message={message} />
+            <Notification message={message} status={messageStatus} />
             <Filter filterVal={newFilter} filterHandler={handleFilterChange} />
             <h3>Add New</h3>
             <PersonForm
