@@ -29,7 +29,16 @@ const App = () => {
         };
 
         if (persons.filter(person => person.name.toLowerCase() === newName.toLowerCase()).length > 0) {
-            alert(`${newName} is already added to the phonebook!`);
+            const updateMessage = `${newName} is already added to the phonebook! Replace the old number with a new one?`;
+            if (window.confirm(updateMessage)) {
+                const personToChange = persons.find(p => p.name.toLowerCase() === newName.toLowerCase());
+                const changedPerson = { ...personToChange, number: newNumber };
+                personService
+                    .update(personToChange.id, changedPerson)
+                    .then(returnedPerson => {
+                        setPersons(persons.map(person => person.name.toLowerCase() !== newName.toLowerCase() ? person : returnedPerson));
+                    });
+            }
         } else {
             personService
                 .create(personObject)
