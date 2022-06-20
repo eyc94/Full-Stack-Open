@@ -71,3 +71,86 @@ const Note = ({ note, toggleImportance }) => {
 ```
 
 
+## Improved Error Message
+- We displayed an error message when user tries to toggle importance of a deleted note.
+    - Used `alert` method.
+    - Implement error message as its own React component.
+```javascript
+const Notification = ({ message }) => {
+    if (message === null) {
+        return null;
+    }
+
+    return (
+        <div className="error">
+            {message}
+        </div>
+    );
+};
+```
+- If `message` is `null`, nothing is rendered.
+- Otherwise, the message gets rendered.
+- Add new piece of state called `errorMessage` to `App`.
+    - Initialize it with some error message.
+```javascript
+const App = () => {
+    const [notes, setNotes] = useState([]);
+    const [newNote, setNewNote] = useState("");
+    const [showAll, setShowAll] = useState(true);
+    const [errorMessage, setErrorMessage] = useState("some error happened...");
+
+    // ...
+
+    return (
+        <div>
+            <h1>Notes</h1>
+            <Notification message={errorMessage} />
+            <div>
+                <button onClick={() => setShowAll(!showAll)}>
+                    show {showAll ? "important" : "all"}
+                </button>
+            </div>
+            // ...
+        </div>
+    );
+};
+```
+- Add a style that suits errors:
+```css
+.error {
+    color: red;
+    background: lightgrey;
+    font-size: 20px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+```
+- Now, add logic to display error message.
+- Change the `toggleImportanceOf` function:
+```javascript
+const toggleImportanceOf = (id) => {
+    const note = notes.find(n => n.id === id);
+    const changedNote = { ...note, important: !note.important };
+
+    noteService
+        .update(id, changedNote)
+        .then(returnedNote => {
+            setNotes(notes.map(note => note.id !== id ? note : returnedNote));
+        })
+        .catch(error => {
+            setErrorMessage(
+                `Note "${note.content}" was already removed from the server!`
+            );
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 5000);
+            setNotes(notes.filter(n => n.id !== id));
+        });
+};
+```
+- When error occurs, we add a message to the `errorMessage` state.
+- Then, we start a timer that sets the `errorMessage` to `null` after 5 seconds.
+
+
