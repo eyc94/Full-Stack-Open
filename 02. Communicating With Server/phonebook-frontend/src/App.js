@@ -39,7 +39,7 @@ const App = () => {
                     .update(personToChange.id, changedPerson)
                     .then(returnedPerson => {
                         setPersons(persons.map(person => person.name.toLowerCase() !== newName.toLowerCase() ? person : returnedPerson));
-                        setMessage(`Added ${newName}`);
+                        setMessage(`Updated ${newName}'s information`);
                         setTimeout(() => {
                             setMessage(null);
                         }, 5000);
