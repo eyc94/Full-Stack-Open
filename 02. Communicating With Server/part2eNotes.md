@@ -154,3 +154,73 @@ const toggleImportanceOf = (id) => {
 - Then, we start a timer that sets the `errorMessage` to `null` after 5 seconds.
 
 
+## Inline Styles
+- Can also writes styles as `inline styles`.
+- Any React component or element can get styled through the `style` attribute.
+- CSS is defined differently in JavaScript than in normal CSS.
+- In CSS:
+```css
+{
+    color: green;
+    font-style: italic;
+    font-size: 16px;
+}
+```
+- In React inline:
+```javascript
+{
+    color: "green",
+    fontStyle: "italic",
+    fontSize: 16
+}
+```
+- CSS property is defined as separate property of JS object.
+- Numeric values like pixels are defined as integers.
+- We also use camel casing.
+- We could add a "bottom block" to our app by creating a `Footer` component and defining inline styles.
+```javascript
+const Footer = () => {
+    const footerStyle = {
+        color: "green",
+        fontStyle: "italic",
+        fontSize: 16
+    };
+
+    return (
+        <div style={footerStyle}>
+            <br />
+            <em>Note App, EC 2022</em>
+        </div>
+    );
+};
+
+const App = () => {
+    // ...
+
+    return (
+        <div>
+            <h1>Notes</h1>
+
+            <Notification message={errorMessage} />
+
+            // ...
+
+            <Footer />
+        </div>
+    );
+};
+```
+- Limitations because certain `pseudo-classes` cannot be used straightforwardly.
+- Inline goes against the grain of old conventions.
+- It was best practice to separate CSS from HTML and JS.
+    - Writing into separate files was the idea.
+- This is the opposite in React because the separate files do not scale well in larger applications.
+- React bases division of application along the lines of its logical functional entities.
+    - Structural units that make up app's functions are React components.
+    - React component defines structure for content (HTML).
+    - The JavaScript for functionality.
+    - The component's styling with CSS.
+    - This is all in one place.
+    - This is to create individual components that are independent and reusable as possible.
+
+
