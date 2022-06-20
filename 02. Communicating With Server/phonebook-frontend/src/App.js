@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Persons from "./components/Persons";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
+import Notification from "./components/Notification";
 
 import personService from "./services/persons";
 
@@ -11,6 +12,7 @@ const App = () => {
     const [newName, setNewName] = useState("");
     const [newNumber, setNewNumber] = useState("");
     const [newFilter, setNewFilter] = useState("");
+    const [message, setMessage] = useState(null);
 
     useEffect(() => {
         personService
@@ -37,6 +39,10 @@ const App = () => {
                     .update(personToChange.id, changedPerson)
                     .then(returnedPerson => {
                         setPersons(persons.map(person => person.name.toLowerCase() !== newName.toLowerCase() ? person : returnedPerson));
+                        setMessage(`Updated ${newName}'s information`);
+                        setTimeout(() => {
+                            setMessage(null);
+                        }, 5000);
                     });
             }
         } else {
@@ -44,6 +50,10 @@ const App = () => {
                 .create(personObject)
                 .then(returnedPerson => {
                     setPersons(persons.concat(returnedPerson));
+                    setMessage(`Added ${newName}`);
+                    setTimeout(() => {
+                        setMessage(null);
+                    }, 5000);
                 });
         }
 
@@ -79,6 +89,7 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
+            <Notification message={message} />
             <Filter filterVal={newFilter} filterHandler={handleFilterChange} />
             <h3>Add New</h3>
             <PersonForm
