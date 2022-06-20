@@ -3,8 +3,8 @@ h1 {
     font-style: italic;
 }
 
-li {
+.note {
     color: grey;
-    padding-top: 3px;
+    padding-top: 5px;
     font-size: 15px;
 }
