@@ -58,3 +58,77 @@ $ npm start
 - Project does not yet have a testing library, so it doesn't do much.
 
 
+## Simple Web Server
+- Change application into a web server.
+    - Change `index.js`:
+```javascript
+const http = require("http");
+
+const app = http.createServer((request, response) => {
+    response.writeHead(200, { "Content-Type": "text/plain" });
+    response.end("Hello World");
+});
+
+const PORT = 3001;
+app.listen(PORT);
+console.log(`Server running on port ${PORT}`);
+```
+- Can open the application on `http://localhost:3001`.
+    - It just has "Hello World" printed as a page.
+- Server works the same way regardless of the latter part of URL.
+    - For example, `http://localhost:3001/foo/bar` still works and displays the same contents.
+- The first line imports Node's built-in `web server` module.
+- Code that runs in browser uses ES6 modules.
+    - Defined with `export` and used with `import`.
+- Node.js uses `CommonJS` modules.
+    - This is because Node needed modules long before JavaScript supported them.
+    - Now, also supports the use of ES6 modules.
+    - Stick to `CommonJS` because the support is not yet perfect.
+    - Works exactly like ES6 modules.
+- The next chunk uses the `createServer` method of `http` module to create new web server.
+    - Event handler is registered to the server.
+    - Called *every time* an HTTP request is made to server's address `http://localhost:3001`.
+    - Request responded to with status code 200 with `Content-Type` header set.
+    - The content to be returned is set to `Hello World`.
+- Last row binds http server to listen to HTTP requests sent to port 3001.
+- The purpose of our backend server is to return raw data in JSON format to the frontend.
+    - Change our server to return a hard-coded list of notes in JSON format.
+```javascript
+const http = require("http");
+
+let notes = [
+    {
+        id: 1,
+        content: "HTML is easy",
+        date: "2022-05-30T17:30:21.098Z",
+        important: true
+    },
+    {
+        id: 2,
+        content: "Browser can execute only Javascript",
+        date: "2022-05-30T18:39:34.091Z",
+        important: false
+    },
+    {
+        id: 3,
+        content: "GET and POST are the most important methods of HTTP protocol",
+        date: "2022-05-30T19:20:14.298Z",
+        important: true
+    }
+];
+
+const app = http.createServer((request, response) => {
+    response.writeHead(200, { "Content-Type": "application/json" });
+    response.end(JSON.stringify(notes));
+});
+
+const PORT = 3001;
+app.listen(PORT);
+console.log(`Server running on port ${PORT}`);
+```
+- Restart server and refresh browser.
+- The `application/json` value informs receiver that the data is in JSON format.
+    - The `notes` array gets transformed to JSON with `JSON.stringify(notes)`.
+- When we open the browser, the displayed format is exactly the same as Part 2 where we used `json-server` to server our notes.
+
+
