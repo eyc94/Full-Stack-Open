@@ -132,3 +132,43 @@ console.log(`Server running on port ${PORT}`);
 - When we open the browser, the displayed format is exactly the same as Part 2 where we used `json-server` to server our notes.
 
 
+## Express
+- Using `http` is cumbersome.
+    - Especially when the application grows in size.
+- Libraries are offered to ease server-side development.
+    - One library is `express`.
+- Install `express`.
+```
+$ npm install express
+```
+- The dependency is added to our `package.json`.
+```json
+{
+    // ...
+    "dependencies": {
+        "express": "^4.17.2"
+    }
+}
+```
+- Source code for dependency is added to `node_modules` folder.
+    - There are a bunch of `transitive dependencies` in this folder.
+- What does the caret mean?
+    - Versioning model used in npm is called `semantic versioning`.
+    - If and when the dependencies of a project are updated, the version of express that is installed will be at least 4.17.2.
+    - The installed version of express can also be on that has a larger *patch* number (last number).
+    - Can have larger *minor* number (middle number).
+    - The *major* number (first number) must be the same.
+- We can update dependencies with:
+```
+$ npm update
+```
+- If we start working on this project on another computer, we can install all up-to-date dependencies in `package.json`.
+```
+$ npm install
+```
+- If *major* number does not change, then newer versions should be `backwards compatible`.
+    - If our app uses version 4.99.175 of express in the future.
+    - All code implemented would still have to work without making changes to the code.
+    - If the future version was 5.0.0 express may contain changes that would cause our application not to work.
+
+
