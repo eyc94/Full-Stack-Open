@@ -446,3 +446,17 @@ app.delete("/api/notes/:id", (request, response) => {
     - List of notes will return on server restart.
 
 
+## The Visual Studio Code REST Client
+- If you use VSCode, you can use the VS Code `REST client` plugin instead of Postman.
+- Make a directory at root of app named `requests`.
+    - Save all REST client requests in the directory as files that end with the `.rest` extension.
+- Create a new `get_all_notes.rest` file.
+    - Define the request that fetches all notes.
+```
+GET http://localhost:3001/api/notes
+```
+- Click the `Send Request` text to execute it.
+
+
+
+
