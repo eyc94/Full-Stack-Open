@@ -290,3 +290,20 @@ $ npm start
 - Notice that we have to add the word `run` inside the command unlike with `start` and `test` scripts.
 
 
+## REST
+- Expand app so that it provides same RESTful HTTP API as `json-server`.
+- `REST` stands for `Representational State Transfer`.
+    - An architectural style meant for building scalable web apps.
+- We concern ourselves with how RESTful APIs are typically understood in web apps.
+- Remember that singular things, like notes, are called `resources`.
+    - Every resource has a URL which is unique to them.
+- One convention is to combine name of resource type with the unique identifier.
+- Assume root URL of our service is `www.example.com/api`.
+    - Define resource type of note to be `notes`.
+    - Address of note resource with `id` of 10 is `www.example.com/api/notes/10`.
+- URL for collection of all resources is `www.example.com/api/notes`.
+- Can execute different operations on resources.
+    - Operation to be executed is defined by the HTTP `verb`.
+| URL        | verb           | functionality  |
+| ------------- |:-------------:| -----:|
+| notes/10      | GET| fetches a single resource |
