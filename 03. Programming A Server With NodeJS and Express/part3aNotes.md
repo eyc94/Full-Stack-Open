@@ -412,5 +412,23 @@ app.get("/api/notes/:id", (request, response) => {
         - Can override default NOT FOUND message.
 
 
+## Deleting Resources
+- Implement route for deleting resources.
+    - Happens with HTTP DELETE request to the URL of the resource:
+```javascript
+app.delete("/api/notes/:id", (request, response) => {
+    const id = Number(request.params.id);
+    notes = notes.filter(note => note.id !== id);
+
+    response.status(204).end();
+});
+```
+- If deleting resource is successful.
+    - Means note exists and it is removed.
+    - Respond to request with status code `204 no content`.
+    - Return no data with the response.
+- No consensus on what status code should be returned to a DELETE request if resource doesn't exist.
+    - Only two options are `204` and `404`.
+    - For simplicity, respond with `204` in both cases.
 
 
