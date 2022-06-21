@@ -314,3 +314,9 @@ notes/10 | DELETE | removes the identified resource
 notes/10 | PUT | replaces the entire identified resource with the request data
 notes/10 | PATCH | replaces a part of the identified resource with the request data
 
+- This is what's defined as a `uniform interface`.
+    - Consistent way of defining interfaces that makes it possible for systems to cooperate.
+- This way of interpreting REST falls under the `second level of RESTful maturity in the Richardson Maturity Model`.
+- This might be represented as a `resource oriented architecture` instead of REST.
+
+
