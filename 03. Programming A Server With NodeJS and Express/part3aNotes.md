@@ -320,3 +320,97 @@ notes/10 | PATCH | replaces a part of the identified resource with the request d
 - This might be represented as a `resource oriented architecture` instead of REST.
 
 
+## Fetching A Single Resource
+- Expand app so that it offers a REST interface for operating on individual notes.
+- Create a `route` for fetching a single resource.
+- Unique address is of the form `notes/10` where 10 is the `id` of the note.
+- Define `parameters` for routes in express by using colon syntax.
+```javascript
+app.get("/api/notes/:id", (request, response) => {
+    const id = request.params.id;
+    const note = notes.find(note => note.id === id);
+    response.json(note);
+});
+```
+- The route above handles all requests of the form `/api/notes/SOMETHING` where `SOMETHING` is an arbitrary string.
+- Notice we can access the `id` in the `request` object.
+- We use the `find` method to find the note that matches the `id`.
+- We return this note we found to the sender of the request as JSON.
+- When we go to `http://localhost:3001/api/notes/1`, it's blank.
+    - Let's use `console.log()` to find out why.
+```javascript
+app.get("/api/notes/:id", (request, response) => {
+    const id = request.params.id;
+    console.log(id);
+    const note = notes.find(note => note.id === id);
+    console.log(note);
+    response.json(note);
+});
+```
+- When we visit the page again, the `note` we "found" is `undefined`.
+- We see it printed the correct `id`, but the `find` method does not find a matching note.
+- Add logging inside the comparison function passed to `find`.
+```javascript
+app.get("/api/notes/:id", (request, response) => {
+    const id = request.params.id;
+    const note = notes.find(note => {
+        console.log(note.id, typeof note.id, id, typeof id, note.id === id);
+        return note.id === id;
+    });
+    console.log(note);
+    response.json(note);
+});
+```
+- Visit URL and see what's printed.
+```
+1 'number' '1' 'string' false
+2 'number' '2' 'string' false
+3 'number' '3' 'string' false
+```
+- We see that the `id` variable is a `string`.
+- The notes' ids are all `integers`.
+- The triple equals considers all values of different types to not be equal by default.
+    - So, 1 is not "1".
+- Fix this by changing `id` parameter from a `string` to a `number`.
+```javascript
+app.get("/api/notes/:id", (request, response) => {
+    const id = Number(request.params.id);
+    const note = notes.find(note => note.id === id);
+    response.json(note);
+});
+```
+- Now, fetching single resource works.
+- Another problem.
+    - If we search for a note with an `id` that does not exist, server responds with status 200 and content length of 0.
+    - This means response succeeded.
+    - There is no data sent back.
+- This is because `note` variable is set to `undefined` if nothing matches.
+- This needs to be handled in a better way.
+    - Server should respond with status code `404 not found` instead of 200.
+- Make the following changes:
+```javascript
+app.get("/api/notes/:id", (request, response) => {
+    const id = Number(request.params.id);
+    const note = notes.find(note => note.id === id);
+
+    if (note) {
+        response.json(note);
+    } else {
+        response.status(404).end();
+    }
+});
+```
+- No data is attached to the response.
+    - Use `status` method for setting the status.
+    - Use `end` method for responding to request without sending any data.
+- All JavaScript objects are truthy.
+    - So, it evaluates to true, or `truthy`, in the if-statement if the `note` object is found.
+    - The `undefined` value is `falsy`.
+- The error is returned successfully when no `note` is found.
+    - However, there's nothing to visually see this.
+    - It's possible to give a clue about the reason of sending a 404 error.
+        - Can override default NOT FOUND message.
+
+
+
+
