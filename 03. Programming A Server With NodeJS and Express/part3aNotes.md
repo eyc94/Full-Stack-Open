@@ -236,3 +236,57 @@ undefined
     - Useful for testing commands.
 
 
+## nodemon
+- In order to make and see changes to application code, we have to manually restart it.
+    - This is different from React's auto reload feature we're used to.
+- The solution is `nodemon`.
+    - **nodemon will watch the files in the directory in which nodemon was started, and if any files change, nodemon will automatically restart your node application.**
+- Install `nodemon` by defining it as a `development dependency`.
+```
+$ npm install --save-dev nodemon
+```
+- The `package.json` also changes:
+```json
+{
+    // ...
+    "dependencies": {
+        "express": "^4.17.2"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.15"
+    }
+}
+```
+- If you accidentally did not install as a development dependency, just change it to the above manually.
+- Development dependencies means tools that are needed only during development of the application.
+    - Not needed when application is run in production mode on the production server (Heroku).
+- Start app with `nodemon` like this:
+```
+$ node_modules/.bin/nodemon index.js
+```
+- Changes to application happen automatically.
+- The command is too long, so let's define a dedicated `npm script` in `package.json`:
+```json
+{
+    // ...
+    "scripts": {
+        "start": "node index.js",
+        "dev": "nodemon index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    // ...
+}
+```
+- No need to specify the whole path as you can see.
+    - `npm` automatically knows to search for the file from that directory.
+- Can now start the server in development mode using:
+```
+$ npm run dev
+```
+- Instead of:
+```
+$ npm start
+```
+- Notice that we have to add the word `run` inside the command unlike with `start` and `test` scripts.
+
+
