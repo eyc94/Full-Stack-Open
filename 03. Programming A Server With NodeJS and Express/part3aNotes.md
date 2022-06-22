@@ -464,5 +464,142 @@ GET http://localhost:3001/api/notes
 - Editor will display options to create and run your requests.
 
 
+## Receiving Data
+- Make it possible to add new notes to the server.
+- Adding new note happens with HTTP POST request to `http://localhost:3001/api/notes`.
+    - Send all information for the new note in the request `body` in JSON format.
+- To access data easily, we need the help of express `json-parser`.
+    - Use with command `app.use(express.json())`.
+- Activate json-parser and implement an initial handler for HTTP POST requests.
+```javascript
+const express = require("express");
+const app = express();
+
+app.use(express.json());
+
+// ...
+
+app.post("/api/notes", (request, response) => {
+    const note = request.body;
+    console.log(note);
+    response.json(note);
+});
+```
+- Event handler accesses the data from `body` property of the `request` object.
+- The `json-parser` is needed here.
+    - Without it, the `body` would be undefined.
+    - It takes the JSON data of a request.
+    - It transforms it into a JavaScript object.
+    - Attaches it to the `body` property of the `request` object before the route handler is called.
+- The app does not do anything with the received data.
+    - It just prints to console and send the data back in the response.
+- Before implementing the rest, verify with Postman that the data is received by the server.
+- Define request type and URL in Postman.
+    - Also define the data to be sent in the `body`.
+- The app will print the data we sent in the request to the `console`.
+- Keep terminal open will working on the backend.
+- Remember to correctly set the `Content-Type` header in Postman.
+- With VSCode Rest Client, POST request can be sent like this:
+```
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+
+{
+    "content": "VS Code REST client",
+    "important": false
+}
+```
+- Created a new `create_note.rest` file for the request.
+- Benefit of REST client is that requests are readily available at the root of the project directory.
+    - Easily disributable to everyone in the dev team.
+- Can add multiple requests in the same file using `###` separators:
+```
+GET http://localhost:3001/api/notes/
+
+
+###
+POST http://localhost:3001/api/notes/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
+```
+- If you want to see the headers of the HTTP request, use the `get` method of the `request` object.
+    - Can be used to get value of a single header.
+- The `request` object also has the `headers` property.
+    - Contains all headers of a specific request.
+- You will spot this missing `Content-Type` header if you print request headers at some point with the command:
+```javascript
+console.log(request.headers);
+```
+- Return to the application.
+- Finalize handling of the request.
+```javascript
+app.post("/api/notes", (request, response) => {
+    const maxId = notes.length > 0
+        : Math.max(...notes.map(n => n.id))
+        : 0;
+    
+    const note = request.body;
+    note.id = maxid + 1;
+
+    notes = notes.concat(note);
+
+    response.json(note);
+});
+```
+- Need an ID.
+    - Find the largest ID number in the current list.
+    - Assign it to the `maxId` variable.
+- There's still a problem.
+    - HTTP POST request can be used to add objects with arbitrary properties.
+- Improve app by defining that the `content` may not be empty.
+- The `important` and `date` will be given default values.
+- All other properties discarded.
+```javascript
+const generateId = () => {
+    const maxId = notes.length > 0
+        ? Math.max(...notes.map(n => n.id))
+        : 0
+    return maxId + 1;
+};
+
+app.post("/api/notes", (request, response) => {
+    const body = request.body;
+
+    if (!body.content) {
+        return response.status(400).json({
+            error: "content missing"
+        });
+    }
+
+    const note = {
+        content: body.content,
+        important: body.important || false,
+        date: new Date(),
+        id: generateId()
+    };
+
+    notes = notes.concat(note);
+    response.json(note);
+});
+```
+- Logic for generating new id of a note is in a separate `generateId` function.
+- If data we got is missing `content`, the server responds with status `400 bad request`.
+    - Calling return is important.
+    - Otherwise, code falls through and saves bad data to the app.
+- Generation of ID and date is done on the server now.
+- If the `important` property is missing, it auto sets to `false`.
+- What is happening in this line of code?
+```javascript
+Math.max(...notes.map(n => n.id));
+```
+- `notes.map(n => n.id)` creates new array that has all ids of the notes.
+- The `Math.max` returns max value of numbers passed to it.
+    - However, the `map` method returns an array so it can't be directly used with `Math.max`.
+    - Must transform it into individual numbers by using `spread` stynax `...`.
+
 
 
