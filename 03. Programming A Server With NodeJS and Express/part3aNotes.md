@@ -458,5 +458,11 @@ GET http://localhost:3001/api/notes
 - Click the `Send Request` text to execute it.
 
 
+## The WebStorm HTTP Client
+- If you use `IntelliJ WebStorm`, you can use a similar procedure with its builtin HTTP Client.
+- Create file with `.rest` extension.
+- Editor will display options to create and run your requests.
+
+
 
 
