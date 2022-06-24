@@ -602,4 +602,32 @@ Math.max(...notes.map(n => n.id));
     - Must transform it into individual numbers by using `spread` stynax `...`.
 
 
+## About HTTP Request Types
+- HTTP standard talks about two properties related to request types:
+    1. **Safety**
+    2. **Idempotence**
+- HTTP GET request should be *safe*.
+    - **In particular, the convention has been established that the GET and HEAD methods SHOULD NOT have the significance of taking an action other than retrieval. These methods ought to be considered "safe".**
+- Safety means:
+    - Executing request should not cause side effects.
+    - State of DB must not change because of request.
+    - Response must only return data that already exists on server.
+- Nothing guarantees a GET is safe.
+    - Just a recommendation defined in the standard.
+    - Adhering to RESTful principles in our API, GET requests are always used in a way that is safe.
+- HTTP standard also defines request type `HEAD`.
+    - Ought to be safe.
+    - Works like GET but does not return anything but status code and response headers.
+    - Response body will not be returned when you make HEAD request.
+- All HTTP requests other than POST should be `idempotent`.
+    - **Methods can also have the property of "idempotence" in that (aside from error or expiration issues) the side-effects of N > 0 identical requests is the same as for a single request. The methods GET, HEAD, PUT, and DELETE share this property.**
+    - This means is a request has side-effects, the result should be the same regardless of how many times the request is sent.
+    - If we make a PUT request to `/api/notes/10` and send the data `{ content: "no side effects!", important: true }`, the result is the same.
+    - This is also recommended not guaranteed.
+    - When API adheres to RESTful principles, then GET, HEAD, PUT and DELETE are used in a way that they're idempotent.
+- POST is the only HTTP request that is neither `safe` nor `idempotent`.
+    - If we send 5 different POST requests to `/api/notes` with `{ content: "many same", important: true }`.
+    - The resulting 5 notes on server will all have same content.
+
+
 
