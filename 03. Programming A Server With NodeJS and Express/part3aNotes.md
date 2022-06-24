@@ -630,4 +630,44 @@ Math.max(...notes.map(n => n.id));
     - The resulting 5 notes on server will all have same content.
 
 
+## Middleware
+- The express `json-parser` from earlier is called `middleware`.
+- Middleware are functions used to handle `request` and `response` objects.
+- `json-parser` takes raw data from requests that's in `request` object, parses into JavaScript object, and assigns it to the `request` object as a new property `body`.
+- Can use multiple middleware at the same time.
+    - When you have more than one, they are executed in the order they are taken into use in express.
+- Implement our own middleware.
+    - Prints information about every request sent to the server.
+    - It'll be a function that receives three parameters.
+```javascript
+const requestLogger = (request, response, next) => {
+    console.log("Method:", request.method);
+    console.log("Path:  ", request.path);
+    console.log("Body:  ", request.body);
+    console.log("---");
+    next();
+};
+```
+- The `next` function that was passed as a parameter is called at the end.
+- The `next` function yields control to the next middleware.
+- Use middleware like this:
+```javascript
+app.use(requestLogger);
+```
+- Middleware functions are called in the order they're used with express object's `use` method.
+- Notice `json-parser` is used before the `requestLogger`.
+    - Because otherwise `request.body` will not be initialized when the logger is executed.
+- Middleware functions must be used before routes if we want them to be executed before route event handlers are called.
+    - Sometimes we want to define middleware functions after routes.
+    - This means we are defining middleware functions that are only called if no route handles the HTTP request.
+- Add the following middleware after our routes:
+    - Used to catch requests made to non-existent routes.
+    - Middleware will return an error message in JSON format.
+```javascript
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: "unknown endpoint" });
+};
+
+app.use(unknownEndpoint);
+```
 
