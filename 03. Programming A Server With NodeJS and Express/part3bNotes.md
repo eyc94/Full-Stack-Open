@@ -98,5 +98,40 @@ app.listen(PORT, () => {
     - Option 1 below.
 
 
+## Frontend Production Build
+- We have been running React code in `development mode`.
+    - We can see errors and recompile off the bat.
+- When application is deployed, we must create a `production build` or a version of the app which is optimized for production.
+- Production build of apps created with `create-react-app` can be created with `npm run build`.
+- On (20th January 2022), CRA had a bug that causes the error:
+    - `TypeError: MiniCssExtractPlugin is not a constructor`.
+    - A fix can be found here: `https://github.com/facebook/create-react-app/issues/11930`.
+    - Add the following to `package.json`.
+```json
+{
+    // ...
+    "resolutions": {
+        "mini-css-extract-plugin": "2.4.5"
+    }
+}
+```
+- Run the following commands:
+```
+$ rm -rf package-lock.json
+$ rm -rf node_modules
+$ npm cache clean --force
+$ npm install
+```
+- `npm run build` should now work.
+    - Run this command from the root of the frontend project.
+- This creates a folder called `build`.
+    - Contains the only HTML file of our app, `index.html`.
+    - Contains the directory `static`.
+    - Minified version of our app's JS code will be generated to the `static` folder.
+    - App code may be in muliple files, but all JS code will be minified into one file.
+- Not very readable.
+
+
+
 
 
