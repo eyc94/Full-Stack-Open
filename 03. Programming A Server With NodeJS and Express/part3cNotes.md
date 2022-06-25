@@ -11,3 +11,11 @@
 - Can set breakpoints.
 
 
+## Chrome Dev Tools
+- Debugging possible with Chrome developer console.
+- Start app by:
+```
+node --inspect index.js
+```
+
+
