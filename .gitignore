@@ -6,7 +6,6 @@
 
 # NPM
 **/node_modules
-**/build
 
 # Misc
 **/.env
