@@ -203,6 +203,25 @@ const getAll = () => {
     - When the root address is of the form `https://<name_of_app>.herokuapp.com/` is accessed, the browser loads and executes the React app that fetches the json-data from Heroku server.
 
 
+## Streamlining Deploying Of The Frontend
+- Add npm scripts to reduce manual work of creating new production build.
+- Add to `package.json` of backend repo:
+```json
+{
+    "scripts": {
+        // ...
+        "build:ui": "rm -rf build && cd <path_to_frontend> && npm run build && cp -r build <path_to_backend>",
+        "deploy": "git push heroku main",
+        "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
+        "logs:prod": "heroku logs --tail"
+    }
+}
+```
+- The `build:ui` script removes build from backend repo, goes to frontend repo and copies the build from frontend to backend repo.
+- The `deploy` script releases the current backend to Heroku.
+- The `npm run deploy:full` combines the two above and contains the `git` commands to update backend repo.
+- Finally, `npm run logs:prod` shows Heroku logs.
+
 
 
 
