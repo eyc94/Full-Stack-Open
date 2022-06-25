@@ -126,3 +126,31 @@ const Note = mongoose.model("Note", noteSchema);
     - Defines the shape of the documents stored in any given collection.
 
 
+## Creating and Saving Objects
+- Application creates a new note object with the help of `Note` model.
+```javascript
+const note = new Note({
+    content: "HTML is easy",
+    date: new Date(),
+    important: false
+});
+```
+- Models are `constructor` functions.
+    - Creates new JavaScript objects based on provided parameters.
+    - They have all properties of the model like the method for saving the object to the database.
+- Saving objects to database happen with the `save` method.
+    - Provided with an event handler with the `then` method.
+```javascript
+note.save().then(result => {
+    console.log("note saved!");
+    mongoose.connection.close();
+});
+```
+- When object is saved to the database, the event handler provided to `then` is called.
+    - This event handler closes the database connection with `mongoose.connection.close()`.
+    - If connection is not closed, the program will never finish its execution.
+- Result of `save` is the `result` parameter of event handler.
+    - Result is uninteresting when storing one object.
+- Save a few more notes.
+
+
