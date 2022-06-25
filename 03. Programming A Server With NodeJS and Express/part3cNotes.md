@@ -6,3 +6,8 @@
 - Use the `console.log()` method.
 
 
+## Visual Studio Code
+- Can start debugging with F5 key.
+- Can set breakpoints.
+
+
