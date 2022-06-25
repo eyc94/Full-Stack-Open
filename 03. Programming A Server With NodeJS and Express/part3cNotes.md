@@ -19,3 +19,8 @@ node --inspect index.js
 ```
 
 
+## Question Everything
+- Many potential areas for bugs.
+- When problem occurs, find out where it occurs.
+- Question everything!
+
