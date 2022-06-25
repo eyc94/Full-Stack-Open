@@ -103,4 +103,26 @@ mongoose
 - Run code again, and the data is now stored in the correct db.
 
 
+## Schema
+- After connection is established, define `schema` for a note and the matching `model`:
+```javascript
+const noteSchema = new mongoose.Schema({
+    content: String,
+    date: Date,
+    important: Boolean
+});
+
+const Note = mongoose.model("Note", noteSchema);
+```
+- First define `schema` of a note stored in `noteSchema` variable.
+- The schema tells Mongoose how note objects are stored in db.
+- In model definition, the first "Note" parameter is the singular name of the model.
+    - Name of collection will be lowercased plural `notes`.
+    - Mongoose convention is to automatically name collections as the plural (like `notes`) when schema refers to them in the singular (like `Note`).
+- Document databases like Mongo are `schemaless`.
+    - Database does not care about structure of data stored in the database.
+    - Possible to store documents with different fields in same collection.
+- Idea of Mongoose is that data stored in database is given a schema at the level of the application.
+    - Defines the shape of the documents stored in any given collection.
+
 
