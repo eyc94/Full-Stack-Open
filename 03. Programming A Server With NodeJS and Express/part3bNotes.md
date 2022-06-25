@@ -132,6 +132,64 @@ $ npm install
 - Not very readable.
 
 
+## Serving Static Files From The Backend
+- One option to deploying the frontend is to copy the production build (`build` folder) to the root of the backend repo.
+- Configure backend to show the frontend's `main page` (the file `build/index.html`) as its main page.
+- Begin by copying production build of frontend to the root of the backend.
+- With Mac or Linux, copy with:
+```
+$ cp -r build <path_to_backend_repo>
+```
+- To make express show `static` content, the page `index.html` and JS that it fetches, we need a built-in middleware from express called `static`.
+- Use `app.use(express.static("build"))`.
+- When exepress gets an HTTP GET request, it first checks if the `build` folder has a file corresponding to the request's address.
+    - If the file is found, express will return it.
+- Now, HTTP GET requests to `www.serversaddress.com/index.html` or `www.serveraddress.com` will show the React frontend.
+    - GET requests to `www.serversaddress.com/api/notes` will be handled by the backend's code.
+- Our frontend and backend are at the same address.
+    - Declare `baseUrl` as a `relative` URL.
+    - Leave out the part declaring the server.
+```javascript
+import axios from "axios";
+const baseUrl = "/api/notes";
+
+const getAll = () => {
+    const request = axios.get(baseUrl);
+    return request.then(response => response.data);
+};
+
+// ...
+```
+- After the change, create a new production build.
+    - Copy it to the backend root repo.
+    - The application can now be used from the `backend` address `http://localhost:3001`.
+- Our app is now working like the `single-page app` from Part 0.
+- When we go to `http://localhost:3001`, the server returns the `index.html` file from the `build` repository.
+    - Summarized contents of the `index.html` file below:
+```html
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>React App</title>
+    <link href="/static/css/main.f9a47af2.chunk.css" rel="stylesheet">
+</head>
+<body>
+    <div id="root"></div>
+    <script src="/static/js/1.578f4ea1.chunk.js"></script>
+    <script src="/static/js/main.104ca08d.chunk.js"></script>
+</body>
+</html>
+```
+- We notice that there is a CSS that gets the styles of the app and the script the fetches JS.
+- React code fetches notes from the server `http://localhost:3001/api/notes` and renders them to the screen.
+    - Communication between server and browser can be seen in the `Network` tab.
+- Now our setup that is ready for product deployment looks like this:
+    - Unlike running app is development environment, everything is now in the same node/express-backend that runs in localhost:3001.
+    - When browser goes to the page, `index.html` is rendered.
+    - This causes the browser to fetch the product version of React app.
+    - Once it runs, it fetches the json-data from `localhost:3001/api/notes`.
+
+
 
 
 
