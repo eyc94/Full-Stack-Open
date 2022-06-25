@@ -56,5 +56,47 @@ app.use(cors());
     - The react app running in the browser now fetches the data from node/express server that runs in localhost:3001.
 
 
+## Application To The Internet
+- Move our application to the internet!
+- Use `Heroku`.
+    - Documentation: `https://devcenter.heroku.com/articles/getting-started-with-nodejs`.
+- Add `Procfile` to the backend repo root.
+    - This is to tell how to start the application.
+```
+web: npm start
+```
+- Change the definition of the port our application uses at the bottom of the `index.js` file.
+```javascript
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+```
+- We use the port defined in the `environment variable` or port 3001 if `PORT` is undefined.
+    - Heroku configures the port based on environment variable.
+- Create `.gitignore` and add `node_modules`.
+- Create a Heroku account at `https://devcenter.heroku.com`.
+    - Install Heroku package using `npm install -g heroku`.
+    - Create Heroku app with `heroku create`.
+    - Commit your code to the repo.
+    - Move it to Heroku with `git push heroku main`.
+- If everything went well, you should be able to access application at:
+    - `https://<name_of_app>.herokuapp.com/api/notes`
+- If there is an issue, look at heroku logs with `heroku logs` command.
+- Should begin by developing while keeping an eye on heroku logs.
+    - Use command `heroku logs -t`.
+    - Prints logs whenever something happens on the server.
+- If deploying from a git repo where your code is not on the main branch.
+    - (i.e. If you are altering the `notes repo` from last lesson).
+    - Run `git push heroku HEAD:master`.
+- If you have already done a push to Heroku, might need to run:
+    - `git push heroku HEAD:main --force`
+- Frontend should also work with backend on Heroku.
+    - Change the backend's address on frontend to be the backend's address in Heroku instead of `http://localhost:3001`.
+- So, how do we deploy frontend to the internet?
+    - We have multiple options.
+    - Option 1 below.
+
+
 
 
