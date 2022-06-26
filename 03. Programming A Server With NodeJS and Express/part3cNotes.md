@@ -365,3 +365,9 @@ app.get("/api/notes/:id", (request, response) => {
 ```
 
 
+## Verifying Frontend and Backend Integration
+- When backend gets expanded, it's good to test backend first.
+- Then we test the frontend works with backend.
+- Implement one functionality at a time.
+- Once we introduce database, it's good to check the state persisted in the database.
+
