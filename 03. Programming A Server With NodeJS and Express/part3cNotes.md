@@ -234,3 +234,91 @@ app.get("/api/notes", (request, response) => {
 - When response is sent in JSON format, the `toJSON` method of each object in the array is called automatically by the `JSON.stringify` method.
 
 
+## Database Configuration Into Its Own Module
+- Extract Mongoose specific code into its own module.
+- Create a new folder for the module called `models`.
+    - Add a file called `note.js`.
+```javascript
+const mongoose = require("mongoose");
+
+const url = process.env.MONGODB_URI;
+
+console.log("Connecting to", url);
+
+mongoose.connect(url)
+    .then(result => {
+        console.log("Conncted to MongoDB");
+    })
+    .catch((error) => {
+        console.log("Error connecting to MongoDB:", error.message);
+    });
+
+const noteSchema = new mongoose.Schema({
+    content: String,
+    date: Date,
+    important: Boolean
+});
+
+noteSchema.set("toJSON", {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString();
+        delete returnedObject._id;
+        delete returnedObject.__v;
+    }
+});
+
+module.exports = mongoose.model("Note", noteSchema);
+```
+- Notice how defining Node modules is different than ES6 modules.
+- Public interface of the module is defined by setting a value to the `module.exports` variable.
+    - Set value to be `Note` model.
+    - Variables like `mongoose` and `url` are not accessible or visible to users of the module.
+- Import model to `index.js`:
+```javascript
+const Note = require("./models/note");
+```
+- `Note` variable will be assigned to the same object that the module defines.
+- Notice how the connection is made is changed a bit.
+- Not a good idea to hard-code address of dataabase in code.
+    - Instead the address is passed as an environment variable `MONGODB_URI`.
+- The method for making a connection with Mongo is given functions for dealing with success and failure of connection.
+- Many ways to define environment variables:
+    - One is to define it when the app is started.
+```
+MONGODB_URI=address_here npm run dev
+```
+- More sophisticated way is to use `dotenv` library.
+    - Install it:
+```
+$ npm install dotenv
+```
+- Create a `.env` file at the root.
+    - Environment variables are defined inside of the file:
+```
+MONGODB_URI=mongodb+srv://exc:${password}@cluster0.jpep5cz.mongodb.net/noteApp?retryWrites=true&w=majority
+PORT=3001
+```
+- The `.env` file should be ignored right away.
+- Environment variables can be used with `require("dotenv").config();`.
+- Reference them like you would normally.
+    - Like `process.env.MONGODB_URI`.
+- Change `index.js`:
+```javascript
+require("dotenv").config();
+const express = require("express");
+const app = express();
+const Note = require("./models/note");
+
+// ...
+
+const PORT = process.env.PORT;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+```
+- Important to have `dotenv` imported before the `note` model is imported.
+    - Ensures env var from the `.env` file is available globally before code from other modules.
+- Need to set env var yourself in Heroku.
+    - Database URL and PORT.
+
+
