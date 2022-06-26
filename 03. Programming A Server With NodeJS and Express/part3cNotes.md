@@ -371,3 +371,57 @@ app.get("/api/notes/:id", (request, response) => {
 - Implement one functionality at a time.
 - Once we introduce database, it's good to check the state persisted in the database.
 
+
+## Error Handling
+- If we tried to access a note with an id that does not exist, it will return `null`.
+- Change behavior:
+    - If note with given id does not exist, server will respond to request with HTTP status code 404 not found.
+- Implement simple `catch` block to handle cases where promise returned by `findById` method is `rejected`.
+```javascript
+app.get("/api/notes/:id", (request, response) => {
+    Note.findById(request.params.id)
+        .then(note => {
+            if (note) {
+                response.json(note);
+            } else {
+                response.status(404).end();
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            response.status(500).end();
+        });
+});
+```
+- If no matching note is found, value of `note` is `null`, and the `else` block will run.
+    - Results in 404.
+- If promise returned by `findById` fails, response will have status code 500 internal server error.
+- Another error situation other than non-existing note.
+    - Fetching note with wrong kind of `id`.
+    - An `id` that does not match the Mongo identifier format.
+- Given malformed id as an argument, `findById` will throw an error causing the returned promise to be rejected.
+    - Causes callback in `catch` block to be called.
+- Make adjustment to fetching single resource.
+```javascript
+app.get("/api/notes/:id", (request, response) => {
+    Note.findById(request.params.id)
+        .then(note => {
+            if (note) {
+                response.json(note);
+            } else {
+                response.status(404).end();
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            response.status(400).send({ error: "malformatted id" });
+        });
+});
+```
+- If format of id is incorrect, we end up in the error handler in the `catch` block.
+    - Status code is `400 Bad Request`.
+        - **The request could not be understood by the server due to malformed syntax. The client SHOULD NOT repeat the request without modifications.**
+- When using Promises, it's a good idea to use error handling/exception.
+- Never bad idea to print object that caused the exception to the console in error handler.
+
+
