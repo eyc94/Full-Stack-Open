@@ -324,6 +324,44 @@ app.listen(PORT, () => {
     - `heroku config:set MONGODB_URI='const url = mongodb+srv://exc:${password}@cluster0.jpep5cz.mongodb.net/noteApp?retryWrites=true&w=majority`
 
 
+## Using Database In Route Handlers
+- Change the rest of the backend functionality to use the database.
+- Creating new note is like this:
+```javascript
+app.post("/api/notes", (request, response) => {
+    const body = request.body;
 
+    if (body.content === undefined) {
+        return response.status(400).json({ error: "content missing" });
+    }
+
+    const note = new Note({
+        content: body.content,
+        important: body.important || false,
+        date: new Date()
+    });
+
+    note.save().then(savedNote => {
+        response.json(savedNote);
+    });
+});
+```
+- The note objects are created with `Note` constructor function.
+    - Response sent in the callback function for `save` function.
+    - Ensures response sent only if operation succeeded.
+    - Error handling discussed later.
+- The `savedNote` parameter of callback is the saved and newly created note.
+    - Data sent back in response is the formatted version created with the `toJSON` method:
+```javascript
+response.json(savedNote);
+```
+- Using Mongoose's `findById` method, change fetching an individual note.
+```javascript
+app.get("/api/notes/:id", (request, response) => {
+    Note.findById(request.params.id).then(note => {
+        response.json(note);
+    });
+});
+```
 
 
