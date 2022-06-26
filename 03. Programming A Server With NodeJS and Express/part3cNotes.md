@@ -517,4 +517,47 @@ app.get("/api/notes", (request, response) => {
 ```
 
 
+## Other Operations
+- Add missing functionality such as deleting and updating note.
+- Easiest way to delete a note is with `findByIdAndRemove` method.
+```javascript
+app.delete("/api/notes/:id", (request, response, next) => {
+    Note.findByIdAndRemove(request.params.id)
+        .then(result => {
+            response.status(204).end();
+        })
+        .catch(error => next(error));
+});
+```
+- Delete function succeeds in both situations where the backend responds with status `204 no content`.
+    - Deleting a note that exists.
+    - Deleting a note that does not exist.
+- The `result` callback parameter can be used to check if resource was really deleted.
+    - We can use this info to return different status codes for the two situations above.
+- Any exception that occurs is passed to error handler.
+- Toggling of importance of note can be done with `findByIdAndUpdate` method.
+```javascript
+app.put("/api/notes/:id", (request, response, next) => {
+    const body = request.body;
+
+    const note = {
+        content: body.content,
+        important: body.important
+    };
+
+    Note.findByIdAndUpdate(request.params.id, note, { new: true })
+        .then(updatedNote => {
+            response.json(updatedNote);
+        })
+        .catch(error => next(error));
+});
+```
+- We allow content of note to be edited.
+- Creation date should not be changed.
+- The `findByIdAndUpdate` receives a regular JS object as its parameter.
+    - It does not receive a new note object created with `Note` constructor function.
+- One detail regarding use of `findByIdAndUpdate`.
+    - By default, the `updatedNote` parameter of event handler receives original document **without the modifications**.
+    - Added the `{ new: true }` parameter.
+        - Causes event handler to be called with the new modified document instead of the original.
 
