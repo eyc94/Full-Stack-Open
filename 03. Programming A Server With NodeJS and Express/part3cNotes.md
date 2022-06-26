@@ -320,5 +320,10 @@ app.listen(PORT, () => {
     - Ensures env var from the `.env` file is available globally before code from other modules.
 - Need to set env var yourself in Heroku.
     - Database URL and PORT.
+- Or set it in the command line for Heroku:
+    - `heroku config:set MONGODB_URI='const url = mongodb+srv://exc:${password}@cluster0.jpep5cz.mongodb.net/noteApp?retryWrites=true&w=majority`
+
+
+
 
 
