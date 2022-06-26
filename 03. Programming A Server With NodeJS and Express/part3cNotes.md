@@ -470,3 +470,51 @@ app.use(errorHandler);
 - Error handling middleware has to be the last loaded middleware!
 
 
+## The Order Of Middleware Loading
+- Execution order of middleware is same as the order that they are loaded into express with `app.use` function.
+- Be careful when defining middleware.
+- The correct order:
+```javascript
+app.use(express.static("build"));
+app.use(express.json());
+app.use(requestLogger);
+
+app.post("/api/notes", (request, response) => {
+    const body = request.body;
+    // ...
+});
+
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: "unknown endpoint" });
+};
+
+// Handler of requests with unknown endpoint.
+app.use(unknownEndpoint);
+
+const errorHandler = (error, request, response, next) => {
+    // ...
+};
+
+// Handler of requests with result to errors.
+app.use(errorHandler);
+```
+- `json-parser` should be among the first!
+- If `requestLogger` or `app.post` came first, the `request.body` is undefined!
+- Important that the middleware for handling unsupported routes is next to the last middleware that is loaded into Express.
+    - Before the error handler.
+- The following order would result in an issue:
+```javascript
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: "unknown endpoint" });
+};
+
+// Handler of requests with unknown endpoints.
+app.use(unknownEndpoint);
+
+app.get("/api/notes", (request, response) => {
+    // ...
+});
+```
+
+
+
