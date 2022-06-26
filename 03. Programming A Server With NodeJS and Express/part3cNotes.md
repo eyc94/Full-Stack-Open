@@ -177,3 +177,60 @@ Note.find({ important: true }).then(result => {
 ```
 
 
+## Backend Connected To A Database
+- Can now use Mongo in our backend application.
+- Copy and paste the Mongoose definition to `index.js`.
+```javascript
+const mongoose = rqeuire("mongoose");
+
+// DO NOT SAVE YOUR PASSWORD TO GITHUB!!
+const url = `mongodb+srv://exc:<some_password>@cluster0.jpep5cz.mongodb.net/noteApp?retryWrites=true&w=majority`;
+
+mongoose.connect(url);
+
+const noteSchema = new mongoose.Schema({
+    content: String,
+    date: Date,
+    important: Boolean
+});
+
+const Note = mongoose.model("Note", noteSchema);
+```
+- Change handler for fetching all notes to:
+```javascript
+app.get("/api/notes", (request, response) => {
+    Note.find({}).then(notes => {
+        response.json(notes);
+    });
+});
+```
+- Verify in the browser that the backend works for displaying all of the documents.
+- Frontend assumes every object has a unique id in the `id` field.
+    - Don't want to return the mongo versioning field `__v` to the frontend.
+- Format objects returned by Mongoose.
+    - Modify the `toJSON` method of schema.
+    - Used on all instances of models produced with that schema.
+    - Modify method:
+```javascript
+noteSchema.set("toJSON", {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString();
+        delete returnedObject._id;
+        delete returnedObject.__v;
+    }
+});
+```
+- The `_id` looks like a string but it's an object.
+- The method above transforms `_id` to string just in case.
+- Respond to HTTP request with a list of objects formatted with the `toJSON` method:
+```javascript
+app.get("/api/notes", (request, response) => {
+    Note.find({}).then(notes => {
+        response.json(notes);
+    });
+});
+```
+- The `notes` variable is assigned to array of objects returned by Mongo.
+- When response is sent in JSON format, the `toJSON` method of each object in the array is called automatically by the `JSON.stringify` method.
+
+
