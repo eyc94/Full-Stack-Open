@@ -90,4 +90,13 @@ app.put("/api/notes/:id", (request, response, next) => {
 ```
 
 
+## Deploying The Database Backend To Production
+- Generate new prod build of frontend.
+- Environment variables defined in `dotenv` only used when backend is not in `production mode` (Heroku).
+- Defined environment variables in `.env`.
+    - However, define environment variables in Heroku for production.
+```
+heroku config:set MONGODB_URI=const url = mongodb+srv://exc:<password>@cluster0.jpep5cz.mongodb.net/noteApp?retryWrites=true&w=majority
+```
+- If it gives error, try wrapping the value with quotes.
 
