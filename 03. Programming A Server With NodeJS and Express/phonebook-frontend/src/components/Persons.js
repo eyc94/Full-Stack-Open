@@ -5,8 +5,7 @@ const Persons = (props) => {
         <div>
             {props.persons.map(person =>
                 <div key={person.name}>
-                    {person.name} {person.number}
-                    <button onClick={() => props.deleteHandler(person.id, person.name)}>Delete</button>
+                    {person.name} {person.number} <button onClick={() => props.deleteHandler(person.id, person.name)}>Delete</button>
                 </div>
             )}
         </div>
