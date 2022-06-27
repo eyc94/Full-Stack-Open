@@ -45,7 +45,15 @@ const App = () => {
                         setTimeout(() => {
                             setMessage(null);
                         }, 5000);
-                    });
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        setMessage(`${error.response.data.error}`);
+                        setMessageStatus("failure");
+                        setTimeout(() => {
+                            setMessage(null);
+                        }, 5000);
+                    })
             }
         } else {
             personService
