@@ -268,4 +268,42 @@ module.exports = mongoose.model("Note", noteSchema);
 - Separate different responsibilities of app into different modules.
 
 
+## Note On Exports
+- We used two different kinds of exports in this part.
+- The file `utils/logger.js` does the export as follows:
+```javascript
+const info = (...params) => {
+    console.log(...params);
+};
+
+const error = (...params) => {
+    console.error(...params);
+};
+
+module.exports = {
+    info, error
+};
+```
+- File exports an `object` that has two fields.
+    - Both are functions.
+- Functions can be used in two different ways:
+    - First is to use dot notation and access functions through objects.
+    - Second is to destructure the functions to its own variables in the `require` statement:
+```javascript
+// First way.
+const logger = require("./utils/logger");
+
+logger.info("message");
+logger.error("error message");
+
+// Second way.
+const { info, error } = require("./utils/logger");
+
+info("message");
+error("error message");
+```
+- The second way is preferred only when a small portion of exported functions are used in a file.
+- For example, in `controllers/notes.js`, it exports just one thing.
+    - That's why when we use it, we just assign it to a variable in the require statement.
+
 
