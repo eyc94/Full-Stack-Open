@@ -307,3 +307,170 @@ error("error message");
     - That's why when we use it, we just assign it to a variable in the require statement.
 
 
+## Testing Node Applications
+- Completely neglected automated testing.
+- Look at `unit tests`.
+    - App is small so not much we can test with unit tests.
+- Create file `utils/for_testing.js`.
+    - Write couple of simple functions that we can use for test writing practice:
+```javascript
+const reverse = (string) => {
+    return string
+        .split("")
+        .reverse()
+        .join("");
+};
+
+const average = (array) => {
+    const reducer = (sum, item) => {
+        return sum + item;
+    };
+
+    return array.reduce(reducer, 0) / array.length;
+};
+
+module.exports = {
+    reverse,
+    average
+};
+```
+- The `average` function uses the array's `reduce` method.
+    - `https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce`
+    - Should watch first three videos from `Funtional Javascript` series on YouTube.
+        - `https://www.youtube.com/watch?v=BMUiFMZr7vk&list=PL0zVEGEvSaeEd9hlmCXrk5yUyqUag-n84`
+- Many different testing libraries and `test runners` for JavaScript.
+- We will use a testing library developed and used internally by Facebook called `jest`.
+    - Resembles the previous king of testing libraries: `Mocha`.
+    - Natural choice.
+    - Works well with testing backends.
+    - Shines for testing React applications.
+- Tests are only executed during development, so install `jest` as a development dependency.
+```
+$ npm install --save-dev jest
+```
+- Define `npm script` for `test` to run tests with Jest.
+```json
+{
+    // ...
+    "scripts": {
+        // ...
+        "test": "jest --verbose"
+    },
+    // ...
+}
+```
+- `Jest` requires setting the execution environment to Node.
+    - Add the following to end of `package.json`.
+```json
+{
+    // ...
+    "jest": {
+        "testEnvironment": "node"
+    }
+}
+```
+- Alternatively, Jest can look for a config file with the name `jest.config.js`.
+    - Can define execution environment like this:
+```javascript
+module.exports = {
+    testEnvironment: "node"
+};
+```
+- Create separate directory for our tests called `tests`.
+    - Create file called `reverse.test.js` with the following:
+```javascript
+const reverse = require("../utils/for_testing").reverse;
+
+test("Reverse of a", () => {
+    const result = reverse("a");
+    expect(result).toBe("a");
+});
+
+test("Reverse of react", () => {
+    const result = reverse("react");
+    expect(result).toBe("tcaer");
+});
+
+test("Reverse of releveler", () => {
+    const result = reverse("releveler");
+    expect(result).toBe("releveler");
+});
+```
+- The ESLint config we previously added is complaining about `test` and `expect` commands.
+    - Our config does not allow `globals`.
+    - Rid the complaints by adding `"jest": true` to the `env` property in `.eslintrc.js` file:
+```javascript
+module.exports = {
+    "env": {
+        "commonjs": true,
+        "es2021": true,
+        "node": true,
+        "jest": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": 12
+    },
+    "rules": {
+        // ...
+    }
+}
+```
+- The first line of our test file imports the `reverse` function and assigns to a variable called `reverse`.
+- Individual test cases are defined with `test` function.
+    - First parameter is description test as string.
+    - Second parameter is a `function` that defines the functionality for the test case.
+- First run the code to be tested.
+- Then verify results with `expect` function.
+    - Wraps the resulting value into an object that offers a collection of `matcher` functions.
+    - Used for verifying correctness of result.
+    - Since comparing two strings, we can use the `toBe` matcher.
+- All tests should pass.
+- Jest expects names of test files contain `.test`.
+    - In this course, we follow convention of naming our tests files with extension `.test.js`.
+- Can see what kind of error it gives with this:
+```javascript
+test("Palindrome of react", () => {
+    const result = reverse("react");
+    expect(result).toBe("tkaer");
+});
+```
+- Add a few tests for `average` function into a new file `tests/average.test.js`.
+```javascript
+describe("Average", () => {
+    test("of one value is the value itself", () => {
+        expect(average([1])).toBe(1);
+    });
+
+    test("of many is calculated correctly", () => {
+        expect(average([1, 2, 3, 4, 5, 6])).toBe(3.5);
+    });
+
+    test("of empty array is zero", () => {
+        expect(average([])).toBe(0);
+    });
+});
+```
+- The last test is an error because you cannot divide by zero!
+    - Results in `NaN`.
+- Fix function:
+```javascript
+const average = (array) => {
+    const reducer = (sum, item) => {
+        return sum + item;
+    };
+
+    return array.length === 0
+        ? 0
+        : array.reduce(reducer, 0) / array.length;
+};
+```
+- If length of the array is 0, we return 0.
+- Otherwise calculate the average.
+- Notice how we defined a `describe` block around the tests that was given the name `average`.
+- The `describe` block is good for grouping tests.
+    - Logical collections.
+    - Test output of Jest also uses name of describe block.
+    - Necessary when we want to run some shared setup or teardown operations for a group of tests.
+- Notice also how compact the tests are written.
+
