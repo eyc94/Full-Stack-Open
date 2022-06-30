@@ -300,4 +300,28 @@ test("A specific note is within the returned notes", async () => {
 - The `toContain` method is used to check that the note given as a parameter is in the list of notes returned by the API.
 
 
+## Running Tests One By One
+- The `npm test` command runs all tests of the app.
+- When writing tests, it's wise to execute only one or two tests.
+    - Can use the `only` method of Jest.
+- If test is written across many files, this method is not good.
+- Better option to specify test that needs to be run.
+    - Parameter of `npm test` command.
+- The following runs tests in the `tests/note_api.test.js` file.
+```
+$ npm test -- tests/note_api.test.js
+```
+- The `-t` option can be used for running tests with a specific name.
+```
+$ npm test -- -t "A specific note is within the returned notes"
+```
+- The parameter can be the name of the test or the describe block.
+- Parameter can also contain just a part of the name.
+- The following runs all tests that contain `notes` in their name.
+```
+$ npm test -- -t "notes"
+```
+- When running single test, mongoose connection might stay open if no tests using the connection are run.
+    - Problem could be that `supertest` primes connection but Jest does not run the `afterAll` code.
+
 
