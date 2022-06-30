@@ -241,4 +241,63 @@ module.exports = {
 ```
 
 
+## Initializing The Database Before Tests
+- Testing looks easy and tests are passing.
+- However, tests are bad.
+    - Dependent on state of the database.
+- To make tests more robust, we have to reset the database and generate the needed test data in a controlled manner before we run the tests.
+- Test already uses `afterAll` function to close connecton to db.
+- Jest has many other functions.
+    - Functions that can be used once before any test is run or every time before a test is run.
+- Initialize db *before every test* with `beforeEach` function.
+```js
+const mongoose = require("mongoose");
+const supertest = require("supertest");
+const app = require("../app");
+const api = supertest(app);
+const Note = require("../models/note");
+
+const initialNotes = [
+    {
+        content: "HTML is easy",
+        date: new Date(),
+        important: false
+    },
+    {
+        content: "Browser can execute only Javascript",
+        date: new Date(),
+        important: true
+    }
+];
+
+beforeEach(async () => {
+    await Note.deleteMany({});
+    let noteObject = newNote(initialNotes[0]);
+    await noteObject.save();
+    noteObject = new Note(initialNotes[1]);
+    await noteObject.save();
+});
+
+// ...
+```
+- The db is cleared out at the beginning.
+- We save two notes stored in `initialNotes` array to the db.
+    - This ensures db is in the same state before every test is run.
+- Make the following changes to the last two tests:
+```js
+test("All notes are returned", async () => {
+    const response = await api.get("/api/notes");
+    expect(response.body).toHaveLength(initialNotes.length);
+});
+
+test("A specific note is within the returned notes", async () => {
+    const response = await api.get("/api/notes");
+    const contents = response.body.map(r => r.content);
+    expect (contents).toContain("Browser can execute only JavaScript");
+});
+```
+- Notice that we use the `map` method to create an array called `contents` that holds the contents of every note.
+- The `toContain` method is used to check that the note given as a parameter is in the list of notes returned by the API.
+
+
 
