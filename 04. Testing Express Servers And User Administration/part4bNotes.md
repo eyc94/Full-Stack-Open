@@ -792,6 +792,89 @@ notesRouter.get("/:id", async (request, response) => {
 ```
 
 
+## Optimizing The beforeEach Function
+- Return to writing our tests and take closer look at `beforeEach` function that sets up tests.
+```js
+beforeEach(async () => {
+    await Note.deleteMany({});
 
+    let noteObject = new Note(helper.initialNotes[0]);
+    await noteObject.save();
 
+    noteObject = new Note(helper.initialNotes[1]);
+    await noteObject.save();
+};
+```
+- The code above saves the first two notes of `helper.initialNotes` array into db with two separate calls.
+- Better way of saving multiple objects to db.
+```js
+beforeEach(async () => {
+    await Note.deleteMany();
+    console.log("CLEARED");
+
+    helper.initialNotes.forEach(async (note) => {
+        let noteObject = new Note(note);
+        await noteObject.save();
+        console.log("SAVED");
+    });
+    console.log("DONE");
+});
+
+test("Notes are returned as JSON", async () => {
+    console.log("Entered test");
+    // ...
+});
+```
+- Saved notes in db with the `forEach` method of array using a loop.
+- Tests don't seem to work, so we added logs.
+- Console displays this:
+```
+cleared
+done
+entered test
+saved
+saved
+```
+- Notice that even if we use `async/await` syntax, the test executes before notes are saved to db.
+- The reason is that every iteration of `forEach` loop generates its own asynchronous operation.
+    - The `beforeEach` function will not wait for them to finish executing.
+    - The `await` commands defined inside for each `forEach` loop are not in the `beforeEach` function.
+    - They are in separate functions that `beforeEach` will not wait for.
+- One fix is to wait for all of the asynchronous operations to finish running with the `Promise.all` method:
+```js
+beforeEach(async () => {
+    await Note.deleteMany({});
+
+    const noteObjects = helper.initialNotes
+        .map(note => new Note(note));
+    const promiseArray = noteObjects.map(note => note.save());
+    await Promise.all(promiseArray);
+});
+```
+- Solution is advanced even though it looks simple.
+- The `noteObjects` array is created with `Note` constructor for each note in the `helper.initialNotes` array.
+- Then, it creates a new array that holds `promises` created by calling `save` method on each item in `noteObjects` array.
+    - Array of promises for saving each item to db.
+- The `Promise.all` method transforms an array of promises to a single promise.
+    - This will be fulfilled once every promise in the array passed to it as a parameter is resolved.
+- The last line `await Promise.all(promiseArray);` waits that every promise for saving a note is finished.
+    - This means that the db has been initialized.
+- Returned values of each promise in the array can still be accessed when using `Promise.all`.
+    - If we wait for the promises to be resolved with the `await` syntax `const results = await Promise.all(promiseArray);`, operation will return an array that contains the resolved values for each promise in the `promiseArray`.
+    - Appears in same order as promises in array.
+- `Promise.all` executes the promises it receives in parallel.
+    - If they need to be run in a particular order, we have a problem.
+    - Situations like this, the operations can be run inside of a `for...of` block.
+    - Guarantees a specific execution order.
+```js
+beforeEach(async () => {
+    await Note.deleteMany({});
+
+    for (let note of helper.initialNotes) {
+        let noteObject = new Note(note);
+        await noteObject.save();
+    }
+});
+```
+- Important to pay attention to asynchronous behavior.
 
