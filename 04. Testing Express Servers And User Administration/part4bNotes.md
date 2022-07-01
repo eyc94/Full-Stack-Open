@@ -415,5 +415,212 @@ notesRouter.get("/", async (request, response) => {
     - Also run tests from earlier.
 
 
+## More Tests and Refactoring The Backend
+- When refactoring, there is a risk of `regression`.
+    - Meaning functionality may break.
+- Refactor remaining operations.
+    - Write a test for each route of the API.
+- Start with operation of adding new note.
+    - Write test that adds new note.
+    - Verify the amount of notes returned by the API increases.
+    - Verify the newly added note is in the list.
+```js
+test("A valid notes can be added", async () => {
+    const newNote = {
+        content: "async/await simplifies making async calls",
+        important: true
+    };
+
+    await api
+        .post("/api/notes")
+        .send(newNote)
+        .expect(201)
+        .expect("Content-Type", /application\/json/);
+    
+    const response = await api.get("/api/notes");
+
+    const contents = response.body.map(r => r.content);
+
+    expect(response.body).toHaveLength(initialNotes.length + 1);
+    expect(contents).toContain("async/await simplifies making async calls");
+});
+```
+- Notice that the test fails.
+    - Because we are sending a 200 OK response code when a new note is created.
+    - Change that to 201 CREATED.
+```js
+notesRouter.post("/", (request, response, next) => {
+    const body = request.body;
+
+    const note = new Note({
+        content: body.content,
+        important: body.important || false,
+        date: new Date()
+    });
+
+    note.save()
+        .then(savedNote => {
+            response.status(201).json(savedNote);
+        })
+        .catch(error => next(error));
+});
+```
+- Write a test that verifies that a note without content will not be saved to the db.
+```js
+test("A note without content is not added", async () => {
+    const newNote = {
+        important: true
+    };
+
+    await api
+        .post("/api/notes")
+        .send(newNote)
+        .expect(400);
+    
+    const response = await api.get("/api/notes");
+    expect(response.body).toHavelength(initialNotes.length);
+});
+```
+- Both tests check state stored in db after the saving operation.
+    - Fetches all notes of the app.
+- Same verifications will repeat in other tests later.
+    - Good idea to extract these steps into helper functions.
+- Add the function into a new file called `tests/test_helper.js`.
+    - Same directory as the test file.
+```js
+const Note = require("../models/note");
+
+const initialNotes = [
+    {
+        content: "HTML is easy",
+        date: new Date(),
+        important: false
+    },
+    {
+        content: "Browser can execute only Javascript",
+        date: new Date(),
+        important: true
+    }
+];
+
+const nonExistingId = async () => {
+    const note = new Note({ content: "willremovethissoon", date: new Date() });
+    await note.save();
+    await note.remove();
+
+    return note._id.toString();
+};
+
+const notesInDb = async () => {
+    const notes = await Note.find({});
+    return notes.map(note => note.toJSON());
+};
+
+module.exports = {
+    initialNotes, nonExistingId, notesInDb
+};
+```
+- Module defines the `notesInDb` function.
+    - Can be used for checking the notes stored in db.
+- The `initialNotes` array containing initial db state is also stored in the module.
+- We define a `nonExistingId` function ahead of time.
+    - Use for creating a db object ID that does not belong to any note object in db.
+- Tests can now use helper module and be changed like this:
+```js
+const supertest = require("supertest");
+const mongoose = require("mongoose");
+const helper = require("./test_helper");
+const app = require("../app");
+const api = supertest(app);
+
+const Note = require("../models/note");
+
+beforeEach(() => {
+    await Note.deleteMany({});
+
+    let noteObject = new Note(helper.initialnotes[0]);
+    await noteObject.save();
+
+    noteObject = new Note(helper.initialNotes[1]);
+    await noteObject.save();
+});
+
+test("Notes are returned as JSON", async () => {
+    await api
+        .get("/api/notes")
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
+});
+
+test("All notes are returned", async () => {
+    const response = await api.get("/api/notes");
+    expect(response.body).toHaveLength(helper.initialNotes.length);
+});
+
+test("A specific note is within the returned notes", async () => {
+    const response = await api.get("/api/notes");
+    const contents = response.body.map(r => r.content);
+    expect(contents).toContain("Browser can execute only JavaScript");
+});
+
+test("A valid note can be added", async () => {
+    const newNote = {
+        content: "async/await simplifies making async calls",
+        important: true
+    };
+
+    await api
+        .post("/api/notes")
+        .send(newNote)
+        .expect(201)
+        .expect("Content-Type", /application\/json/);
+    
+    const notesAtEnd = await helper.notesInDb();
+    expect(notesAtEnd).toHaveLength(helper.initialNotes.length + 1);
+
+    const contents = notesAtEnd.map(n => n.content);
+    expect(contents).toContain("async/await simplifies making async calls");
+});
+
+test("Note without content is not added", async () => {
+    const newNote = {
+        important: true
+    };
+
+    await api
+        .post("/api/notes")
+        .send(newNote)
+        .expect(400);
+    
+    const notesAtEnd = await helper.notesInDb();
+    expect(notesAtEnd).toHaveLength(helper.initialNotes.length);
+});
+
+afterAll(() => {
+    mongoose.connection.close();
+});
+```
+- Code using promises works and tests passes.
+    - Ready to refactor to use the async/await syntax.
+- Make the following changes to the code that takes care of adding new note.
+    - Notice the route handler definition is preceded by the `async` keyword.
+```js
+notesRouter.post("/", async (request, response, next) => {
+    const body = request.body;
+
+    const note = new Note({
+        content: body.content,
+        important: body.important || false,
+        date: new Date()
+    });
+
+    const savedNote = await note.save();
+    response.status(201).json(savedNote);
+})
+```
+- We have a problem.
+    - No error handling.
+    - How do we deal with this?
+
 
 
