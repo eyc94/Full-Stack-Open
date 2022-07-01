@@ -712,4 +712,86 @@ notesRouter.delete("/:id", async (request, response, next) => {
 ```
 
 
+## Eliminating the try-catch
+- async/await unclutters code.
+- The price of using it is the `try/catch` structure required for catching exceptions.
+- All route handlers follow this:
+```js
+try {
+    // Do the async operations here.
+} catch (exception) {
+    next(exception);
+}
+```
+- Can we refactor the code to eliminate the `catch` from the methods?
+- The `express-async-errors` library has a solution:
+```
+$ npm install express-async-errors
+```
+- Introduce library in `app.js`.
+```js
+const config = require("./utils/config");
+const express = require("express");
+require("express-async-errors");
+const app = express();
+const cors = require("cors");
+const notesRouter = require("./controllers/notes");
+const middleware = require("./utils/middleware");
+const logger = require("./utils/logger");
+const mongoose = require("mongoose");
+
+// ...
+
+module.exports = app;
+```
+- Magic of library allows us to eliminate try-catch blocks completely.
+- The route for deleting the note right now is:
+```js
+notesRouter.delete("/:id", async (request, response, next) => {
+    try {
+        await Note.findByIdAndRemove(request.params.id);
+        response.status(204).end();
+    } catch (exception) {
+        next(exception);
+    }
+});
+```
+- Now it becomes:
+```js
+notesRouter.delete("/:id", async (request, response) => {
+    await Note.findByIdAndRemove(request.params.id);
+    response.status(204).end();
+});
+```
+- The library allows us to not need `next(exception)` anymore.
+    - Handles everything under the hood.
+    - If exception occurs in an *async* route, exception is automatically passed to the error handling middleware.
+- The other routes are now:
+```js
+notesRouter.post("/", async (request, response) => {
+    const body = request.body;
+
+    const note = new Note({
+        content: body.content,
+        important: body.important || false,
+        date: new Date()
+    });
+
+    const savedNote = await note.save();
+    response.json(savedNote);
+});
+
+notesRouter.get("/:id", async (request, response) => {
+    const note = await Note.findById(request.params.id);
+    if (note) {
+        response.json(note);
+    } else {
+        response.status(404).end();
+    }
+});
+```
+
+
+
+
 
