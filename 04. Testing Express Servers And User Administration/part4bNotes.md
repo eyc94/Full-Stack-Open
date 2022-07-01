@@ -399,3 +399,21 @@ main();
 - Code declares the function assigned to `main` is asynchronous.
 - After, the code calls the function with `main()`.
 
+
+## async/await in the Backend
+- Change the backend to async and await.
+- All of the asynchronous operations are done inside of a function.
+    - It is enough to change the route handler functions into async functions.
+- Route for fetching all notes is now:
+```js
+notesRouter.get("/", async (request, response) => {
+    const notes = await Note.find({});
+    response.json(notes);
+});
+```
+- Verify refactoring worked by testing endpoint through browser.
+    - Also run tests from earlier.
+
+
+
+
