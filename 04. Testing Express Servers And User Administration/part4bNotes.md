@@ -623,4 +623,93 @@ notesRouter.post("/", async (request, response, next) => {
     - How do we deal with this?
 
 
+## Error Handling and the async/await
+- If there is an exception while handling POST request, we end up with an error.
+- We end up with an unhandled promise rejection.
+    - The request never receives a response.
+- With async/await, the recommended way of dealing with exceptions is the `try/catch` mechanism.
+```js
+notesRouter.post("/", async (request, response, next) => {
+    const body = request.body;
+
+    const note = new Note({
+        content: body.content,
+        important: body.important || false,
+        date: new Date()
+    });
+
+    try {
+        const savedNote = await note.save();
+        response.status(201).json(savedNote);
+    } catch (exception) {
+        next(exception);
+    }
+});
+```
+- Now our tests pass again.
+- Write tests for fetching and removing an individual note:
+```js
+test("A specific note can be viewed", async () => {
+    const notesAtStart = await helper.notesInDb();
+    const noteToView = notesAtStart[0];
+
+    const resultNote = await api
+        .get(`/api/notes/${noteToView.id}`)
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
+    
+    const processedNoteToView = JSON.parse(JSON.stringify(noteToView));
+    expect(resultNote.body).toEqual(processedNoteToView);
+});
+
+test("A note can be deleted", async () => {
+    const notesAtStart = await helper.notesInDb();
+    const noteToDelete = notesAtStart[0];
+
+    await api
+        .delete(`/api/notes/${notesToDelete.id}`)
+        .expect(204);
+
+    const notesAtEnd = await helper.notesInDb();
+    expect(notesAtEnd).toHaveLength(helper.initialNotes.length - 1);
+
+    const contents = notesAtEnd.map(r => r.content);
+    expect(contents).not.toContain(noteToDelete.content);
+});
+```
+- Both tests share similar structure.
+    - Initialization phase fetches a note from db.
+    - Tests then call operation being tested.
+    - Tests verify outcome is as expected.
+- In first test.
+    - The note we receive as response body goes through JSON serialization and parsing.
+    - Processing turns the note object's `date` property value's type from `Date` object to string.
+    - So, we cannot directly compare equality of `resultNote.body` and `noteToView` read from db.
+    - Must first do similar JSON serialization and parsing for `noteToView` as server is performing for the note object.
+- Tests pass and can safely refactor routes to use async/await:
+```js
+notesRouter.get("/:id", async (request, response, next) => {
+    try {
+        const note = await Note.findById(request.params.id);
+        if (note) {
+            response.json(note);
+        } else {
+            response.status(404).end();
+        }
+    } catch (exception) {
+        next(exception);
+    }
+});
+
+notesRouter.delete("/:id", async (request, response, next) => {
+    try {
+        await Note.findByIdAndRemove(request.params.id);
+        response.status(204).end();
+    } catch (exception) {
+        next(exception);
+    }
+});
+```
+
+
 
