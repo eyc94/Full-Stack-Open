@@ -1,1 +1,26 @@
 # User Administration
+- We want to add user authentication and authorization to our app.
+- Users are stored in the database.
+    - Every note should be linked to the user who created it.
+    - Deleting and editing a note should be allowed to the user who created it.
+- Add info about users to db.
+    - One-to-many relationship between user (`User`) and notes (`Note`).
+- In relational db, implementation is straightforward.
+    - Both resources have their separate tables.
+    - The id of the user who created a note would be stored in the notes table as a foreign key.
+- Using document databases is different.
+    - Many ways to model the situation.
+- Existing solution saves every note in the `notes` collection in db.
+    - If we don't want to change this existing solution, natural choice is to save users in their own collection.
+    - Like `users`.
+- Can use object id in Mongo to reference documents in other collections.
+    - Similar to using foreign keys in relational db.
+- Document dbs like Mongo don't support `join queries` that are in relational dbs.
+    - Used for aggregating data from multiple tables.
+    - Starting version 3.2, Mongo supported `lookup aggregation queries`.
+        - Not taking a look at this functionality.
+- If join queries are needed, we will implement it in our app code by making multiple queries.
+    - Mongoose can take care of joining and aggregating data.
+        - Gives appearance of join query.
+    - Even in these situations, Mongoose makes multiple queries to the database in background.
+
