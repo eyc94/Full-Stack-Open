@@ -174,5 +174,56 @@ const noteSchema = new mongoose.Schema({
 - References are now stored in both documents.
     - The note references the user who created it.
     - The user has an array of references to all of the notes created by them.
-    
+
+
+## Creating Users
+- Implement a route for creating new users.
+    - Unique `username`.
+    - Has a `name`.
+    - Has a `passwordHash`.
+        - Output of a one-way hash function.
+        - Applied to the user's password.
+        - Never wise to store unencrypted plain text passwords in the db.
+- Install the `bcrypt` package.
+```
+$ npm install bcrypt
+```
+- Creating new users happens in compliance with RESTful conventions.
+    - Makes HTTP POST request to the `users` path.
+- Define separate `router` for dealing with users in a new `controllers/users.js` file.
+- Take router to use in `app.js` file.
+    - Handles requests made to `/api/users` url.
+```js
+const usersRouter = require("./controllers/users");
+
+// ...
+
+app.use("/api/users", usersRouter);
+```
+- Contents of file that defines router is:
+```js
+const bcrypt = require("bcrypt");
+const usersRouter = require("express").Router();
+const User = require("../models/user");
+
+usersRouter.post("/", async (request, response) => {
+    const { username, name, password } = request.body;
+
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
+
+    const user = new User({
+        username,
+        name,
+        passwordHash
+    });
+
+    const savedUser = await user.save();
+    response.status(201).json(savedUser);
+});
+
+module.exports = usersRouter;
+```
+
+
 
