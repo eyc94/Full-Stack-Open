@@ -117,3 +117,62 @@
 - Schemaless dbs like Mongo require making far more radical design decisions about data organization at the beginning of the project than relational dbs with schemas.
 - Relational dbs offer a more or less suitable way of organizing data for many apps.
 
+
+## Mongoose Schema For Users
+- We make decision to store ids of the notes created by the user in the user document.
+- Define the model for representing a user in `models/user.js` file:
+```js
+const mongoose = require("mongoose");
+
+const userSchema = new mongoose.Schema({
+    username: String,
+    name: String,
+    passwordHash: String,
+    notes: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Note"
+        }
+    ]
+});
+
+userSchema.set("toJSON", {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString();
+        delete returnedObject._id;
+        delete returnedObject.__v;
+        // The passwordHash should not be revealed.
+        delete returnedObject.passwordHash;
+    }
+});
+
+const User = mongoose.model("User", userSchema);
+
+module.exports = User;
+```
+- The ids of notes are stored in user document as an array of Mongo ids.
+- Type of field is `ObjectId` that references `note`-style documents.
+- Mongo does not know that this is a field that references notes.
+    - Syntax related to and defined by Mongoose.
+- Expand schema of note in `models/note.js` file.
+    - Note should contain information about the user who created it.
+```js
+const noteSchema = new mongoose.Schema({
+    content: {
+        type: String,
+        required: true,
+        minLength: 5
+    },
+    date: Date,
+    important: Boolean,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }
+});
+```
+- References are now stored in both documents.
+    - The note references the user who created it.
+    - The user has an array of references to all of the notes created by them.
+    
+
