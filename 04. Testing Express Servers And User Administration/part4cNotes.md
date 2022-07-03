@@ -24,3 +24,96 @@
         - Gives appearance of join query.
     - Even in these situations, Mongoose makes multiple queries to the database in background.
 
+
+## References Across Collections
+- If using relational db, note would have a `reference key` to the user who created it.
+- In document db, we can do the same thing.
+- Assume `users` collection contains two users:
+```js
+[
+    {
+        username: "mluukkai",
+        _id: 123456
+    },
+    {
+        username: "hellas",
+        _id: 141414
+    }
+];
+```
+- The `notes` collection has three notes that all have a `user` field that references a user in the `users` collection.
+```js
+[
+    {
+        content: "HTML is Easy",
+        important: false,
+        _id: 221212,
+        user: 123456
+    },
+    {
+        content: "The most important operations of HTTP protocol are GET and POST",
+        important: true,
+        _id: 221255,
+        user: 123456
+    },
+    {
+        content: "A propert dinosaur codes with Java",
+        important: false,
+        _id: 221244,
+        user: 141414
+    }
+];
+```
+- Document dbs do not require the foreign key to be stored in the note resources.
+    - Can also be stored in the `users` collection or even both.
+```js
+[
+    {
+        username: "mluukkai",
+        _id: 123456,
+        notes: [221212, 221255]
+    },
+    {
+        username: "hellas",
+        _id: 141414,
+        notes: [221244]
+    }
+];
+```
+- Users can have many notes, so the related ids are stored in an array in the `notes` field.
+- Document dbs also offer a different way of organizing data.
+    - Might be beneficial to nest the entire notes array as a part of the documents in the users collection:
+```js
+[
+    {
+        username: "mluukkai",
+        _id: 123456,
+        notes: [
+            {
+                content: "HTML is Easy",
+                important: false
+            },
+            {
+                content: "The most important operations of HTTP protocol are GET and POST",
+                important: true
+            }
+        ]
+    },
+    {
+        username: "hellas",
+        _id: 141414,
+        notes: [
+            {
+                content: "A proper dinosaur codes with Java",
+                important: false
+            }
+        ]
+    }
+];
+```
+- In the above schema, notes are tightly nested under users and db would not generate ids for them.
+- Schema must be one which supports use cases of the app.
+    - Design decision.
+- Schemaless dbs like Mongo require making far more radical design decisions about data organization at the beginning of the project than relational dbs with schemas.
+- Relational dbs offer a more or less suitable way of organizing data for many apps.
+
