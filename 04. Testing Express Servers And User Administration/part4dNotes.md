@@ -98,3 +98,69 @@ Content-Type: application/json
 - Wrong username and password returns an error message and proper status code.
 
 
+## Limiting Creating New Notes To Logged In Users
+- Change creating new notes so it is only possible if post request has a valid token attached.
+- Note is then saved to the notes list of the user identified by the token.
+- Several ways to send token from browser to server.
+    - We use the `Authorization` header.
+    - Header tells which `authentication scheme` is used.
+    - This is necessary if server offers multiple ways to authenticate.
+    - Identifying scheme tells the server how the attached credentials should be interpreted.
+- The `Bearer` scheme is suitable to our needs.
+    - This means if the token is `eyJhbGciOiJIUzI1NiIsInR5c2VybmFtZSI6Im1sdXVra2FpIiwiaW`.
+    - Authorization header will have value: `Bearer eyJhbGciOiJIUzI1NiIsInR5c2VybmFtZSI6Im1sdXVra2FpIiwiaW`
+- Creating a new note will change like so:
+```js
+const jwt = require("jsonwebtoken");
+
+// ...
+
+const getTokenFrom = request => {
+    const authorization = request.get("authorization");
+    if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
+        return authorization.substring(7);
+    }
+    return null;
+};
+
+notesRouter.post("/", async (request, response) => {
+    const body = request.body;
+    const token = getTokenFrom(request);
+    const decodedToken = jwt.verify(token, process.env.SECRET);
+    if (!decodedToken.id) {
+        return response.status(401).json({ error: "token missing or invalid" });
+    }
+    const user = await User.findById(decodedToken.id);
+
+    const note = new Note({
+        content: body.content,
+        important: body.important === undefined ? false : body.important,
+        date: new Date(),
+        user: user._id
+    });
+
+    const savedNote = await note.save();
+    user.notes = user.notes.concat(savedNote._id);
+    await user.save();
+
+    response.json(savedNote);
+});
+```
+- The `getTokenFrom` function isolates the token from the `authorization` header.
+- Validity of token checked with `jwt.verify`.
+- Method also decodes the token.
+    - Or returns the Object the token was based on.
+- If no token is passed, it will return "jwt must be provided".
+- The object decoded from token contains `username` and `id` fields.
+    - Tells server who made the request.
+- If the decoded object from token does not have the user's identity (`decodedToken.id` is undefined).
+    - The error status code `401 unauthorized` is returned.
+    - The reason for the failure is explained in the response body.
+- When identity of maker of request is resolved, execution continues.
+- New note can now be created using Postman.
+    - The `authorization` header must be given the correct value.
+    - The string `bearer eyJhbGciOiJIUzI1NiIsInR5c2VybmFtZSI6Im1sdXVra2FpIiwiaW`.
+        - The second value is the token returned by the `login` operation.
+
+
+
