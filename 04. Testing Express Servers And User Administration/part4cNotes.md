@@ -409,4 +409,67 @@ notesRouter.post("/", async (request, response, next) => {
 - The `id` of the users who created the notes can be seen when we visit the fetch all notes handler.
 
 
+## Populate
+- We would like to have our API work such that when an HTTP GET is made to `/api/users`, the user objects will also contain the contents of the user's notes.
+    - Not just their ids.
+- In relational dbs, the functionality would be implemented with a `join query`.
+- Document dbs do not properly support join queries between collections.
+    - Mongoose library can do some of these for us.
+- Mongoose does multiple queries.
+    - Different from join queries in relational db.
+    - Relational dbs are `transactional`.
+    - State of the db does not change during the time that the query is made.
+- Join queries in Mongoose does not guarantee state between collections is consistent.
+    - If we make a query that joins the user and notes collections, state of collections may change during the query.
+    - Mongoose join is done with `populate` method.
+    - Update route that returns all users:
+```js
+usersRouter.get("/", async (request, response) => {
+    const users = await User
+        .find({}).populate("notes");
+
+    response.json(users);
+});
+```
+- The `populate` method is chained after the `find` method making the initial query.
+    - Parameter given to populate method defines that the `ids` referencing `note` objects in the `notes` field of the `user` document will be replaced by the referenced `note` documents.
+- Result is almost exactly what we wanted.
+- Can use the populate parameter for choosing the fields we want to include from documents.
+    - Selection of fields is done with Mongo `syntax`:
+```js
+usersRouter.get("/", async (request, response) => {
+    const users = await User
+        .find({}).populate("notes", { content: 1, date: 1 });
+    
+    response.json(users);
+});
+```
+- Now add a suitable population of user info to notes:
+```js
+notesRouter.get("/", async (request, response) => {
+    const notes = await Note
+        .find({}).populate("user", { username: 1, name: 1 });
+    
+    response.json(notes);
+});
+```
+- User info is added to `user` field of note objects.
+- Important to know that the db does not actually know that the ids stored in the `user` field of notes actually references documents in the user collection.
+    - Functionality of `populate` is based on the fact that we defined "types" to the references in Mongoose schema with `ref` option.
+```js
+const noteSchema = new mongoose.Schema({
+    content: {
+        type: String,
+        required: true,
+        minLength: 5
+    },
+    date: Date,
+    important: Boolean,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }
+});
+```
+
 
