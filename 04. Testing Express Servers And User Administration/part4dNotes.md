@@ -284,3 +284,13 @@ const errorHandler = (error, request, response, next) => {
     - Also usual that instead of using Authorization-header, `cookies` are used as the mechanism for transferring the token between the client and the server.
 
 
+## End Notes
+- Many changes now, so tests are probably broken.
+    - Leaving the fixing of tests as a non compulsory exercise.
+- Usernames, passwords, and applications using token authentication must always be used over `HTTPS`.
+    - Can use Node `HTTPS` server in our app instead of `HTTP` server.
+        - Requires more configuration.
+    - The prod version of our app is in Heroku, so our app stays secure.
+    - Heroku routes all traffic between a browser and the Heroku server over HTTPS.
+
+
