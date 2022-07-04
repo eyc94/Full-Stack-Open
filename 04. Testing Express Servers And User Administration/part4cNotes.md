@@ -224,6 +224,156 @@ usersRouter.post("/", async (request, response) => {
 
 module.exports = usersRouter;
 ```
+- Password sent in request is not stored in db.
+    - Store the hash of the password created with `bcrypt.hash` function.
+- Fundamentals of storing password is not gone over in this course.
+- We will not talk about the magic number 10 assigned to `saltRounds`.
+    - Read more about it here: `https://github.com/kelektiv/node.bcrypt.js/#a-note-on-rounds`
+- Current code does not contain error handling or input validation for verifying that the username and password are in the desired format.
+- Test the initial features manually with tool like Postman.
+    - Testing manually will be too cumbersome.
+    - Especially with unique usernames.
+- Much less efforts to write automated tests.
+- Initial tests could look like:
+```js
+const bcrypt = require("bcrypt");
+const User = require("../models/user");
+
+// ...
+
+describe("When there is initially one user in db", () => {
+    beforeEach(async () => {
+        await User.deleteMany({});
+
+        const passwordHash = await bcrypt.hash("sekret", 10);
+        const user = new User({ username: "root", passwordHash });
+
+        await user.save();
+    });
+
+    test("Creation succeeds with a fresh username", async () => {
+        const usersAtStart = await helper.usersInDb();
+
+        const newUser = {
+            username: "mluukkai",
+            name: "Matti Luukkainen",
+            password: "salainen"
+        };
+
+        await api
+            .post("/api/users")
+            .send(newUser)
+            .expect(201)
+            .expect("Content-Type", /application\/json/);
+        
+        const usersAtEnd = await helper.usersInDb();
+        expect(usersAtEnd).toHaveLength(usersAtStart.length + 1);
+
+        const usernames = usersAtEnd.map(u => u.username);
+        expect(usernames).toContain(newUser.username);
+    });
+});
+```
+- Test above uses the `usersInDb()` helper function.
+    - Implemented in `tests/test_helper.js` file.
+    - Used to help us verify the state of db after a user is created:
+```js
+const User = require("../models/user");
+
+// ...
+
+const usersInDb = async () => {
+    const users = await User.find({});
+    return users.map(u => u.toJSON());
+};
+
+module.exports = {
+    initialNotes,
+    nonExistingId,
+    notesInDb,
+    usersInDb
+};
+```
+- The `beforeEach` adds a user with the username `root` to the db.
+    - Write a new test that verifies a new user with the same username can not be created:
+```js
+describe("When there is initially one user in db", () => {
+    // ...
+
+    test("Creation fails with proper statuscode and message if username already taken", async () => {
+        const usersAtStart = await helper.usersInDb();
+
+        const newUser = {
+            username: "root",
+            name: "Superuser",
+            password: "salainen"
+        };
+
+        const reuslt = await api
+            .post("/api/users")
+            .send(newUser)
+            .expect(400)
+            .expect("Content-Type", /application\/json/);
+
+        expect(result.body.error).toContain("username must be unique");
+
+        const usersAtEnd = await helper.usersInDb();
+        expect(usersAtEnd).toEqual(usersAtStart);
+    });
+});
+```
+- Test case does not pass.
+    - Practicing `test-driven development (TDD)`.
+    - Tests for new functionality are written before the funcitonality is implemented.
+- Mongoose does not have a built-in validator for checking uniqueness of field.
+    - Can find a ready-made solution from `mongoose-unique-validator` npm package.
+        - Does not work with Mongoose version 6.x.
+        - Implement uniqueness check ourselves in the controller.
+```js
+usersRouter.post("/", async (request, response) => {
+    const { username, name, password } = request.body;
+
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+        return response.status(400).json({
+            error: "username must be unique"
+        });
+    }
+
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
+
+    const user = new User({
+        username,
+        name,
+        passwordHash
+    });
+
+    const savedUser = await user.save();
+    response.status(201).json(savedUser);
+});
+```
+- Implement other validations to user creation.
+    - Can check username is long enough.
+    - Can check the username consists of permitted characters.
+    - Can check if the password is strong enough.
+    - This is left as an optional exercise.
+- Add initial implementation of a route handler that returns all of the users in the db:
+```js
+usersRouter.get("/", async (request, response) => {
+    const users = await User.find({});
+    response.json(users);
+});
+```
+- Making new users in prod or dev, send a POST request to `/api/users` via Postman or REST client:
+```json
+{
+    "username": "root",
+    "name": "Superuser",
+    "password": "salainen"
+}
+```
+
 
 
 
