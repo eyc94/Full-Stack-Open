@@ -375,5 +375,38 @@ usersRouter.get("/", async (request, response) => {
 ```
 
 
+## Creating A New Note
+- Code for creating new note must be updated so that the note is assigned to the user who created it.
+- Expand current implementation.
+    - Info about the user who created a note is sent in the `userId` field of the request body.
+```js
+const User = require("../models/user");
+
+// ...
+
+notesRouter.post("/", async (request, response, next) => {
+    const body = request.body;
+
+    const user = await User.findById(body.userId);
+
+    const note = new Note({
+        content: body.content,
+        important: body.important === undefined ? false : body.important,
+        date: new Date(),
+        user: user._id
+    });
+
+    const savedNote = await note.save();
+    user.notes = user.notes.concat(savedNote._id);
+    await user.save();
+
+    response.json(savedNote);
+});
+```
+- Worth noting that the `user` object also changes.
+    - The `id` of the note is stored in the `notes` field.
+- Try to create a note.
+- The `id` of the users who created the notes can be seen when we visit the fetch all notes handler.
+
 
 
