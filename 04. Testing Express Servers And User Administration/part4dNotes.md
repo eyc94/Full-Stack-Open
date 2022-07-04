@@ -163,4 +163,39 @@ notesRouter.post("/", async (request, response) => {
         - The second value is the token returned by the `login` operation.
 
 
+## Error Handling
+- Token verification can cause `JsonWebTokenError`.
+- If we remove a few characters from the token and try to create a note, we get that error.
+- Many reasons for decoding error.
+    - Token can be faulty like above.
+    - Or it can be falsified or expired.
+    - Extend the `errorHandler` middleware to take into account the different decoding errors.
+```js
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: "unknown edpoint" });
+};
+
+const errorHandler = (error, request, response, next) => {
+    if (error.name === "CastError") {
+        return response.status(400).send({
+            error: "Malformatted ID"
+        });
+    } else if (error.name === "ValidationError") {
+        return response.status(400).json({
+            error: error.message
+        });
+    } else if (error.name === "JsonWebTokenError") {
+        return response.status(401).json({
+            error: "Invalid token"
+        });
+    }
+
+    logger.error(error.message);
+    next(error);
+};
+```
+- If app has multiple interfaces requiring identification.
+    - JWT's validation should be in its own middleware.
+    - Existing library like `express-jwt` could also be used.
+
 
