@@ -88,7 +88,7 @@ const App = () => {
         }
     };
 
-    const loginForm = () => {
+    const loginForm = () => (
         <form onSubmit={handleLogin}>
             <div>
                 Username
@@ -110,9 +110,9 @@ const App = () => {
             </div>
             <button type="submit">login</button>
         </form>
-    };
+    );
 
-    const noteForm = () => {
+    const noteForm = () => (
         <form onSubmit={addNote}>
             <input
                 value={newNote}
@@ -120,12 +120,15 @@ const App = () => {
             />
             <button type="submit">save</button>
         </form>
-    };
+    );
 
     return (
         <div>
             <h1>Notes</h1>
             <Notification message={errorMessage} />
+
+            {user === null && loginForm()}
+            {user !== null && noteForm()}
 
             <div>
                 <button onClick={() => setShowAll(!showAll)}>
