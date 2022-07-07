@@ -264,6 +264,66 @@ return (
 - Should refactor.
 
 
+## Creating New Notes
+- Token returned with successful login is saved to the app's state.
+    - The `user`'s field `token`.
+- Fix creating new notes so it works with backend.
+    - Add token of logged-in user to the Authorization header of HTTP request.
+- The `noteService` module changes:
+```js
+import axios from "axios";
+const baseUrl = "/api/notes";
 
+let token = null;
+
+const setToken = newToken => {
+    token = `bearer ${newToken}`;
+};
+
+const getAll = () => {
+    const request = axios.get(baseUrl);
+    return request.then(response => response.data);
+};
+
+const create = async newObject => {
+    const config = {
+        headers: { Authorization: token }
+    };
+
+    const response = await axios.post(baseUrl, newObject, config);
+    return response.data;
+};
+
+const update = (id, newObject) => {
+    const request = axios.put(`${baseUrl}/${id}`, newObject);
+    return request.then(response => response.data);
+};
+
+export default { getAll, create, update, setToken };
+```
+- The module has a private variable `token`.
+- Value can be changed with function `setToken`.
+    - Exported by the module.
+- The `create` function is now `async/await` function.
+    - Sets the token to the `Authorization` header.
+    - Header is given to axios as the third parameter of `post` method.
+- Event handler that handles login must call `noteService.setToken(user.token)` with successful login.
+```js
+const handleLogin = async (event) => {
+    event.preventDefault();
+    try {
+        const user = await loginService.login({
+            username, password
+        });
+
+        noteService.setToken(user.token);
+        setUser(user);
+        setUsername("");
+        setPassword("");
+    } catch (exception) {
+        // ...
+    }
+};
+```
 
 
