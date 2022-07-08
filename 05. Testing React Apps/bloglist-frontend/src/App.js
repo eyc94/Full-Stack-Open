@@ -38,6 +38,11 @@ const App = () => {
         setPassword("");
     };
 
+    const handleLogout = () => {
+        window.localStorage.removeItem("loggedBlogappUser");
+        setUser(null);
+    };
+
     const loginForm = () => (
         <>
             <h2>Log Into Application</h2>
@@ -71,6 +76,7 @@ const App = () => {
                 loginForm() :
                 <div>
                     <h2>Blogs</h2>
+                    <button onClick={handleLogout}>Logout</button>
                     {blogs.map(blog =>
                         <Blog key={blog.id} blog={blog} />
                     )}
