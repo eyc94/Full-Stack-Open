@@ -10,6 +10,10 @@ const App = () => {
     const [password, setPassword] = useState("");
     const [user, setUser] = useState(null);
 
+    const [newTitle, setNewTitle] = useState("");
+    const [newAuthor, setNewAuthor] = useState("");
+    const [newUrl, setNewUrl] = useState("");
+
     useEffect(() => {
         blogService.getAll().then(blogs =>
             setBlogs(blogs)
@@ -21,6 +25,7 @@ const App = () => {
         if (loggedUserJSON) {
             const user = JSON.parse(loggedUserJSON);
             setUser(user);
+            blogService.setToken(user.token);
         }
     }, []);
 
@@ -33,6 +38,7 @@ const App = () => {
 
         window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
 
+        blogService.setToken(user.token);
         setUser(user);
         setUsername("");
         setPassword("");
@@ -70,6 +76,26 @@ const App = () => {
         </>
     );
 
+    const addBlog = async (event) => {
+        event.preventDefault();
+
+        const newBlog = {
+            title: newTitle,
+            author: newAuthor,
+            url: newUrl
+        };
+
+        blogService
+            .create(newBlog)
+            .then(returnedBlog => {
+                setBlogs(blogs.concat(returnedBlog));
+            });
+
+        setNewTitle("");
+        setNewAuthor("");
+        setNewUrl("");
+    };
+
     return (
         <div>
             {user === null ?
@@ -77,6 +103,33 @@ const App = () => {
                 <div>
                     <h2>Blogs</h2>
                     <p>{user.name} logged in <button onClick={handleLogout}>Logout</button></p>
+                    <form onSubmit={addBlog}>
+                        <div>
+                            title:
+                            <input
+                                type="text"
+                                value={newTitle}
+                                onChange={({ target }) => setNewTitle(target.value)}
+                            />
+                        </div>
+                        <div>
+                            author:
+                            <input
+                                type="text"
+                                value={newAuthor}
+                                onChange={({ target }) => setNewAuthor(target.value)}
+                            />
+                        </div>
+                        <div>
+                            url:
+                            <input
+                                type="text"
+                                value={newUrl}
+                                onChange={({ target }) => setNewUrl(target.value)}
+                            />
+                        </div>
+                        <button type="submit">Create</button>
+                    </form>
                     {blogs.map(blog =>
                         <Blog key={blog.id} blog={blog} />
                     )}
