@@ -180,3 +180,56 @@ const NoteForm = ({ onSubmit, handleChange, value }) => {
 ```
 
 
+## State Of The Forms
+- State of application is in `App`.
+- React says this about where to place state:
+    - **Often, several components need to reflect the same changing data. We recommend lifting the shared state up to their closest common ancestor.**
+- If we think about the state of forms.
+    - Like contents of new note before it is created.
+    - `App` does not need it for anything.
+    - Just move this state down to the corresponding components.
+- Component for a note changes like:
+```js
+import { useState } from "react";
+
+const NoteForm = ({ createNote }) => {
+    const [newNote, setNewNote] = useState("");
+
+    const handleChange = (event) => {
+        setNewNote(event.target.value);
+    };
+
+    const addNote = (event) => {
+        event.preventDefault();
+        createNote({
+            content: newNote,
+            important: Math.random() > 0.5
+        });
+
+        setNewNote("");
+    };
+
+    return (
+        <div>
+            <h2>Create A New Note</h2>
+
+            <form onSubmit={addNote}>
+                <input
+                    value={newNote}
+                    onChange={handleChange}
+                />
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    );
+};
+
+export default NoteForm;
+```
+- Notice we moved functions and state to the `NoteForm` component.
+- The `createNote` function is not moved however.
+- Can do the same for the login form.
+
+
+
+
