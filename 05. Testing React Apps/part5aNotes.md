@@ -417,3 +417,24 @@ const App = () => {
 - Or clear local storage completely with: `window.localStorage.clear()`.
 
 
+## A Note On Using Local Storage
+- We mentioned the challenge of token based authentication.
+    - Coping with when API access of the token holder to the API needs to be revoked.
+- Two solutions:
+    - Make token expire.
+    - Hold validity info of each token in the backend db. This is called `server side session`.
+- Holding token in local storage is risky if application allows `Cross Site Scripting (XSS) attacks`.
+    - XSS attack is possible if app allows user to inject random JS code that the app would then run.
+    - Using React in a sensible manner, this should not happen.
+    - React sanitizes all text that it renders.
+    - Not executing the rendered content as JavaScript.
+- Safe bet is not to store token in local storage.
+- Suggested that the identity of signed in user should be saved as `httpOnly cookies`.
+    - JS code cannot access token.
+    - Drawback is that it would make implementing an SPA more complex.
+        - Need to implement separate page for login.
+- Even the use of `httpOnly cookies` does not guarantee anything.
+    - Not any safer than local storage.
+- Just try your best to minimize risk of XSS attacks.
+
+
