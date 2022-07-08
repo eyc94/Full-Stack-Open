@@ -76,7 +76,7 @@ const App = () => {
                 loginForm() :
                 <div>
                     <h2>Blogs</h2>
-                    <button onClick={handleLogout}>Logout</button>
+                    <p>{user.name} logged in <button onClick={handleLogout}>Logout</button></p>
                     {blogs.map(blog =>
                         <Blog key={blog.id} blog={blog} />
                     )}
