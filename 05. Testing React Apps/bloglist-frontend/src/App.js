@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
+import BlogForm from "./components/BlogForm";
 
 import blogService from "./services/blogs";
 import loginService from "./services/login";
@@ -13,10 +14,6 @@ const App = () => {
     const [user, setUser] = useState(null);
     const [message, setMessage] = useState(null);
     const [messageStatus, setMessageStatus] = useState("");
-
-    const [newTitle, setNewTitle] = useState("");
-    const [newAuthor, setNewAuthor] = useState("");
-    const [newUrl, setNewUrl] = useState("");
 
     useEffect(() => {
         blogService.getAll().then(blogs =>
@@ -90,52 +87,12 @@ const App = () => {
         </>
     );
 
-    const blogForm = () => (
-        <Togglable buttonLabel="New Blog">
-            <form onSubmit={addBlog}>
-                <div>
-                    title:
-                    <input
-                        type="text"
-                        value={newTitle}
-                        onChange={({ target }) => setNewTitle(target.value)}
-                    />
-                </div>
-                <div>
-                    author:
-                    <input
-                        type="text"
-                        value={newAuthor}
-                        onChange={({ target }) => setNewAuthor(target.value)}
-                    />
-                </div>
-                <div>
-                    url:
-                    <input
-                        type="text"
-                        value={newUrl}
-                        onChange={({ target }) => setNewUrl(target.value)}
-                    />
-                </div>
-                <button type="submit">Create</button>
-            </form>
-        </Togglable>
-    );
-
-    const addBlog = async (event) => {
-        event.preventDefault();
-
+    const addBlog = async (newBlog) => {
         try {
-            const newBlog = {
-                title: newTitle,
-                author: newAuthor,
-                url: newUrl
-            };
-
             const blog = await blogService.create(newBlog);
             setBlogs(blogs.concat(blog));
 
-            setMessage(`Created Blog: ${newTitle} by ${newAuthor}`);
+            setMessage(`Created Blog: ${newBlog.title} by ${newBlog.author}`);
             setMessageStatus("success");
             setTimeout(() => {
                 setMessage("");
@@ -149,11 +106,13 @@ const App = () => {
                 setMessageStatus("");
             }, 5000);
         }
-
-        setNewTitle("");
-        setNewAuthor("");
-        setNewUrl("");
     };
+
+    const blogForm = () => (
+        <Togglable buttonLabel="New Blog">
+            <BlogForm createBlog={addBlog} />
+        </Togglable>
+    );
 
     return (
         <div>
