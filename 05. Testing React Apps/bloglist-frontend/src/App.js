@@ -89,6 +89,36 @@ const App = () => {
         </>
     );
 
+    const blogForm = () => (
+        <form onSubmit={addBlog}>
+            <div>
+                title:
+                <input
+                    type="text"
+                    value={newTitle}
+                    onChange={({ target }) => setNewTitle(target.value)}
+                />
+            </div>
+            <div>
+                author:
+                <input
+                    type="text"
+                    value={newAuthor}
+                    onChange={({ target }) => setNewAuthor(target.value)}
+                />
+            </div>
+            <div>
+                url:
+                <input
+                    type="text"
+                    value={newUrl}
+                    onChange={({ target }) => setNewUrl(target.value)}
+                />
+            </div>
+            <button type="submit">Create</button>
+        </form>
+    );
+
     const addBlog = async (event) => {
         event.preventDefault();
 
@@ -130,33 +160,7 @@ const App = () => {
                     <h2>Blogs</h2>
                     <Notification message={message} status={messageStatus} />
                     <p>{user.name} logged in <button onClick={handleLogout}>Logout</button></p>
-                    <form onSubmit={addBlog}>
-                        <div>
-                            title:
-                            <input
-                                type="text"
-                                value={newTitle}
-                                onChange={({ target }) => setNewTitle(target.value)}
-                            />
-                        </div>
-                        <div>
-                            author:
-                            <input
-                                type="text"
-                                value={newAuthor}
-                                onChange={({ target }) => setNewAuthor(target.value)}
-                            />
-                        </div>
-                        <div>
-                            url:
-                            <input
-                                type="text"
-                                value={newUrl}
-                                onChange={({ target }) => setNewUrl(target.value)}
-                            />
-                        </div>
-                        <button type="submit">Create</button>
-                    </form>
+                    {blogForm()}
                     {blogs.map(blog =>
                         <Blog key={blog.id} blog={blog} />
                     )}
