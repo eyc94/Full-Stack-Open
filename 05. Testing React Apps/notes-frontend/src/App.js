@@ -6,6 +6,7 @@ import LoginForm from "./components/LoginForm";
 
 import noteService from "./services/notes";
 import loginService from "./services/login";
+import Togglable from "./components/Togglable";
 
 const App = () => {
     const [notes, setNotes] = useState([]);
@@ -115,10 +116,7 @@ const App = () => {
 
         return (
             <div>
-                <div style={hideWhenVisible}>
-                    <button onClick={() => setLoginVisible(true)}>Login</button>
-                </div>
-                <div style={showWhenVisible}>
+                <Togglable buttonLabel="Login">
                     <LoginForm
                         username={username}
                         password={password}
@@ -126,8 +124,7 @@ const App = () => {
                         handlePasswordChange={({ target }) => setPassword(target.value)}
                         handleSubmit={handleLogin}
                     />
-                    <button onClick={() => setLoginVisible(false)}>Cancel</button>
-                </div>
+                </Togglable>
             </div>
         );
     };
