@@ -108,6 +108,17 @@ const App = () => {
         }
     };
 
+    const likeHandler = async (blog) => {
+        const likedBlog = await blogService.like(blog);
+        setBlogs(
+            blogs.map(b =>
+                b.id === likedBlog.id
+                    ? { ...b, likes: likedBlog.likes }
+                    : b
+            )
+        );
+    };
+
     const blogForm = () => (
         <Togglable buttonLabel="New Blog">
             <BlogForm createBlog={addBlog} />
@@ -124,7 +135,7 @@ const App = () => {
                     <p>{user.name} logged in <button onClick={handleLogout}>Logout</button></p>
                     {blogForm()}
                     {blogs.map(blog =>
-                        <Blog key={blog.id} blog={blog} />
+                        <Blog key={blog.id} blog={blog} likeHandler={() => likeHandler(blog)} />
                     )}
                 </div>
             }
