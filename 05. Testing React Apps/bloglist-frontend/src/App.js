@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
+import Togglable from "./components/Togglable";
 
 import blogService from "./services/blogs";
 import loginService from "./services/login";
@@ -90,33 +91,35 @@ const App = () => {
     );
 
     const blogForm = () => (
-        <form onSubmit={addBlog}>
-            <div>
-                title:
-                <input
-                    type="text"
-                    value={newTitle}
-                    onChange={({ target }) => setNewTitle(target.value)}
-                />
-            </div>
-            <div>
-                author:
-                <input
-                    type="text"
-                    value={newAuthor}
-                    onChange={({ target }) => setNewAuthor(target.value)}
-                />
-            </div>
-            <div>
-                url:
-                <input
-                    type="text"
-                    value={newUrl}
-                    onChange={({ target }) => setNewUrl(target.value)}
-                />
-            </div>
-            <button type="submit">Create</button>
-        </form>
+        <Togglable buttonLabel="New Blog">
+            <form onSubmit={addBlog}>
+                <div>
+                    title:
+                    <input
+                        type="text"
+                        value={newTitle}
+                        onChange={({ target }) => setNewTitle(target.value)}
+                    />
+                </div>
+                <div>
+                    author:
+                    <input
+                        type="text"
+                        value={newAuthor}
+                        onChange={({ target }) => setNewAuthor(target.value)}
+                    />
+                </div>
+                <div>
+                    url:
+                    <input
+                        type="text"
+                        value={newUrl}
+                        onChange={({ target }) => setNewUrl(target.value)}
+                    />
+                </div>
+                <button type="submit">Create</button>
+            </form>
+        </Togglable>
     );
 
     const addBlog = async (event) => {
