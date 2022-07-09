@@ -231,5 +231,99 @@ export default NoteForm;
 - Can do the same for the login form.
 
 
+## References To Components With ref
+- One aspect can be improved.
+- After new note is created, it makes sense to hide the new note form.
+    - Form stays visible.
+- Problem because visibility is controlled with `visible` variable inside of `Togglable` component.
+    - Can we access this outside of the component?
+- Many ways to implement closing the form from the parent component.
+    - Use `ref` mechanism of React.
+    - Offers reference to the component.
+- Make the following changes to `App`:
+```js
+import { useState, useEffect, useRef } from "react";
+
+const App = () => {
+    // ...
+    const noteFormRef = useRef();
+
+    const noteForm = () => (
+        <Togglable buttonLabel="New Note" ref={noteFormRef}>
+            <NoteForm createNote={addNote} />
+        </Togglable>
+    );
+
+    // ...
+};
+```
+- `useRef` hook is used to create a `noteFormRef` ref.
+    - Assigned to `Togglable` component.
+        - Contains the note creation form.
+- `noteFormRef` acts as a reference to the component.
+    - Hook ensures the same reference (ref) is kept throughout re-renders of the component.
+- Then make the changes to the `Togglable` component.
+```js
+import { useState, forwardRef, useImperativeHandle } from "react";
+
+const Togglable = forwardRef((props, ref) => {
+    const [visible, setVisible] = useState(false);
+
+    const hideWhenVisible = { display: visible ? "none" : "" };
+    const showWhenVisible = { display: visible ? "" : "none" };
+
+    const toggleVisibility = () => {
+        setVisible(!visible);
+    };
+
+    useImperativeHandle(refs, () => {
+        return {
+            toggleVisibility
+        };
+    });
+
+    return (
+        <div>
+            <div style={hideWhenVisible}>
+                <button onClick={toggleVisibility}>{props.buttonLabel}</button>
+            </div>
+            <div style={showWhenVisible}>
+                {props.children}
+                <button onClick={toggleVisibility}>Cancel</button>
+            </div>
+        </div>
+    );
+});
+
+export default Togglable;
+```
+- Function that creates the component is wrapped in a `forwardRef` function call.
+    - Component can access the ref assigned to it.
+- Component uses `useImperativeHandle` hook to make its `toggleVisibility` function available outside of the component.
+- Can now hide form by calling `noteFormRef.current.toggleVisibility()` after new note is created:
+```js
+const App = () => {
+    // ...
+    const addNote = (noteObject) => {
+        noteFormRef.current.toggleVisibility();
+        noteService
+            .create(noteObject)
+            .then(returnedNote => {
+                setNotes(notes.concat(returnedNote));
+            });
+    };
+    // ...
+}
+```
+- To recap:
+    - The `useImperativeHandle` function is a React hook.
+        - Used for defining functions in component which can be invoked from outside the component.
+    - Works for changing state of component.
+    - Looks unpleasant.
+    - Could have done the same thing with Old React and make it look cleaner with class-based components.
+        - This is the only case where using React hooks leads to code that is not cleaner than class components.
+    - There are other use cases for refs other than accessing React components.
+
+
 
 
