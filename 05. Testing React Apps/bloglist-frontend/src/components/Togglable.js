@@ -10,12 +10,6 @@ const Togglable = (props) => {
         setVisible(!visible);
     };
 
-    useImperativeHandle(refs, () => {
-        return {
-            toggleVisibility
-        }
-    });
-
     return (
         <div>
             <div style={hideWhenVisible}>
