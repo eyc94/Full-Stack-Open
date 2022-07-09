@@ -119,6 +119,20 @@ const App = () => {
         );
     };
 
+    const removeHandler = async (blog) => {
+        const message = `Remove Blog: ${blog.title} by ${blog.author} ?`;
+        if (window.confirm(message)) {
+            await blogService.remove(blog.id);
+            setMessage(`Blog: ${blog.title} was removed!`);
+            setMessageStatus("success");
+            setBlogs(blogs.filter(b => b.id !== blog.id));
+            setTimeout(() => {
+                setMessage("");
+                setMessageStatus("");
+            }, 5000);
+        }
+    };
+
     const blogForm = () => (
         <Togglable buttonLabel="New Blog">
             <BlogForm createBlog={addBlog} />
@@ -135,7 +149,7 @@ const App = () => {
                     <p>{user.name} logged in <button onClick={handleLogout}>Logout</button></p>
                     {blogForm()}
                     {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-                        <Blog key={blog.id} blog={blog} likeHandler={() => likeHandler(blog)} />
+                        <Blog key={blog.id} blog={blog} user={user} removeHandler={() => removeHandler(blog)} likeHandler={() => likeHandler(blog)} />
                     )}
                 </div>
             }
