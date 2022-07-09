@@ -1,4 +1,8 @@
+import { useState } from "react";
+
 const Blog = ({ blog }) => {
+    const [showDetails, setShowDetails] = useState(false);
+
     const blogStyle = {
         paddingTop: 10,
         paddingLeft: 2,
@@ -7,10 +11,22 @@ const Blog = ({ blog }) => {
         marginBottom: 5
     };
 
+    const viewHandler = () => {
+        setShowDetails(!showDetails);
+    };
+
     return (
         <div style={blogStyle}>
             <div>
-                {blog.title} [{blog.author}] <button>View</button>
+                {blog.title} {!showDetails ? "[" + blog.author + "]" : ""} <button onClick={viewHandler}>{showDetails ? "Hide" : "View"}</button>
+                {showDetails ?
+                    <>
+                        <div>URL: {blog.url}</div>
+                        <div>Likes: {blog.likes} <button>Like</button></div>
+                        <div>Author: {blog.author}</div>
+                    </>
+                    : <div></div>
+                }
             </div>
         </div>
     );
