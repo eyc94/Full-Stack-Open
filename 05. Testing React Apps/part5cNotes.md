@@ -127,3 +127,78 @@ test("Renders content", () => {
     - Looks for elements based on id-attributes.
 
 
+## Debugging Tests
+- We can run into different problems when running tests.
+- The object `screen` has a method `debug` that can be used to print the HTML of a component to terminal.
+- Change the test:
+```js
+import React from "react";
+import "@testing-library/jest-dom/extend-expect";
+import { render, screen } from "@testing-library/react";
+import Note from "./Note";
+
+test("Renders content", () => {
+    const note = {
+        content: "Component testing is done with react-testing-library",
+        important: true
+    };
+
+    render(<Note note={note} />);
+
+    screen.debug();
+
+    // ...
+});
+```
+- The HTML gets printed to the console.
+```
+console.log
+    <body>
+        <div>
+            <li
+                class="note"
+            >
+                Component testing is done with react-testing-library
+                <button>
+                    Make not important
+                </button>
+            </li>
+        </div>
+    </body>
+```
+- Can also use the same method to print a wanted element to console:
+```js
+import React from "react";
+import "@testing-library/jest-dom/extend-expect";
+import { render, screen } from "@testing-library/react";
+import Note from "./Note";
+
+test("Renders content", () => {
+    const note = {
+        content: "Component testing is done with react-testing-library",
+        important: true
+    };
+
+    render(<Note note={note} />);
+
+    const element = screen.getByText("Component testing is done with react-testing-library");
+
+    screen.debug(element);
+
+    expect(element).toBeDefined();
+});
+```
+- The HTML of the wanted element gets printed.
+```
+<li
+    class="note"
+>
+    Component testing is done with react-testing-library
+    <button>
+        Make not important
+    </button>
+</li>
+```
+
+
+
