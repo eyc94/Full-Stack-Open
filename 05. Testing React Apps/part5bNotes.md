@@ -412,6 +412,7 @@ $ npm install --save-dev eslint-plugin-jest
 ```
 - Create `.eslintrc.js` file with the following:
 ```js
+/* eslint-env node */
 module.exports = {
     "env": {
         "browser": true,
@@ -466,7 +467,7 @@ module.exports = {
         "version": "detect"
         }
     }
-}
+};
 ```
 - If using VSCode with ESlint, might need to add additional workspace setting.
     - If you see **Failed to load plugin react: Cannot find module 'eslint-plugin-react'** additional config is needed.
