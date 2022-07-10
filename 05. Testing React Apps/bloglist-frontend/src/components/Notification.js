@@ -19,7 +19,7 @@ const Notification = ({ message, status }) => {
         borderRadius: 5,
         padding: 10,
         marginBottom: 10
-    }
+    };
 
     if (message === null) {
         return null;
