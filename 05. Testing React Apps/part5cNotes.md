@@ -201,4 +201,53 @@ test("Renders content", () => {
 ```
 
 
+## Clicking Buttons In Tests
+- The `Note` component also makes sure that when the button associated with the note is pressed, the `toggleImportance` event handler function gets called.
+- Install library `user-event` that makes simulating user input easier:
+```
+$ npm install --save-dev @testing-library/user-event
+```
+- At the moment of writing (Jan 28, 2022), there is a mismatch between the version of a dependency `jest-watch-typeahead` that `create-react-app` and `user-event` are using.
+- Problem fixed by installing:
+```
+$ npm install -D --exact jest-watch-typeahead@0.6.5
+```
+- Testing functionality is like this:
+```js
+import React from "react";
+import "@testing-library/jest-dom/extend-expect";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import Note from "./Note";
+
+// ...
+
+test("Clicking the button calls event handler once", async () => {
+    const note = {
+        content: "Component testing is done with react-testing-library",
+        important: true
+    };
+
+    const mockHandler = jest.fn();
+
+    render(<Note note={note} toggleImportance={mockHandler} />);
+
+    const user = userEvent.setup();
+    const button = screen.getByText("Make not important");
+    await user.click(button);
+
+    expect(mockHandler.mock.calls).toHaveLength(1);
+});
+```
+- The event handler is a `mock` function defined with Jest.
+- A `session` is started to interact with the rendered component.
+- The test finds button based on text from the rendered component and clicks the element.
+- Clicking happens with `click` method of `userEvent` library.
+- Expectation of test is that the `mock function` is called exactly once.
+- `Mock objects and functions` are commonly used stub components in testing used for replacing dependencies of the components being tested.
+    - Mocks make it possible to return hardcoded responses.
+    - To verify the number of times the mock functions are called.
+    - And with what parameters.
+
+
 
