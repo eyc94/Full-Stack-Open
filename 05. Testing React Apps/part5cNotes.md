@@ -592,5 +592,6 @@ test("Does not render this", () => {
 ```
 CI=true npm test -- --coverage
 ```
-
+- HTML report is generated to `coverage/lcov-report` directory.
+    - Report tells us lines of untested code in each component.
 
