@@ -29,3 +29,31 @@ const Note = ({ note, toggleImportance }) => {
     - Can be used to access the component in our tests.
 
 
+## Rendering The Component For Tests
+- Write our test in `src/components/Note.test.js`.
+    - Same directory as the component itself.
+- First test verifies component renders the contents of the note:
+```js
+import React from "react";
+import "@testing-library/jest-dom/extend-expect";
+import { render, screen } from "@testing-library/react";
+import Note from "./Note";
+
+test("Renders content", () => {
+    const note = {
+        content: "Component testing is done with react-testing-library",
+        important: true
+    };
+
+    render(<Note note={note} />);
+
+    const element = screen.getByText("Component testing is done with react-testing-library");
+    expect(element).toBeDefined();
+});
+```
+- After initial configuration, the test renders the component with the `render` function provided by the react-testing-library.
+- Normally React components are rendered to the DOM.
+- The render method we used renders the components in a format suitable for tests without rendering to DOM.
+- Can use the `screen` object to access rendered component.
+- Use screen's method `getByText` to search for an element that has the note content and ensure that it exists.
+
