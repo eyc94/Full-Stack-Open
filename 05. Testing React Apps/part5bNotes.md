@@ -399,3 +399,114 @@ LoginForm.propTypes = {
 ```
 
 
+## ESlint
+- Use `ESlint` for the frontend now.
+- `create-react-app` has ESlint by default.
+    - Just define desired configuration in `.eslintrc.js`.
+    - Do not run `eslint --init` command.
+    - This installs latest version of ESlint that is not compatible with config file created by CRA.
+- Start testing frontend and in order to avoid undesired and irrevelvant linter errors.
+    - Install `eslint-plugin-jest` package:
+```
+$ npm install --save-dev eslint-plugin-jest
+```
+- Create `.eslintrc.js` file with the following:
+```js
+module.exports = {
+    "env": {
+        "browser": true,
+        "es6": true,
+        "jest/globals": true 
+    },
+    "extends": [ 
+        "eslint:recommended",
+        "plugin:react/recommended"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react", "jest"
+    ],
+    "rules": {
+        "indent": [
+            "error",
+            4
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "double"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "eqeqeq": "error",
+        "no-trailing-spaces": "error",
+        "object-curly-spacing": [
+            "error", "always"
+        ],
+        "arrow-spacing": [
+            "error", { "before": true, "after": true }
+        ],
+        "no-console": 0,
+        "react/prop-types": 0,
+        "react/react-in-jsx-scope": "off"
+    },
+    "settings": {
+        "react": {
+        "version": "detect"
+        }
+    }
+}
+```
+- If using VSCode with ESlint, might need to add additional workspace setting.
+    - If you see **Failed to load plugin react: Cannot find module 'eslint-plugin-react'** additional config is needed.
+    - Add line `"eslint.workingDirectories": [{ "mode": "auto" }]` to `settings.json` in workspace seems to work.
+- Create a `.eslintignore` file and add to the root. Add the following:
+```
+node_modules
+build
+.eslintrc.js
+```
+- Add a npm script to run the lint:
+```json
+{
+    // ...
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject",
+        "server": "json-server -p3001 db.json",
+        "eslint": "eslint ."
+    },
+    // ...
+}
+```
+- The `Togglable` component gives a warning: **Component definition is missing display name**.
+- The react-devtools reveals the component does not have a name.
+- Easy to fix:
+```js
+import { useState, useImperativeHandle } from "react";
+import PropTypes from "prop-types";
+
+const Togglable = React.forwardRef((props, ref) => {
+    // ...
+});
+
+Togglable.displayName = "Togglable";
+
+export default Togglable;
+```
+- CRA has default eslint config and we overrode it.
+- Recommend to extend the base config.
+
