@@ -341,3 +341,76 @@ describe("<Togglable />", () => {
 ```
 
 
+## Testing The Forms
+- Can simulate text input with `userEvent`.
+- Make a test for `NoteForm` component.
+- The code of the component is below:
+```js
+import { useState } from "react";
+
+const NoteForm = ({ createNote }) => {
+    const [newNote, setNewNote] = useState("");
+
+    const handleChange = (event) => {
+        setNewNote(event.target.value);
+    };
+
+    const addNote = (event) => {
+        event.preventDefault();
+        createNote({
+            content: newNote,
+            important: Math.random() > 0.5
+        });
+
+        setNewNote("");
+    };
+
+    return (
+        <div className="formDiv">
+            <h2>Create A New Note</h2>
+
+            <form onSubmit={addNote}>
+                <input
+                    value={newNote}
+                    onChange={handleChange}
+                />
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    );
+};
+
+export default NoteForm;
+```
+- Our form works by calling `createNote` function received as props with the details of the new note.
+- The test is below:
+```js
+import React from "react";
+import "@testing-library/jest-dom/extend-expect";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import NoteForm from "./NoteForm";
+
+test("<NoteForm /> updates parent state and calls onSubmit", async () => {
+    const createNote = jest.fn();
+    const user = userEvent.setup();
+
+    render(<NoteForm createNote={createNote} />);
+
+    const input = screen.getByRole("textbox");
+    const sendButton = screen.getByText("Save");
+
+    await user.type(input, "Testing a form...");
+    await user.click(sendButton);
+
+    expect(createNote.mock.calls).toHaveLength(1);
+    expect(createNote.mock.calls[0][0].content).toBe("Testing a form...");
+});
+```
+- Tests gets access to input field by function `getByRole`.
+- Method `type` of `userEvent` is used to write text to input field.
+- First expect tests that submitting form calls `createNote` method.
+- Second expect tests that event handler is called with the right parameters.
+    - A note with correct content is created when form is filled.
+
+
