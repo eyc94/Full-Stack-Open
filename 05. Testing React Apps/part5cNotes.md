@@ -75,3 +75,10 @@ $ CI=true npm test
     - `https://facebook.github.io/watchman/`
 
 
+## Test File Location
+- In React there are at least two different conventions for test file's location.
+- We created test file in the same directory as the component being tested.
+- Other convention is to store the test files in their own separate directory.
+- The first convention is configured by default in apps created by `create-react-app`.
+
+
