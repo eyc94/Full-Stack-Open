@@ -250,4 +250,94 @@ test("Clicking the button calls event handler once", async () => {
     - And with what parameters.
 
 
+## Tests For The Togglable Component
+- Write a few tests for `Togglable` component.
+- Add the `togglableContent` CSS classname to the div that returns child components.
+```js
+const Togglable = forwardRef((props, ref) => {
+    // ...
+
+    return (
+        <div>
+            <div style={hideWhenVisible}>
+                <button onClick={toggleVisibility}>
+                    {props.buttonLabel}
+                </button>
+            </div>
+            <div style={showWhenVisible} className="togglableContent">
+                {props.children}
+                <button onClick={toggleVisibility}>Cancel</button>
+            </div>
+        </div>
+    )
+})
+```
+- The tests are shown below:
+```js
+import React from "react";
+import "@testing-library/jest-dom/extend-expect";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import Note from "./Note";
+
+describe("<Togglable />", () => {
+    let container;
+
+    beforeEach(() => {
+        container = render(
+            <Togglable buttonLabel="Show...">
+                <div className="testDiv">
+                    Togglable content
+                </div>
+            </Togglable>
+        ).container;
+    });
+
+    test("renders its children", () => {
+        screen.findAllByText("Togglable content");
+    });
+
+    test("At start the children are not displayed", () => {
+        const div = container.querySelector(".togglableContent");
+        expect(div).toHaveStyle("display: none");
+    });
+
+    test("After clicking the button, children are displayed", async () => {
+        const user = userEvent.setup();
+        const button = screen.getByText("Show...");
+        await user.click(button);
+
+        const div = container.querySelector(".togglableContent");
+        expect(div).not.toHaveStyle("display: none");
+    });
+});
+```
+- The `beforeEach` function gets called before each test.
+    - Renders the `Togglable` component.
+    - Saves the field `container` of the return value.
+- First test verifies that the `Togglable` component renders its child component.
+- The tests use the `toHaveStyle` method to verify the child component of `Togglable` is not visible initially.
+    - Done by checking the style of `div` element contains `{ display: "none" }`.
+- Another test verifies the component is visible after button press.
+    - Style for hiding component is no longer assigned to component.
+- Add a test used to verify that the visible content can be hidden by clicking the second button of component.
+```js
+describe("<Togglable />", () => {
+    
+    // ...
+
+    test("Toggled content can be closed", async () => {
+        const user = userEvent.setup();
+        const button = screen.getByText("Show...");
+        await user.click(button);
+
+        const closeButton = screen.getByText("Cancel");
+        await user.click(closeButton);
+
+        const div = container.querySelector(".togglableContent");
+        expect(div).toHaveStyle("display: none");
+    });
+});
+```
+
 
