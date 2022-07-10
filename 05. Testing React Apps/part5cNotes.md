@@ -57,3 +57,21 @@ test("Renders content", () => {
 - Can use the `screen` object to access rendered component.
 - Use screen's method `getByText` to search for an element that has the note content and ensure that it exists.
 
+
+## Running Tests
+- CRA configures tests to be run in watch mode by default.
+- This means `npm test` command will not exit once the tests have finished.
+- It will wait for changes to be made to the code.
+- Once new changes are saved, the tests are auto executed and the cycle repeats.
+- If you want to run tests normally, do it like this:
+```
+$ CI=true npm test
+```
+- Console may issue warning if you do not have Watchman installed.
+- Watchman watches for changes made to files.
+- Program speeds up execution of tests.
+- Starting from macOS Sierra, running tests in watch mode issues some warnings to console.
+    - Can be removed by installing `Watchman`.
+    - `https://facebook.github.io/watchman/`
+
+
