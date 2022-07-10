@@ -23,7 +23,7 @@ const Blog = ({ blog, user, likeHandler, removeHandler }) => {
     return (
         <div style={blogStyle}>
             <div style={hideWhenShown}>
-                <div>
+                <div className="contents">
                     {blog.title} {!showDetails ? "[" + blog.author + "]" : ""} <button onClick={viewHandler}>View</button>
                 </div>
             </div>
