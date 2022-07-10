@@ -17,20 +17,24 @@ const Blog = ({ blog, user, likeHandler, removeHandler }) => {
     };
 
     const showIfAuthor = { display: blog.user.username === user.username ? "" : "none" };
+    const showWhenShown = { display: showDetails ? "" : "none" };
+    const hideWhenShown = { display: showDetails ? "none" : "" };
 
     return (
         <div style={blogStyle}>
-            <div>
-                {blog.title} {!showDetails ? "[" + blog.author + "]" : ""} <button onClick={viewHandler}>{showDetails ? "Hide" : "View"}</button>
-                {showDetails ?
-                    <>
-                        <div>URL: {blog.url}</div>
-                        <div>Likes: {blog.likes} <button onClick={likeHandler}>Like</button></div>
-                        <div>Author: {blog.author}</div>
-                        <div><button style={showIfAuthor} onClick={removeHandler}>Remove</button></div>
-                    </>
-                    : <div></div>
-                }
+            <div style={hideWhenShown}>
+                <div>
+                    {blog.title} {!showDetails ? "[" + blog.author + "]" : ""} <button onClick={viewHandler}>View</button>
+                </div>
+            </div>
+            <div style={showWhenShown}>
+                <div>
+                    <div>Title: {blog.title} <button onClick={viewHandler}>Hide</button></div>
+                    <div>URL: {blog.url}</div>
+                    <div>Likes: {blog.likes} <button onClick={likeHandler}>Like</button></div>
+                    <div>Author: {blog.author}</div>
+                    <div><button style={showIfAuthor} onClick={removeHandler}>Remove</button></div>
+                </div>
             </div>
         </div>
     );
