@@ -586,3 +586,11 @@ test("Does not render this", () => {
 });
 ```
 
+
+## Test Coverage
+- Find out `coverage` of our tests by running with command:
+```
+CI=true npm test -- --coverage
+```
+
+
