@@ -28,4 +28,6 @@ test("Renders blog title and author but not url or likes", () => {
     const { container } = render(<Blog blog={blog} user={user} likeHandler={mockLikeHandler} removeHandler={mockRemoveHandler} />);
     const div = container.querySelector(".contents");
     expect(div).toHaveTextContent(`${blog.title} [${blog.author}]`);
+    expect(div).not.toHaveTextContent(`${blog.url}`);
+    expect(div).not.toHaveTextContent(`${blog.likes}`);
 });
