@@ -414,3 +414,175 @@ test("<NoteForm /> updates parent state and calls onSubmit", async () => {
     - A note with correct content is created when form is filled.
 
 
+## About Finding The Elements
+- Assume the form has two input fields.
+```js
+const NoteForm = ({ createNote }) => {
+    // ...
+
+    return (
+        <div className="formDiv">
+            <h2>Create A New Note</h2>
+
+            <form onSubmit={addNote}>
+                <input
+                    value={newNote}
+                    onChange={handleChange}
+                />
+                <input
+                    value={...}
+                    onChange={...}
+                />
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    );
+};
+```
+- Approach our test uses to find input field results in an error:
+```js
+const input = screen.getByRole("textbox");
+```
+- Suggests to use `getAllByRole`.
+```js
+const inputs = screen.getAllByRole("textbox");
+await user.type(inputs[0], "Testing a form...");
+```
+- The method returns an array of input fields.
+    - However, this relies on the order of input fields.
+- Often, input fields have a `placeholder` text that hints what kind of input is expected.
+- Add placeholder to form.
+```js
+const NoteForm = ({ createNote }) => {
+    // ...
+
+    return (
+        <div className="formDiv">
+            <h2>Create A New Note</h2>
+
+            <form onSubmit={addNote}>
+                <input
+                    value={newNote}
+                    onChange={handleChange}
+                    placeholder="Write here note content"
+                />
+                <input
+                    value={...}
+                    onChange={...}
+                />
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    );
+};
+```
+- Finding the correct input field is easy with `getByPlaceholderText`.
+```js
+test("<NoteForm /> updates parent state and calls onSubmit", async () => {
+    const createNote = jest.fn();
+
+    render(<NoteForm createNote={createNote} />);
+
+    const input = screen.getByPlaceholderText("Write here note content");
+    const sendButton = screen.getByText("Save");
+
+    await user.type(input, "Testing a form...");
+    await user.click(sendButton);
+
+    expect(createNote.mock.calls).toHaveLength(1);
+    expect(createNote.mock.calls[0][0].content).toBe("Testing a form...");
+});
+```
+- Most flexible way of finding elements in tests is the method `querySelector` of the `container` object.
+    - Returned by `render`.
+    - Any CSS selector can be used with this method for searching elements in tests.
+- Consider we would define a unique `id` to the input field:
+```js
+const NoteForm = ({ createNote }) => {
+    // ...
+
+    return (
+        <div className="formDiv">
+            <h2>Create A New Note</h2>
+
+            <form onSubmit={addNote}>
+                <input
+                    value={newNote}
+                    onChange={handleChange}
+                    id="note-input"
+                />
+                <input
+                    value={...}
+                    onChange={...}
+                />
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    );
+};
+```
+- The input element can be found in the test like:
+```js
+const { container } = render(<NoteForm createNote={createNote} />);
+const input = container.querySelector("#note-input");
+```
+- Just stick to the approach of using `getByPlaceholderText` in the test.
+- Look at a couple details before moving on.
+- Assume a component would render text to an HTML element like so:
+```js
+const Note = ({ note, toggleImportance }) => {
+    const label = note.important
+        ? "Make not important" : "Make important";
+
+    return (
+        <li className="note">
+            Your awesome note: {note.content}
+            <button onClick={toggleImportance}>{label}</button>
+        </li>
+    );
+};
+
+export default Note;
+```
+- The `getByText` command does not find the element.
+```js
+test("Renders content", () => {
+    const note = {
+        content: "Does not work anymore :(",
+        important: true
+    };
+
+    render(<Note note={note} />);
+    const element = screen.getByText("Does not work anymore :(");
+    expect(element).toBeDefined();
+});
+```
+- Command `getByText` looks for an element with the **same text** it has as a parameter.
+- If we want to look for an element that *contains* the text, add the option:
+```js
+const element.getByText(
+    "Does not work anymore :(", { exact: false }
+);
+```
+- Or, use command `findByText`:
+```js
+const element = await screen.findByText("Does not work anymore :(");
+```
+- Notice that `findByText` returns a promise.
+- Situations where `queryByText` is useful.
+    - Returns an element but does not cause an exception if element is not found.
+    - Could use command to ensure that something is not rendered to the component:
+```js
+test("Does not render this", () => {
+    const note = {
+        content: "This is a reminder",
+        important: true
+    };
+
+    render(<Note note={note} />);
+
+    const element = screen.queryByText("Do not want this thing to be rendered");
+    expect(element).toBeNull();
+});
+```
+
