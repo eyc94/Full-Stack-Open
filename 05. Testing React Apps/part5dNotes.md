@@ -318,7 +318,132 @@ describe("Note App", function () {
     - Changes to browser's state is reversed after each test.
 
 
+## Controlling The State Of The Database
+- If tests need to modify the server's database, it becomes more complicated.
+- Ideally, server's database should be the same each time we run the tests.
+    - Reliable and easily repeatable.
+- Like unit and integration tests, with E2E tests, it's best to empty db and format it before the tests are run.
+    - However, E2E tests have no access to the database.
+- Solution is to create API endpoints to the backend for the test.
+    - Can empty db using those endpoints.
+    - Create new `router` for the tests.
+```js
+const testingRouter = require("express").Router();
+const Note = require("../models/note");
+const User = require("../models/user");
 
+testingRouter.post("/reset", async (request, response) => {
+    await Note.deleteMany({});
+    await User.deleteMany({});
+    response.status(204).end();
+});
+
+module.exports = testingRouter;
+```
+- Add it to the backend only if application is run on test mode:
+```js
+// ...
+
+app.use("/api/login", loginRouter);
+app.use("/api/users", usersRouter);
+app.use("/api/notes", notesRouter);
+
+if (process.env.NODE_ENV === "test") {
+    const testingRouter = require("./controllers/testing");
+    app.use("/api/testing", testingRouter);
+}
+
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
+
+module.exports = app;
+```
+- HTTP POST requests to `/api/testing/reset` endpoint empties the database.
+- Make sure backend is running in test mode:
+```
+$ npm run start:test
+```
+- Change `beforeEach` block so it empties the server's db before tests are run.
+- Currently not possible to add users through frontend UI.
+    - So, add new user to the backend from the beforeEach block.
+```js
+describe("Note App", function () {
+    beforeEeach(function () {
+        cy.request("POST", "http://localhost:3001/api/test/reset");
+        const user = {
+            name: "Sample Name",
+            username: "username",
+            password: "password"
+        };
+        cy.request("POST", "http://localhost:3001/api/users/", user);
+        cy.visit("http://localhost:3000");
+    });
+
+    it("Front page can be opened", function () {
+        // ...
+    });
+
+    it("User can login", function () {
+        // ...
+    });
+    
+    describe("When logged in", function () {
+        // ...
+    });
+});
+```
+- During formatting, the test does HTTP requests to backend with `cy.request`.
+- Testing now starts with backend in the same state every time.
+- Backend will contain one user and no notes.
+- Add check to test for checking we can change importance of notes.
+- Change frontend so that a new note is unimportant by default:
+```js
+const NoteForm = ({ createNote }) => {
+    // ...
+
+    const addNote = (event) => {
+        event.preventDefault();
+        createNote({
+            content: newNote,
+            important: false
+        });
+
+        setNewNote("");
+    };
+
+    // ...
+};
+```
+- Multiple ways to test.
+- Below we search for note and click its `make important` button.
+- We then check that the note now contains a `make not important` button.
+```js
+describe("Note App", function () {
+    // ...
+
+    describe("When logged in", function () {
+        // ...
+
+        describe("And a note exists", function () {
+            beforeEach(function () {
+                cy.contains("New Note").click();
+                cy.get("input").type("another note cypress");
+                cy.contains("Save").click();
+            });
+
+            it("It can be made important", function () {
+                cy.contains("another note cypress");
+                  .contains("make important")
+                  .click();
+                
+                cy.contains("another note cypress");
+                  .contains("make not important");
+            });
+        });
+    });
+});
+```
+- We click the button and the text is now "make not important".
 
 
 
