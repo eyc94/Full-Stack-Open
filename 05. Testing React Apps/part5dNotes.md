@@ -252,3 +252,73 @@ module.exports = {
 ```
 
 
+## Testing New Note Form
+- Next add test which tests the "new note" functionality.
+```js
+describe("Note App", function () {
+    // ...
+    describe("When logged in", function () {
+        beforeEach(function () {
+            cy.contains("Login").click();
+            cy.get("input:first").type("username");
+            cy.get("input:last").type("password");
+            cy.get("#login-button").click();
+        });
+
+        it("A new note can be created", function () {
+            cy.contains("New Note").click();
+            cy.get("input").type("A note created by cypress");
+            cy.contains("Save").click();
+            cy.contains("A note created by cypress");
+        });
+    });
+});
+```
+- Only logged in users can create new notes, so we logged into the app in the `beforeEach` block.
+- Test trusts that when creating a new note, the page contains only one input, so it searches for it like:
+```js
+cy.get("input");
+```
+- If page contained more inputs, the test would break.
+- Better to give input an id and search for that.
+- Structure of tests:
+```js
+describe("Note App", function () {
+    // ...
+
+    it("User can log in", function () {
+        cy.contains("Login").click();
+        cy.get("#username").type("username");
+        cy.get("#password").type("password");
+        cy.get("#login-button").click();
+
+        cy.contains("EC logged in");
+    });
+
+    describe("When logged in", function () {
+        beforeEach(function () {
+            cy.contains("Login").click();
+            cy.get("input:first").type("username");
+            cy.get("input:last").type("password");
+            cy.get("#login-button").click();
+        });
+
+        it("A new note can be created", function () {
+            // ...
+        });
+    });
+});
+```
+- Cypress runs tests in the order they are in the code.
+- First runs `User can log in`.
+- Then it runs `A new note can be created`.
+    - Notice we login again.
+    - Why? Wouldn't it be okay to just log in once?
+    - No, each test starts from zero as far as the browser is concerned.
+    - Changes to browser's state is reversed after each test.
+
+
+
+
+
+
