@@ -65,3 +65,38 @@ test("Renders blog url and likes when view button is clicked", async () => {
     expect(div).toHaveTextContent(`${blog.url}`);
     expect(div).toHaveTextContent(`${blog.likes}`);
 });
+
+test("Calls the likeHandler twice when user clicks 'like' twice.", async () => {
+    const blog = {
+        title: "Sample Blog Title",
+        author: "Sample Author",
+        url: "https://www.google.com",
+        likes: 10,
+        user: {
+            username: "echin",
+            name: "Eric",
+            id: "62c7e7ee9ff8b1bf39fdcf72"
+        }
+    };
+
+    const sampleUser = {
+        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVjaGluIiwiaWQiOiI2MmM3ZTdlZTlmZjhiMWJmMzlmZGNmNzIiLCJpYXQiOjE2NTc0NTYwNjB9.CLCvJzk90RE6yR4Mq9N1BKLcnyZdx5SqjHyNN8Xkk_0",
+        username: "echin",
+        password: "password"
+    };
+
+    const mockLikeHandler = jest.fn();
+    const mockRemoveHandler = jest.fn();
+
+    render(<Blog blog={blog} user={sampleUser} likeHandler={mockLikeHandler} removeHandler={mockRemoveHandler} />);
+
+    const user = userEvent.setup();
+    const button = screen.getByText("View");
+    await user.click(button);
+
+    const likeButton = screen.getByText("Like");
+    await user.click(likeButton);
+    await user.click(likeButton);
+
+    expect(mockLikeHandler.mock.calls).toHaveLength(2);
+});
