@@ -28,7 +28,7 @@ const Blog = ({ blog, user, likeHandler, removeHandler }) => {
                 </div>
             </div>
             <div style={showWhenShown}>
-                <div>
+                <div className="details">
                     <div>Title: {blog.title} <button onClick={viewHandler}>Hide</button></div>
                     <div>URL: {blog.url}</div>
                     <div>Likes: {blog.likes} <button onClick={likeHandler}>Like</button></div>
