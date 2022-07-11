@@ -595,3 +595,24 @@ CI=true npm test -- --coverage
 - HTML report is generated to `coverage/lcov-report` directory.
     - Report tells us lines of untested code in each component.
 
+
+## Frontend Integration Tests
+- In previous part, we wrote integration tests for the backend.
+    - Tested its logic and connected the db through the API provided by backend.
+- We made decision not to write unit tests.
+- Code for backend is too simple.
+- Seems bugs in our app code occur in more complicated scenarios than unit tests are well suited for.
+- Our tests for the frontend have been unit tests.
+    - Validated the correct functioning of individual components.
+- Unit testing is useful.
+    - However, even a comprehensive suite of unit tests is not enough to validate that the application works as a whole.
+- Can also make integration tests for the frontend.
+    - Tests the collaboration of multiple components.
+    - More difficult than unit testing.
+    - We would have to mock data from the server.
+    - We chose to concentrate on making end to end tests in order to test the whole app.
+    - We work on this in the last part of this chapter.
+
+
+
+
