@@ -213,5 +213,42 @@ describe("Note App", function () {
 - Last row ensures login successful.
 
 
+## Some Things To Note
+- Test first clicks button opening the login form.
+- When form is filled, the form is submitted by clicking the submit button.
+- Both buttons have the text `login`, but they are two separate buttons.
+    - Only one is visible because of the `display: none` CSS style.
+- If we search for button by its text, `cy.contains` will return the first of them.
+    - The one opening the login form.
+    - Happens even if button is not visible.
+    - To avoid name conflicts, we gave the submit button the id `login-button`.
+- Notice variable `cy` our tests use gives an ESlint error.
+    - Rid the error by installing `eslint-plugin-cypress` as a development dependency.
+```
+$ npm install --save-dev eslint-plugin-cypress
+```
+- Change the config in `.eslintrc.js` like:
+```js
+module.exports = {
+    "env": {
+        "browser": true,
+        "es6": true,
+        "jest/globals": true,
+        "cypress/globals": true
+    },
+    "extends": [
+        // ...
+    ],
+    "parserOptions": {
+        // ...
+    },
+    "plugins": [
+        "react", "jest", "cypress"
+    ],
+    "rules": {
+        // ...
+    }
+}
+```
 
 
