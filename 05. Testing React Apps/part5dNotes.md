@@ -799,4 +799,51 @@ it("One of those can be made important", function () {
 - Following lines can use the named element with `cy.get("@theButton")`.
 
 
+## Running and Debugging The Tests
+- Some notes on how Cypress works and debugging your tests.
+- There is the impression that the tests are normal JS code.
+- We can try this:
+```js
+const button = cy.contains("Login");
+button.click();
+debugger();
+cy.contains("Logout").click();
+```
+- Won't work.
+- When Cypress runs a test, it adds each `cy` command to an execution queue.
+- Cypress executes each command in queue one by one.
+- Cypress commands always return `undefined`.
+    - So, `button.click()` would cause an error.
+- An attempt to start debugger does not stop the code between commands but before any commands have been run.
+- Cypress commands are like `promises`.
+    - Accessing return values means using the `then` method.
+    - The following test prints number of buttons in app and click the first button:
+```js
+it("Then example", function () {
+    cy.get("button").then(buttons => {
+        console.log("Number of buttons", buttons.length);
+        cy.wrap(buttons[0]).click();
+    });
+});
+```
+- Stopping test execution with debugger is possible.
+- Debugger starts only if Cypress test runner is open.
+- We have run Cypress tests with our graphical test runner.
+    - Also possible to run from command line.
+    - Add an npm script:
+```json
+"scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "server": "json-server -p3001 db.json",
+    "cypress:open": "cypress open",
+    "test:e2e": "cypress run"
+},
+```
+- Now we can run tests from command line with: `$ npm run test:e2e`.
+- Videos of test execution will be saved to `cypress/videos/`.
+    - You should add this folder to `.gitignore`.
+
 
