@@ -614,5 +614,14 @@ CI=true npm test -- --coverage
     - We work on this in the last part of this chapter.
 
 
+## Snapshot Testing
+- Jest offers a different alternative to "traditional" testing called `snapshot` testing.
+- Interesting feature of snapshot testing is that developers do not need to define any tests themselves.
+- Simple to just adopt snapshot testing.
+- Principle is to compare HTML code defined by component after it changed to the HTML code that existed before it was changed.
+- If snapshot finds changes in HTML defined by component, it's either a new feature or a "bug".
+- Snapshot tests notify developer if HTML code of the component changes.
+    - Developer tells Jest if change is desired/undesired.
+    - Unexpected changes means a bug.
 
 
