@@ -551,4 +551,172 @@ it("Login fails with wrong password", function () {
     - Passes in Chrome and Electron but not in Firefox.
 
 
+## Bypassing The UI
+- Currently our tests:
+```js
+describe("Note App", function () {
+    it("User can log in", function () {
+        cy.contains("Login").click();
+        cy.get("#username").type("username");
+        cy.get("#password").type("password");
+        cy.get("#login-button").click();
+
+        cy.contains("EC logged in");
+    });
+
+    it.only("Login fails with wrong password", function () {
+        // ...
+    });
+
+    describe("When logged in", function () {
+        beforeEach(function () {
+            cy.contains("Login").click();
+            cy.get("input:first").type("username");
+            cy.get("input:last").type("password");
+            cy.get("#login-button").click();
+        });
+
+        it("A new note can be created", function () {
+            // ...
+        });
+    });
+});
+```
+- First we test logging in.
+- Then, we expect the user to be logged in.
+- User is logged in in the `beforeEach` block.
+- Each test starts from zero!
+    - Tests do not start from the state where the previous tests ended.
+- Cypress documentation says:
+    - Fully test the login flow - but only once!
+    - Instead of logging in a user using the form in the `beforeEach` block, Cypress recommends we bypass the UI and do an HTTP request to the backend to log in.
+    - Logging in with HTTP request is faster than filling out a form.
+- A little complicated.
+- When user logs in, our app saves their details to localStorage.
+    - Cypress can handle this as well.
+```js
+describe("When logged in", function () {
+    beforeEach(function () {
+        cy.request("POST", "http://localhost:3001/api/login", {
+            username: "username", password: "password"
+        }).then(response => {
+            localStorage.setItem("loggedNoteappUser", JSON.stringify(response.body));
+            cy.visit("http://localhost:3000");
+        });
+    });
+
+    it("A new note can be created", function () {
+        // ...
+    });
+
+    // ...
+});
+```
+- Can access response to a `cy.request` with `then` method.
+- The `cy.request`, like all Cypress commands, are `promises`.
+- The callback saves user details to local storage and reloads the page.
+- No difference to a user logging in with the login form.
+- If and when we write tests to our app, we have to use login code multiple times.
+    - Make it a custom command.
+- Custom commands are declared in `cypress/support/commands.js`.
+- Code for logging in:
+```js
+Cypress.Commands.add("login", ({ username, password }) => {
+    cy.request("POST", "http://localhost:3001/api/login", {
+        username: "username", password: "password"
+    }).then(response => {
+        localStorage.setItem("loggedNoteappUser", JSON.stringify(response.body));
+        cy.visit("http://localhost:3000");
+    });
+})
+```
+- Using custom command is easy and our test becomes cleaner:
+```js
+describe("When logged in", function () {
+    beforeEach(function () {
+        cy.login({ username: "username", password: "password" });
+    });
+
+    it("A new note can be created", function () {
+        // ...
+    });
+
+    // ...
+});
+```
+- Sample applies to creating a new note.
+- We have a test which makes a new note using the form.
+- We make a new note in the `beforeEach` block of test testing changing the importance of a note:
+```js
+describe("Note app", function () {
+    // ...
+
+    describe("When logged in", function () {
+        it("A new note can be created", function () {
+            cy.contains("New Note").click();
+            cy.get("input").type("A note created by cypress");
+            cy.contains("Save").click();
+
+            cy.contains("A note created by cypress");
+        });
+
+        describe("And a note exists", function () {
+            beforeEach(function () {
+                cy.contains("New note").click();
+                cy.get("input").type("Another note cypress");
+                cy.contains("Save").click();
+            });
+
+            it("It can be made important", function () {
+                // ...
+            });
+        });
+    });
+});
+```
+- Make a new custom command for making a new note.
+- Command will make a new note with an HTTP POST request.
+```js
+Cypress.Commands.add("createNote", ({ content: important }) => {
+    cy.request({
+        url: "http://localhost:3001/api/notes",
+        method: "POST",
+        body: { content, important },
+        headers: {
+            "Authorization": `bearer ${JSON.parse(localStorage.getItem("loggedNoteappUser")).token}`
+        }
+    });
+
+    cy.visit("http://localhost:3000");
+});
+```
+- Command expects user to be logged in.
+- User details saved to localStorage.
+- Now formatting block becomes:
+```js
+describe("Note app", function () {
+    // ...
+
+    describe("When logged in", function () {
+        it("A new note can be created", function () {
+            // ...
+        });
+
+        describe("And a note exists", function () {
+            beforeEach(function () {
+                cy.createNote({
+                    content: "another note cypress",
+                    important: false
+                });
+            });
+
+            it("It can be made important", function () {
+                // ...
+            });
+        });
+    });
+});
+```
+
+
 
