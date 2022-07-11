@@ -719,4 +719,84 @@ describe("Note app", function () {
 ```
 
 
+## Changing The Importance Of A Note
+- Let's look at the test we did for changing importance of note.
+- Change formatting block so that it creates three notes instead of one.
+```js
+describe("When logged in", function () {
+    describe("And several notes exist", function () {
+        beforeEach(function () {
+            cy.createNote({ content: "first note", important: false });
+            cy.createNote({ content: "second note", important: false });
+            cy.createNote({ content: "third note", important: false });
+        });
+
+        it("One of those can be made important", function () {
+            cy.contains("second note")
+              .contains("make important")
+              .click();
+
+            cy.contains("second note")
+              .contains("make not important");
+        });
+    });
+});
+```
+- How does `cy.contains` actually work?
+- When clicking `cy.contains("second note")` command in Cypress `Test Runner`, we see that the command searches for the element containing the text `second note`.
+- Clicking next line `.contains("make important")`, we see that test uses the "make important" button corresponding to `second note`.
+- When chained, the second `contains` command continues search within the same component found by the first command.
+- If we did not chain:
+```js
+cy.contains("second note");
+cy.contains("make important").click();
+```
+- Behavior is different.
+- Second line of test would click button of the wrong note.
+- When coding tests, check test runner to ensure tests are using the right components!
+- Change `Note` component so that the text of the note is rendered to a `span`.
+```js
+const Note = ({ note, toggleImportance }) => {
+    const label = note.important
+        ? "make not important" : "make important";
+
+    return (
+        <li className="note">
+            <span>{note.content}</span>
+            <button onClick={toggleImportance}>{label}</button>
+        </li>
+    );
+};
+```
+- Test breaks!
+- The `cy.contains("second note")` now returns the component containing text.
+    - The button is not in it.
+- One way to fix this:
+```js
+it("One of those can be made important", function () {
+    cy.contains("second note").parent().find("button").click();
+    cy.contains("second note").parent().find("button")
+      .should("contain", "make not important");
+});
+```
+- In the first line, we use `parent` command to access parent element of element containing `second note` and find the button from within it.
+- We click the button.
+- Check the text on it changes.
+- We use the `find` command to search for the button.
+    - We cannot use `cy.get` because it always searches the whole page and would return all 5 buttons on the page.
+- Unfortunately we have copy-pasted tests.
+- Code for searching button is always the same.
+- In these situations, it is possible to use the `as` command.
+```js
+it("One of those can be made important", function () {
+    cy.contains("second note").parent().find("button").as("theButton");
+    cy.get("@theButton").click();
+    cy.get("@theButton").should("contain", "make not important");
+});
+```
+- First line finds the right button.
+    - Uses `as` to save it as `theButton`.
+- Following lines can use the named element with `cy.get("@theButton")`.
+
+
 
