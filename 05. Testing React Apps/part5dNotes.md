@@ -446,4 +446,109 @@ describe("Note App", function () {
 - We click the button and the text is now "make not important".
 
 
+## Failed Login Test
+- Make test to ensure login attempt fails if the password is wrong.
+- Cypress runs all tests by default.
+    - Time consuming when there becomes a lot of tests.
+- When making new test or when debugging broken test, we can define the test with `it.only` instead of `it`.
+    - Cypress will only run the required test.
+- When the test is working, we can remove `.only`.
+- First version of our test:
+```js
+describe("Note App", function () {
+    // ...
+
+    it.only("Login fails with wrong password", function () {
+        cy.contains("Login").click();
+        cy.get("#username").type("username");
+        cy.get("#password").type("wrong");
+        cy.get("#login-button").click();
+
+        cy.contains("Wrong credentials");
+    });
+
+    // ...
+});
+```
+- The test checks for the error message printed.
+- The application renders the error message to a component with CSS class `error`:
+```js
+const Notification = ({ message }) => {
+    if (message === null) {
+        return null;
+    }
+
+    return (
+        <div className="error">
+            {message}
+        </div>
+    );
+};
+```
+- We can make sure that the error message gets rendered to the correct component:
+```js
+it("Login fails with wrong password", function () {
+    // ...
+
+    cy.get(".error").contains("Wrong credentials");
+});
+```
+- We use `cy.get` to get component with CSS class `error`.
+- We then check that the error message can be found from this component.
+- Can use the `should` syntax:
+```js
+it("Login fails with wrong password", function () {
+    // ...
+
+    cy.get(".error").should("contain", "Wrong credentials");
+});
+```
+- Using `should` is trickier.
+    - Allows for more diverse tests than `contains` which works based on text content only.
+- Can make sure that the error message is red and it has a border:
+```js
+it("Login fails with wrong password", function () {
+    // ...
+
+    cy.get(".error").should("contain", "Wrong credentials");
+    cy.get(".error").should("have.css", "color", "rgb(255, 0, 0)");
+    cy.get(".error").should("have.css", "border-style", "solid");
+});
+```
+- Cypress requires colors be given as `rgb`.
+- Because all tests are for the same component we accessed using `cy.get`, we can chain them using `and`.
+```js
+it("Login fails with wrong password", function () {
+    // ...
+
+    cy.get(".error")
+      .should("contain", "Wrong credentials");
+      .and("have.css", "color", "rgb(255, 0, 0)");
+      .and("have.css", "border-style", "solid");
+});
+```
+- Finish test so that it also checks the app does not render the success message.
+```js
+it("Login fails with wrong password", function () {
+    cy.contains("Login").click();
+    cy.get("#username").type("username");
+    cy.get("#password").type("wrong");
+    cy.get("#login-button").click();
+
+    cy.get(".error")
+      .should("contain", "Wrong credentials");
+      .and("have.css", "color", "rgb(255, 0, 0)");
+      .and("have.css", "border-style", "solid");
+
+    cy.get("html").should("not.contain", "EC logged in");
+});
+```
+- The `should` should always be chained with `get` (or another chainable command).
+- Used `cy.get("html")` to access whole visible content of the app.
+- Some CSS properties behave differently on Firefox.
+- If you run tests with Firefox:
+    - Tests that involve `border-style`, `border-radius`, and `padding`.
+    - Passes in Chrome and Electron but not in Firefox.
+
+
 
