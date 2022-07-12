@@ -10,7 +10,10 @@ describe("Note App", function () {
 
     it("User can login", function () {
         cy.contains("Login").click();
-        cy.get("input:first").type("echin");
-        cy.get("input:last").type("password");
+        cy.get("#username").type("echin");
+        cy.get("#password").type("password");
+        cy.get("#login-button").click();
+
+        cy.contains("Eric logged-in");
     });
 });
