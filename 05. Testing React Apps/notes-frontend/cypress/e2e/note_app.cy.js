@@ -58,12 +58,9 @@ describe("Note App", function () {
             });
 
             it("One of these can be made important", function () {
-                cy.contains("second note")
-                    .contains("make important")
-                    .click();
-
-                cy.contains("second note")
-                    .contains("make not important");
+                cy.contains("second note").parent().find("button").as("theButton");
+                cy.get("@theButton").click();
+                cy.get("@theButton").should("contain", "make not important");
             });
         });
     });
