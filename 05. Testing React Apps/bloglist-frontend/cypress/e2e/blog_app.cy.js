@@ -6,7 +6,7 @@ describe("Blog App", function () {
             username: "echin",
             password: "password"
         };
-        cy.request("POST", "http://localhost:3003/api/users", user);
+        cy.request("POST", "http://localhost:3003/api/users/", user);
         cy.visit("http://localhost:3000");
     });
 
@@ -57,6 +57,18 @@ describe("Blog App", function () {
             cy.get("#create-button").click();
             cy.contains("View").click();
             cy.get("#like-button").click();
-        })
+            cy.contains("1");
+        });
+
+        it("A blog can be removed", function () {
+            cy.contains("New Blog").click();
+            cy.get("#title").type("Sample Blog");
+            cy.get("#author").type("Sample Author");
+            cy.get("#url").type("https://www.google.com");
+            cy.get("#create-button").click();
+            cy.contains("View").click();
+            cy.get("#remove-button").click();
+            cy.get("html").should("not.contain", "Sample Blog [Sample Author]");
+        });
     });
 });
