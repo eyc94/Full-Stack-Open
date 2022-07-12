@@ -16,9 +16,7 @@ describe("Blog App", function () {
 
     describe("Login", function () {
         it("Succeeds with correct credentials", function () {
-            cy.get("#username").type("echin");
-            cy.get("#password").type("password");
-            cy.get("#login-button").click();
+            cy.login({ username: "echin", password: "password" });
 
             cy.contains("Eric logged in");
         });
@@ -35,9 +33,7 @@ describe("Blog App", function () {
 
     describe("When logged in", function () {
         beforeEach(function () {
-            cy.get("#username").type("echin");
-            cy.get("#password").type("password");
-            cy.get("#login-button").click();
+            cy.login({ username: "echin", password: "password" });
         });
 
         it("A blog can be created", function () {
