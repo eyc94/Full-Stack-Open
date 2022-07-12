@@ -11,6 +11,6 @@ describe("Blog App", function () {
     });
 
     it("Login form is shown", function () {
-
+        cy.contains("Log Into Application");
     });
 });
