@@ -34,6 +34,8 @@ describe("Note App", function () {
             .should("contain", "Wrong credentials")
             .and("have.css", "color", "rgb(255, 0, 0)")
             .and("have.css", "border-style", "solid");
+
+        cy.get("html").should("not.contain", "Eric logged-in");
     });
 
     describe("When logged in", function () {
