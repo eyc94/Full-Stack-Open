@@ -52,9 +52,10 @@ describe("Note App", function () {
 
         describe("And a note exists", function () {
             beforeEach(function () {
-                cy.contains("New Note").click();
-                cy.get("input").type("Another note cypress");
-                cy.contains("Save").click();
+                cy.createNote({
+                    content: "Another note cypress",
+                    important: false
+                });
             });
 
             it("It can be made important", function () {
