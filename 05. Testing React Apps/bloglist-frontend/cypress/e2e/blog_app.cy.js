@@ -6,7 +6,7 @@ describe("Blog App", function () {
             username: "echin",
             password: "password"
         };
-        cy.request("POST", "http://localhost:3003/api/users", user);
+        cy.request("POST", "http://localhost:3003/api/users/", user);
         cy.visit("http://localhost:3000");
     });
 
@@ -58,5 +58,14 @@ describe("Blog App", function () {
             cy.contains("View").click();
             cy.get("#like-button").click();
         })
+
+        it("A blog can be deleted by its creator", function () {
+            cy.contains("New Blog").click();
+            cy.get("#title").type("Sample Blog");
+            cy.get("#author").type("Sample Author");
+            cy.get("#url").type("https://www.google.com");
+            cy.get("#create-button").click();
+            cy.get("#remove-button").click();
+        });
     });
 });
