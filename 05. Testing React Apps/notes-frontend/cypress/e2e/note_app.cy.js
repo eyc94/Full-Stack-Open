@@ -40,5 +40,22 @@ describe("Note App", function () {
             cy.contains("Save").click();
             cy.contains("A note created by cypress");
         });
+
+        describe("And a note exists", function () {
+            beforeEach(function () {
+                cy.contains("New Note").click();
+                cy.get("input").type("Another note cypress");
+                cy.contains("Save").click();
+            });
+
+            it("It can be made important", function () {
+                cy.contains("Another note cypress")
+                    .contains("make important")
+                    .click();
+
+                cy.contains("Another note cypress")
+                    .contains("make not important");
+            });
+        });
     });
 });
