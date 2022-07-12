@@ -32,4 +32,21 @@ describe("Blog App", function () {
             cy.get("html").should("not.contain", "Eric logged in");
         });
     });
+
+    describe("When logged in", function () {
+        beforeEach(function () {
+            cy.get("#username").type("echin");
+            cy.get("#password").type("password");
+            cy.get("#login-button").click();
+        });
+
+        it("A blog can be created", function () {
+            cy.contains("New Blog").click();
+            cy.get("#title").type("Sample Blog");
+            cy.get("#author").type("Sample Author");
+            cy.get("#url").type("https://www.google.com");
+            cy.get("#create-button").click();
+            cy.contains("Sample Blog");
+        });
+    });
 });
