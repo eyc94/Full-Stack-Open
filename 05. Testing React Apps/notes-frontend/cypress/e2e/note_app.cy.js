@@ -30,7 +30,7 @@ describe("Note App", function () {
         cy.get("#password").type("wrong");
         cy.get("#login-button").click();
 
-        cy.contains("Wrong credentials");
+        cy.get(".error").contains("Wrong credentials");
     });
 
     describe("When logged in", function () {
