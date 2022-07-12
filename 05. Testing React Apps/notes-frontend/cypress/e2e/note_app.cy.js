@@ -52,18 +52,17 @@ describe("Note App", function () {
 
         describe("And a note exists", function () {
             beforeEach(function () {
-                cy.createNote({
-                    content: "Another note cypress",
-                    important: false
-                });
+                cy.createNote({ content: "first note", important: false });
+                cy.createNote({ content: "second note", important: false });
+                cy.createNote({ content: "third note", important: false });
             });
 
-            it("It can be made important", function () {
-                cy.contains("Another note cypress")
+            it("One of these can be made important", function () {
+                cy.contains("second note")
                     .contains("make important")
                     .click();
 
-                cy.contains("Another note cypress")
+                cy.contains("second note")
                     .contains("make not important");
             });
         });
