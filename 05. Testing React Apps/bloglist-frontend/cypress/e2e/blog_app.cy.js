@@ -68,6 +68,7 @@ describe("Blog App", function () {
             cy.get("#create-button").click();
             cy.contains("View").click();
             cy.get("#remove-button").click();
+            cy.get("html").should("not.contain", "Sample Blog [Sample Author]");
         });
     });
 });
