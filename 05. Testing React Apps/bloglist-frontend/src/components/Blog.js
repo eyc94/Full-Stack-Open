@@ -31,7 +31,7 @@ const Blog = ({ blog, user, likeHandler, removeHandler }) => {
                 <div className="details">
                     <div>Title: {blog.title} <button onClick={viewHandler}>Hide</button></div>
                     <div>URL: {blog.url}</div>
-                    <div>Likes: {blog.likes} <button onClick={likeHandler}>Like</button></div>
+                    <div>Likes: {blog.likes} <button id="like-button" onClick={likeHandler}>Like</button></div>
                     <div>Author: {blog.author}</div>
                     <div><button style={showIfAuthor} onClick={removeHandler}>Remove</button></div>
                 </div>
