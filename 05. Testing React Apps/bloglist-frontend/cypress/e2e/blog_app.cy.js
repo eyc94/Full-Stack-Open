@@ -37,31 +37,19 @@ describe("Blog App", function () {
         });
 
         it("A blog can be created", function () {
-            cy.contains("New Blog").click();
-            cy.get("#title").type("Sample Blog");
-            cy.get("#author").type("Sample Author");
-            cy.get("#url").type("https://www.google.com");
-            cy.get("#create-button").click();
+            cy.createBlog({ title: "Sample Blog", author: "Sample Author", url: "https://www.google.com" });
             cy.contains("Sample Blog");
         });
 
         it("A blog can be liked", function () {
-            cy.contains("New Blog").click();
-            cy.get("#title").type("Sample Blog");
-            cy.get("#author").type("Sample Author");
-            cy.get("#url").type("https://www.google.com");
-            cy.get("#create-button").click();
+            cy.createBlog({ title: "Sample Blog", author: "Sample Author", url: "https://www.google.com" });
             cy.contains("View").click();
             cy.get("#like-button").click();
             cy.contains("1");
         });
 
         it("A blog can be removed", function () {
-            cy.contains("New Blog").click();
-            cy.get("#title").type("Sample Blog");
-            cy.get("#author").type("Sample Author");
-            cy.get("#url").type("https://www.google.com");
-            cy.get("#create-button").click();
+            cy.createBlog({ title: "Sample Blog", author: "Sample Author", url: "https://www.google.com" });
             cy.contains("View").click();
             cy.get("#remove-button").click();
             cy.get("html").should("not.contain", "Sample Blog [Sample Author]");
