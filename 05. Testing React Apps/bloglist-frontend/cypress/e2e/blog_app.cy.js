@@ -16,9 +16,7 @@ describe("Blog App", function () {
 
     describe("Login", function () {
         it("Succeeds with correct credentials", function () {
-            cy.get("#username").type("echin");
-            cy.get("#password").type("password");
-            cy.get("#login-button").click();
+            cy.login({ username: "echin", password: "password" });
 
             cy.contains("Eric logged in");
         });
@@ -35,40 +33,30 @@ describe("Blog App", function () {
 
     describe("When logged in", function () {
         beforeEach(function () {
-            cy.get("#username").type("echin");
-            cy.get("#password").type("password");
-            cy.get("#login-button").click();
+            cy.login({ username: "echin", password: "password" });
         });
 
         it("A blog can be created", function () {
-            cy.contains("New Blog").click();
-            cy.get("#title").type("Sample Blog");
-            cy.get("#author").type("Sample Author");
-            cy.get("#url").type("https://www.google.com");
-            cy.get("#create-button").click();
+            cy.createBlog({ title: "Sample Blog", author: "Sample Author", url: "https://www.google.com" });
             cy.contains("Sample Blog");
         });
 
-        it("A blog can be liked", function () {
-            cy.contains("New Blog").click();
-            cy.get("#title").type("Sample Blog");
-            cy.get("#author").type("Sample Author");
-            cy.get("#url").type("https://www.google.com");
-            cy.get("#create-button").click();
-            cy.contains("View").click();
-            cy.get("#like-button").click();
-            cy.contains("1");
-        });
+        describe("And a blog exists", function () {
+            beforeEach(function () {
+                cy.createBlog({ title: "Sample Blog", author: "Sample Author", url: "https://www.google.com" });
+            });
 
-        it("A blog can be removed", function () {
-            cy.contains("New Blog").click();
-            cy.get("#title").type("Sample Blog");
-            cy.get("#author").type("Sample Author");
-            cy.get("#url").type("https://www.google.com");
-            cy.get("#create-button").click();
-            cy.contains("View").click();
-            cy.get("#remove-button").click();
-            cy.get("html").should("not.contain", "Sample Blog [Sample Author]");
+            it("A blog can be liked", function () {
+                cy.contains("View").click();
+                cy.get("#like-button").click();
+                cy.contains("1");
+            });
+
+            it("A blog can be removed", function () {
+                cy.contains("View").click();
+                cy.get("#remove-button").click();
+                cy.get("html").should("not.contain", "Sample Blog [Sample Author]");
+            });
         });
     });
 });
