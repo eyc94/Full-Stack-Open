@@ -41,18 +41,22 @@ describe("Blog App", function () {
             cy.contains("Sample Blog");
         });
 
-        it("A blog can be liked", function () {
-            cy.createBlog({ title: "Sample Blog", author: "Sample Author", url: "https://www.google.com" });
-            cy.contains("View").click();
-            cy.get("#like-button").click();
-            cy.contains("1");
-        });
+        describe("And a blog exists", function () {
+            beforeEach(function () {
+                cy.createBlog({ title: "Sample Blog", author: "Sample Author", url: "https://www.google.com" });
+            });
 
-        it("A blog can be removed", function () {
-            cy.createBlog({ title: "Sample Blog", author: "Sample Author", url: "https://www.google.com" });
-            cy.contains("View").click();
-            cy.get("#remove-button").click();
-            cy.get("html").should("not.contain", "Sample Blog [Sample Author]");
+            it("A blog can be liked", function () {
+                cy.contains("View").click();
+                cy.get("#like-button").click();
+                cy.contains("1");
+            });
+
+            it("A blog can be removed", function () {
+                cy.contains("View").click();
+                cy.get("#remove-button").click();
+                cy.get("html").should("not.contain", "Sample Blog [Sample Author]");
+            });
         });
     });
 });
