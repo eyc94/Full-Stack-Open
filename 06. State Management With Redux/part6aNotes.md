@@ -199,3 +199,57 @@ store.subscribe(renderApp);
     - Note the immediate call to `renderApp` method.
         - Without this call, the first rendering of the app never happens.
 
+
+## Redux-Notes
+- Aim is to modify our note application to use Redux for state management.
+- Let's cover few key concepts.
+- First version of our app:
+```js
+const noteReducer = (state = [], action) => {
+    if (action.type === "NEW_NOTE") {
+        state.push(action.data);
+        return state;
+    }
+
+    return state;
+};
+
+const store = createStore(noteReducer);
+
+store.dispatch({
+    type: "NEW_NOTE",
+    data: {
+        content: "The app state is in redux store",
+        important: true,
+        id: 1
+    }
+});
+
+store.dispatch({
+    type: "NEW_NOTE",
+    data: {
+        content: "State changes are made with actions",
+        important: false,
+        id: 2
+    }
+});
+
+const App = () => {
+    return (
+        <div>
+            <ul>
+                {store.getState().map(note =>
+                    <li key={note.id}>
+                        {note.content} <strong>{note.important ? "important" : ""}</strong>
+                    </li>
+                )}
+            </ul>
+        </div>
+    );
+};
+```
+- No functionality to add new notes other than via dispatching the `NEW_NOTE` actions.
+- Now our actions have a type and a field `data` which contains the note to be added.
+
+
+
