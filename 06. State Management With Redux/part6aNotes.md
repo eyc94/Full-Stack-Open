@@ -252,4 +252,159 @@ const App = () => {
 - Now our actions have a type and a field `data` which contains the note to be added.
 
 
+## Pure Functions, Immutable
+- Initial version of reducer is simple:
+```js
+const noteReducer = (state = [], action) => {
+    if (action.type === "NEW_NOTE") {
+        state.push(action.data);
+        return state;
+    }
+
+    return state;
+};
+```
+- State is an array.
+- The `NEW_NOTE` action cause new note to be added to state with `push` method.
+- App seems to work.
+    - Reducer declaration is bad.
+    - Breaks assumption of Redux reducers that reducers must be `pure functions`.
+    - Pure functions do not cause side effects.
+    - Always return same response when called with the same parameters.
+- We used the `push` method which changes the state.
+    - This is not allowed.
+    - Solved by using `concat` method.
+    - This creates a new array.
+    - Contains all the elements of the old and the new element:
+```js
+const noteReducer = (state = [], action) => {
+    if (action.type === "NEW_NOTE") {
+        state.concat(action.data);
+        return state;
+    }
+
+    return state;
+};
+```
+- Reducer must be composed of immutable objects.
+- Change in state means replace old with new, changed, object not changing the object itself.
+- Expand reducer so it handles change of a note's importance:
+```js
+{
+    type: "TOGGLE_IMPORTANCE",
+    data: {
+        id: 2
+    }
+}
+```
+- Expand reducer in a test-driven way.
+- Create a test for handling the action `NEW_NOTE`.
+- Move reducer to its own module to file `src/reducers/noteReducer.js`.
+- Add library called `deep-freeze`.
+    - Ensures reducer is correctly defined as an immutable function.
+    - Install library as a development dependency.
+```
+$ npm install --save-dev deep-freeze
+```
+- The test is defined in `src/reducers/noteReducer.test.js`.
+```js
+import noteReducer from "./noteReducer";
+import deepFreeze from "deep-freeze";
+
+describe("noteReducer", () => {
+    test("Returns new state with action NEW_NOTE", () => {
+        const state = [];
+        const action = {
+            type: "NEW_NOTE",
+            data: {
+                content: "The app state is in redux store",
+                important: true,
+                id: 1
+            }
+        };
+
+        deepFreeze(state);
+        const newState = noteReducer(state, action);
+
+        expect(newState).toHaveLength(1);
+        expect(newState).toContainEqual(action.data);
+    });
+});
+```
+- The `deepFreeze(state)` ensures the state is immutable.
+- Using the `push` method would cause the test to fail.
+- Create a test for `TOGGLE_IMPORTANCE` action:
+```js
+test("Returns new state with action TOGGLE_IMPORTANCE", () => {
+    const state = [
+        {
+            content: "The app state is in redux store",
+            important: true,
+            id: 1
+        },
+        {
+            content: "State changes are made with actions",
+            important: false,
+            id: 2
+        }
+    ];
+
+    const action = {
+        type: "TOGGLE_IMPORTANCE",
+        data: {
+            id: 2
+        }
+    };
+
+    deepFreeze(state);
+    const newState = noteReducer(state, action);
+
+    expect(newState).toHaveLength(2);
+    expect(newState).toContainEqual(state[0]);
+
+    expect(newState).toContainEqual({
+        content: "State changes are made with action",
+        important: true,
+        id: 2
+    });
+});
+```
+- The following action changes the importance of the note with id of 2.
+```js
+{
+    type: "TOGGLE_IMPORTANCE",
+    data: {
+        id: 2
+    }
+}
+```
+- Reducer is expanded:
+```js
+const noteReducer = (state = [], action) => {
+    switch (action.type) {
+        case "NEW_NOTE":
+            return state.concat(action.data);
+        case "TOGGLE_IMPORTANCE": {
+            const id = action.data.id;
+            const noteToChange = state.find(n => n.id === id);
+            const changedNote = {
+                ...noteToChange,
+                important: !noteToChange.important
+            };
+            return state.map(note => note.id !== id ? note : changedNote);
+        }
+        default:
+            return state;
+    }
+};
+```
+- Create a copy of the note which importance has changed with syntax from Part 2.
+- Replace state with new state containing all notes which have not changed and the copy of the changed note `changedNote`.
+- Search for specific note object.
+- Create a new object which is a copy of the old note.
+- Only the value of `important` is changed.
+- The new state is returned.
+- Create new state by taking all notes from old state except the note that is to change.
+
+
 
