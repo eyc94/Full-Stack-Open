@@ -455,3 +455,61 @@ console.log(second);    // Prints 2.
 console.log(rest);      // Prints [3, 4, 5, 6].
 ```
 
+
+## Uncontrolled Form
+- Add functionality for adding new notes and changing their importance:
+```js
+const generateId = () => Number((Math.random() * 1000000).toFixed(0));
+
+const App = () => {
+    const addNote = (event) => {
+        event.preventDefault();
+        const content = event.target.note.value;
+        event.target.note.value = "";
+        store.dispatch({
+            type: "NEW_NOTE",
+            data: {
+                content,
+                important: false,
+                id: generateId()
+            }
+        });
+    };
+
+    const toggleImportance = (id) => {
+        store.dispatch({
+            type: "TOGGLE_IMPORTANCE",
+            data: { id }
+        });
+    };
+
+    return (
+        <div>
+            <form onSubmit={addNote}>
+                <input name="note" />
+                <button type="submit">add</button>
+            </form>
+            <ul>
+                {store.getState().map(note =>
+                    <li
+                        key={note.id}
+                        onClick={() => toggleImportance(note.id)}
+                    >
+                        {note.content} <strong>{note.important ? "important" : ""}</strong>
+                    </li>
+                )}
+            </ul>
+        </div>
+    );
+};
+```
+- We have not bound state of form fields to state of `App` like we did previously.
+    - This is called `uncontrolled form`.
+    - Have limitations like dynamic error messages or disabling submit button based on input.
+- Method handling for adding new notes is simple.
+- Just dispatches action for adding notes.
+- Can get content of new note straight from form field.
+    - Field has value `event.target.note.value`.
+    - Note's importance can be changed by clicking its name.
+
+
