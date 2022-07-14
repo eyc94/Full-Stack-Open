@@ -513,3 +513,47 @@ const App = () => {
     - Note's importance can be changed by clicking its name.
 
 
+## Action Creators
+- We can simplify our code more.
+- Not necessary for React components to know the Redux action types and forms.
+- Separate creating actions into their own functions:
+```js
+const createNote = (content) => {
+    return {
+        type: "NEW_NOTE",
+        data: {
+            content,
+            important: false,
+            id: generateId()
+        }
+    };
+};
+
+const toggleImportanceOf = (id) => {
+    return {
+        type: "TOGGLE_IMPORTANCE",
+        data: { id }
+    };
+};
+```
+- Functions that create actions are called `action creators`.
+- The `App` does not need to know anything about actions anymore.
+    - Gets right actions by calling creator functions.
+```js
+const App = () => {
+    const addNote = (event) => {
+        event.preventDefault();
+        const content = event.target.note.value;
+        event.target.note.value = "";
+        store.dispatch(createNote(content));
+    };
+
+    const toggleImportance = (id) => {
+        store.dispatch(toggleImportanceOf(id));
+    };
+
+    // ...
+};
+```
+
+
