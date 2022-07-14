@@ -33,4 +33,52 @@ describe("Unicafe reducer", () => {
             bad: 0
         });
     });
+
+    test("OK is incremented", () => {
+        const action = {
+            type: "OK"
+        };
+
+        const state = initialState;
+
+        deepFreeze(state);
+        const newState = counterReducer(state, action);
+        expect(newState).toEqual({
+            good: 0,
+            ok: 1,
+            bad: 0
+        });
+    });
+
+    test("Bad is incremented", () => {
+        const action = {
+            type: "BAD"
+        };
+
+        const state = initialState;
+
+        deepFreeze(state);
+        const newState = counterReducer(state, action);
+        expect(newState).toEqual({
+            good: 0,
+            ok: 0,
+            bad: 1
+        });
+    });
+
+    test("Reset makes everything 0", () => {
+        const action = {
+            type: "ZERO"
+        };
+
+        const state = initialState;
+
+        deepFreeze(state);
+        const newState = counterReducer(state, action);
+        expect(newState).toEqual({
+            good: 0,
+            ok: 0,
+            bad: 0
+        });
+    });
 });
