@@ -407,4 +407,51 @@ const noteReducer = (state = [], action) => {
 - Create new state by taking all notes from old state except the note that is to change.
 
 
+## Array Spread Syntax
+- Can now safely refactor the reducer function because tests are good.
+- Adding new notes uses the `concat` method.
+- Let's use JavaScript `array spread` syntax:
+```js
+const noteReducer = (state = [], action) => {
+    switch (action.type) {
+        case "NEW_NOTE":
+            return [...state, action.data];
+        case "TOGGLE_IMPORTANCE":
+            // ...
+        default:
+            return state;
+    }
+};
+```
+- The spread syntax works like so.
+- If we have:
+```js
+const number = [1, 2, 3];
+```
+- The `...numbers` breaks the array into individual elements that can be placed into another array.
+```js
+[...numbers, 4, 5];
+```
+- The result is:
+```
+[1, 2, 3, 4, 5]
+```
+- If we placed the array to another array without the spread syntax:
+```js
+[numbers, 4, 5];
+```
+- We get:
+```
+[[1, 2, 3], 4, 5]
+```
+- We can gather the rest of the elements:
+```js
+const numbers = [1, 2, 3, 4, 5, 6];
+
+const [first, second, ...rest] = numbers;
+
+console.log(first);     // Prints 1.
+console.log(second);    // Prints 2.
+console.log(rest);      // Prints [3, 4, 5, 6].
+```
 
