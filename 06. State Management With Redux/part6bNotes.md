@@ -280,3 +280,175 @@ const notes = useSelector(({ filter, notes }) => {
     - Fix this later because it's harmless.
 
 
+## Redux Toolkit
+- Redux's config and management requires a lot of effort.
+- This is because of the reducer and action creator related code.
+- `Redux Toolkit` is a library that solves these common Redux-related problems.
+    - Simplifies configuration of Redux store and offers a large variety of tools to ease state management.
+- Install library:
+```
+$ npm install @reduxjs/toolkit
+```
+- Open `index.js` which currently creates Redux store.
+- Instead of using `createStore` function, we use Redux Toolkit's `configureStore` function:
+```js
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import App from "./App";
+
+import noteReducer from "./reducers/noteReducer";
+import filterReducer from "./reducers/filterReducer";
+
+const store = configureStore({
+    reducer: {
+        notes: noteReducer,
+        filter: filterReducer
+    }
+});
+
+console.log(store.getState());
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+    <Provider store={store}>
+        <App />
+    </Provider>
+);
+```
+- We don't need `combineReducers` to create reducer for the store.
+- The `configureStore` has many additional benefits.
+    - Effortless integration of dev tools and common libraries without need for additional config.
+- Refactor the reducers.
+- We can easily create reducer and related action creators using `createSlice` function.
+- Can use `createSlice` to refactor reducer and action creators in `reducers/noteReducer.js` file:
+```js
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = [
+    {
+        content: "Reducer defines how redux store works",
+        important: true,
+        id: 1
+    },
+    {
+        content: "State of store can contain any data",
+        important: false,
+        id: 2
+    }
+];
+
+const generateId = () => Number((Math.random() * 1000000).toFixed(0));
+
+const noteSlice = createSlice({
+    name: "notes",
+    initialState,
+    reducers: {
+        createNote(state, action) {
+            const content = action.payload;
+            state.push({
+                content,
+                important: false,
+                id: generateId()
+            });
+        },
+        toggleImportanceOf(state, action) {
+            const id = action.payload;
+            const noteToChange = state.find(n => n.id === id);
+            const changedNote = {
+                ...noteToChange,
+                important: !noteToChange.important
+            };
+            return state.map(note => note.id !== id ? note : changedNote);
+        }
+    }
+});
+```
+- The `createSlice` function's `name` parameter defines prefix used in action's type values.
+- The `createNote` action later will have the type value of `notes/createNote`.
+- Good practice to give parameter a value that is unique among reducers.
+    - There won't be collisions between app's action type values.
+- The `initialState` parameter defines the reducer's initial state.
+- The `reducers` parameter takes the reducer itself as an object.
+    - The functions handle state changes caused by certain actions.
+- The `action.payload` contains argument provided by calling the action creator:
+```js
+dispatch(createNote("Redux Toolkit is awesome!"));
+```
+- The dispatch call above responds to  dispatching the following object:
+```js
+dispatch({ type: "notes/createNote", payload: "Redux Toolkit is awesome!" });
+```
+- Notice that `createNote` function violates the immutability principle.
+- It uses the `push` method.
+- Redux Toolkit uses the `Immer` library with reducers created by `createSlice` function.
+    - Makes it ok to mutate `state` inside reducer.
+    - `Immer` uses mutated state to produce a new, immutable state.
+    - The state thus remains immutable.
+    - This comes in handy for complex states.
+- The `createSlice` function returns object.
+    - Contains reducer and action creators defined by `reducers` parameter.
+- The reducer can be accessed by `noteSlice.reducer` property.
+- Action creators by the `noteSlice.actions` property.
+- Produce the file's exports in this way:
+```js
+const noteSlice = createSlice(/* ... */);
+
+export const { createNote, toggleImportanceOf } = noteSlice.actions;
+export default noteSlice.reducer;
+```
+- Imports in other files work fine.
+- Alter tests a bit due to naming conventions of Redux Toolkit:
+```js
+import noteReducer from "./noteReducer";
+import deepFreeze from "deep-freeze";
+
+describe("noteReducer", () => {
+    test("Returns new state with action notes/createNote", () => {
+        const state = [];
+        const action = {
+            type: "notes/createNote",
+            payload: "The app state is in redux store"
+        };
+
+        deepFreeze(state);
+        const newState = noteReducer(state, action);
+
+        expect(newState).toHaveLength(1);
+        expect(newState.map(s => s.content)).toContainEqual(action.payload);
+    });
+
+    test("Returns new state with action notes/toggleImportanceOf", () => {
+        const state = [
+            {
+                content: "The app state is in redux store",
+                important: true,
+                id: 1
+            },
+            {
+                content: "State changes are made with actions",
+                important: false,
+                id: 2
+            }
+        ];
+
+        const action = {
+            type: "notes/toggleImportanceOf",
+            payload: 2
+        };
+
+        deepFreeze(state);
+        const newState = noteReducer(state, action);
+
+        expect(newState).toHaveLength(2);
+        expect(newState).toContainEqual(state[0]);
+        expect(newState).toContainEqual({
+            content: "State changes are made with actions",
+            important: true,
+            id: 2
+        });
+    });
+});
+```
+
+
