@@ -24,8 +24,7 @@ store.dispatch(filterChange("IMPORTANT"));
 store.dispatch(createNote("combineReducers forms one reducer from many simple reducers"));
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-    // <Provider store={store}>
-    //     <App />
-    // </Provider>
-    <div />
+    <Provider store={store}>
+        <App />
+    </Provider>
 );
