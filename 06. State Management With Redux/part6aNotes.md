@@ -706,4 +706,84 @@ const importantNotes = useSelector(state => state.filter(note => note.important)
 ```
 
 
+## More Components
+- Separate creating new note into its own component:
+```js
+import { useDispatch } from "react-redux";
+import { createNote } from "../reducers/noteReducer";
+
+const NewNote = (props) => {
+    const dispatch = useDispatch();
+
+    const addNote = (event) => {
+        event.preventDefault();
+        const content = event.target.note.value;
+        event.target.note.value = "";
+        dispatch(createNote(content));
+    };
+
+    return (
+        <form onSubmit={addNote}>
+            <input name="note" />
+            <button type="submit">add</button>
+        </form>
+    );
+};
+
+export default NewNote;
+```
+- The event handler for changing the state of the app has been moved from `App` to a child component.
+- Logic for changing state in Redux is still neatly separated from the whole React part of the app.
+- Separate list of notes and displaying a single note into their own components.
+    - Both in the `Notes.js` file:
+```js
+import { useDispatch, useSelector } from "react-redux";
+import { toggleImportanceOf } from "../reducers/noteReducer";
+
+const Note = ({ note, handleClick }) => {
+    return (
+        <li onClick={handleClick}>
+            {note.content}
+            <strong> {note.important ? "important" : ""}</strong>
+        </li>
+    );
+};
+
+const Notes = () => {
+    const dispatch = useDispatch();
+    const notes = useSelector(state => state);
+
+    return (
+        <ul>
+            {notes.map(note =>
+                <Note
+                    key={note.id}
+                    note={note}
+                    handleClick={() => dispatch(toggleImportanceOf(note.id))}
+                />
+            )}
+        </ul>
+    );
+};
+
+export default Notes;
+```
+- Logic for changing importance of notes is in the component managing list of notes.
+- Not much left for `App`:
+```js
+const App = () => {
+    return (
+        <div>
+            <NewNote />
+            <Notes />
+        </div>
+    );
+};
+```
+- The `Note` component is simple and unaware that the event handler dispatches an action.
+    - These components are called `presentational` in React terminology.
+- The `Notes` is a `container` component.
+    - Contains app logic.
+    - Defines what the event handlers of the `Note` components do.
+    - Configures `presentational` components.
 
