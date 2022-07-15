@@ -164,3 +164,119 @@ const filterReducer = (state = "ALL", action) => {
 - Gets printed twice.
 - Combined reducers work such that every action gets handled in every part of the combined reducer.
 
+
+## Finishing The Filters
+- Finish app to use combined reducer.
+- Change rendering of application.
+    - Hook up store to app in `index.js`.
+```js
+ReactDOM.createRoot(document.getElementById("root")).render(
+    <Provider store={store}>
+        <App />
+    </Provider>
+);
+```
+- Fix bug because code is expecting an array of notes.
+    - The notes are stored in the store's `notes` field.
+    - Make slight change to selector function:
+```js
+const Notes = () => {
+    const dispatch = useDispatch();
+    const notes = useSelector(notes => state.notes);
+
+    return (
+        <ul>
+            {notes.map(note =>
+                <Note
+                    key={note.id}
+                    note={note}
+                    handleClick={() => dispatch(toggleImportanceOf(note.id))}
+                />
+            )}
+        </ul>
+    );
+};
+```
+- Extract visibility filter to its own component at `src/components/VisibilityFilter.js`:
+```js
+import { filterChange } from "../reducers/filterReducer";
+import { useDispatch } from "react-redux";
+
+const VisibilityFilter = (props) => {
+    const dispatch = useDispatch();
+
+    return (
+        <div>
+            all <input type="radio" name="filter" onChange={() => dispatch(filterChange("ALL"))} />
+            important <input type="radio" name="filter" onChange={() => dispatch(filterChange("IMPORTANT"))} />
+            nonimportant <input type="radio" name="filter" onChange={() => dispatch(filterChange("NONIMPORTANT"))} />
+        </div>
+    );
+};
+
+export default VisibilityFilter;
+```
+- `App` is now simplifed to:
+```js
+import Notes from "./components/Notes";
+import NewNote from "./components/NewNote";
+import VisibilityFilter from "./components/VisibilityFilter";
+
+const App = () => {
+    return (
+        <div>
+            <NewNote />
+            <VisibilityFilter />
+            <Notes />
+        </div>
+    );
+};
+
+export default App;
+```
+- Clicking different radio buttons changes the stage of the store's `filter` property.
+- Change `Notes` to incorporate filter:
+```js
+const Notes = () => {
+    const dispatch = useDispatch();
+    const notes = useSelector(state => {
+        if (state.filter === "ALL") {
+            return state.notes;
+        }
+
+        return state.filter === "IMPORTANT"
+            ? state.notes.filter(note => note.important)
+            : state.notes.filter(note => !note.important);
+    });
+
+    return (
+        <ul>
+            {notes.map(note =>
+                <Note
+                    key={note.id}
+                    note={note}
+                    handleClick={() => dispatch(toggleImportanceOf(note.id))}
+                />
+            )}
+        </ul>
+    );
+};
+```
+- Simplify selector by destructuring:
+```js
+const notes = useSelector(({ filter, notes }) => {
+    if (filter === "ALL") {
+        return notes;
+    }
+
+    return filter === "IMPORTANT"
+        ? notes.filter(note => note.important)
+        : notes.filter(note => !note.important);
+});
+```
+- There is an issue.
+    - Even though filter is set to `ALL` by default.
+    - Associated radio button is not selected.
+    - Fix this later because it's harmless.
+
+
