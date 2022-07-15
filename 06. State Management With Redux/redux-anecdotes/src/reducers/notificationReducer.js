@@ -13,7 +13,7 @@ const notificationSlice = createSlice({
             return initialState;
         },
         voteNotification(state, action) {
-            return `You voted ${action.payload.content}`;
+            return `You Voted: ${action.payload.content}`;
         }
     }
 });
