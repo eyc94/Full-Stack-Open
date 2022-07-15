@@ -452,3 +452,12 @@ describe("noteReducer", () => {
 ```
 
 
+## Redux DevTools
+- `Redux DevTools` is a Chrome addon.
+- Can inspect Redux store's state and dispatch actions through browser's console.
+- When store is created with Redux Toolkit's `configureStore`, no addition config necessary.
+- Click `Redux` tab in dev console.
+- Can inspecct state.
+- Can see what dispatching certain actions can do to the state.
+- Can also just dispatch actions in general.
+
