@@ -8,8 +8,12 @@ const Notification = () => {
         borderWidth: 1
     };
 
+    const noStyle = {
+        display: "none"
+    };
+
     return (
-        <div style={style}>
+        <div style={notification.length < 1 ? noStyle : style}>
             {notification}
         </div>
     );
