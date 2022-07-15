@@ -557,3 +557,153 @@ const App = () => {
 ```
 
 
+## Forwarding Redux-Store To Various Components
+- Our app is in one file.
+- Should separate `App` into its own module.
+- But how can `App` access the store after the move?
+- Also when we have multiple smaller components in our components, there must be a way for all components to access the store.
+- We look into the newest and easiest way using the `hooks`-api of the `react-redux` library.
+- Install it:
+```
+$ npm install react-redux
+```
+- Move `App` to its own file `App.js`.
+- The file `index.js` becomes:
+```js
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+import App from "./App";
+
+import { createStore } from "redux";
+import { Provider } from "react-redux";
+import noteReducer from "./reducers/noteReducer";
+
+const store = createStore(noteReducer);
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+    <Provider store={store}>
+        <App />
+    </Provider>
+);
+```
+- Notice that application is now child of `Provider` component.
+- The app's store is passed to the Provider as its attribute `store`.
+- Defining action creators is moved to `reducers/noteReducer.js` where reducer is defined.
+```js
+const noteReducer = (state = [], action) => {
+    // ...
+};
+
+const generateId = () => Number((Math.random() * 1000000).toFixed(0));
+
+export const createNote = (content) => {
+    return {
+        type: "NEW_NOTE",
+        data: {
+            content,
+            important: false,
+            id: generateId()
+        }
+    };
+};
+
+export const toggleImportanceOf = (id) => {
+    return {
+        type: "TOGGLE_IMPORTANCE",
+        data: { id }
+    };
+};
+
+export default noteReducer;
+```
+- If app has many components which need the store, `App` needs to pass `store` as props to all of those components.
+- Notice module has many `export` commands.
+- The reducer function still has the same `export default` command, so nothing changed there.
+    - We can import it the same way as usual.
+- A module can have only *one* `default export` but multiple "normal" exports.
+```js
+export const createNote = (content) => {
+    // ...
+};
+
+export const toggleImportanceOf = (id) => {
+    // ...
+};
+```
+- These "normally" exported functions can be imported with curly braces:
+```js
+import { createNote } from "./../reducers/noteReducer";
+```
+- Code for the `App` component:
+```js
+import { createNote, toggleImportanceOf } from "./reducers/noteReducer";
+import { useSelector, useDispatch } from "react-redux";
+
+const App = () => {
+    const dispatch = useDispatch();
+    const notes = useSelector(state => state);
+
+    const addNote = (event) => {
+        event.preventDefault();
+        const content = event.target.note.value;
+        event.target.note.value = "";
+        dispatch(createNote(content));
+    };
+
+    const toggleImportance = (id) => {
+        dispatch(toggleImportanceOf(id));
+    };
+
+    return (
+        <div>
+            <form onSubmit={addNote}>
+                <input name="note" />
+                <button type="submit">add</button>
+            </form>
+            <ul>
+                {notes.map(note =>
+                    <li
+                        key={note.id}
+                        onClick={() => toggleImportance(note.id)}
+                    >
+                        {note.content} <strong>{note.important ? "important" : ""}</strong>
+                    </li>
+                )}
+            </ul>
+        </div>
+    );
+};
+
+export default App;
+```
+- Previously code dispatched actions by calling dispatch method of redux-store:
+```js
+store.dispatch({
+    type: "TOGGLE_IMPORTANCE",
+    data: { id }
+});
+```
+- Now it's done with the `dispatch` function from `useDispatch` hook.
+- The `useDispatch` hook provides any React component access to dispatch function of redux-store defined in `index.js`.
+    - Allows all components to make changes to the state of redux-store.
+- Components can access the notes stored in store with the `useSelector` hook of react-redux library.
+- `useSelector` receives a function as a parameter.
+    - Searches for or selects data from the redux-store.
+    - Here, we need all of the notes, so our selector function returns the whole state.
+```js
+state => state
+
+(state) => {
+    return state;
+}
+
+// The two above are the same. Second is shorthand version.
+```
+- Can also just return only notes marked as important:
+```js
+const importantNotes = useSelector(state => state.filter(note => note.important));
+```
+
+
+
