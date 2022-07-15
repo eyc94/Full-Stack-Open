@@ -66,3 +66,101 @@ const App = () => {
 }
 ```
 
+
+## Combined Reducers
+- Modify current reducer to deal with new shape of state.
+- Better situation is to define a new separate reducer for the state of the filter:
+```js
+const filterReducer = (state = "ALL", action) => {
+    switch (action.type) {
+        case "SET_FILTER":
+            return action.filter;
+        default:
+            return state;
+    };
+};
+```
+- Actions for changing state of the filter look like:
+```js
+{
+    type: "SET_FILTER",
+    filter: "IMPORTANT"
+}
+```
+- Create new action creator function.
+- Write code for new action creator in `src/reducers/filterReducer.js`:
+```js
+const filterReducer = (state = "ALL", action) => {
+    // ...
+};
+
+export const filterChange = filter => {
+    return {
+        type: "SET_FILTER",
+        filter
+    };
+};
+
+export default filterReducer;
+```
+- Can create the actual reducer for our app by combining two existing reducers.
+    - Use `combineReducers` function.
+    - Define in `index.js`:
+```js
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { createStore, combineReducers } from "redux";
+import { Provider } from "react-redux";
+import App from "./App";
+
+import noteReducer from "./reducers/noteReducer";
+import filterReducer from "./reducers/filterReducer";
+
+const reducer = combineReducers({
+    notes: noteReducer,
+    filter: filterReducer
+});
+
+const store = createStore(reducer);
+
+console.log(store.getState());
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+    /*
+    <Provider store={store}>
+        <App />
+    </Provider>
+    */
+    <div />
+);
+```
+- App breaks so comment out code and render an empty `div` element.
+- State of store gets printed to console.
+- State of store defined by reducer above is an object with two properties.
+    - The `notes` and `filter`.
+    - Value of `notes` is defiend by `noteReducer`.
+        - Does not have to deal with other properties of state.
+    - The `filter` is managed by `filterReducer`.
+- Look at how different actions change the state of the store defined by combined reducer.
+- Add the following to `index.js`:
+```js
+import { createNote } from "./reducers/noteReducer";
+import { filterChange } from "./reducers/filterReducer";
+
+// ...
+
+store.subscribe(() => console.log(store.getState()));
+store.dispatch(filterChange("IMPORTANT"));
+store.dispatch(createNote("combineReducers forms one reducer from many simple reducers"));
+```
+- Simulating creation of note and changing the state of the filter causes state of store to be logged to console after every change made to store.
+- Note if we add console logging to beginning of both reducers:
+```js
+const filterReducer = (state = "ALL", action) => {
+    console.log("ACTION: ", action);
+    // ...
+};
+```
+- Gets printed twice.
+- Combined reducers work such that every action gets handled in every part of the combined reducer.
+
