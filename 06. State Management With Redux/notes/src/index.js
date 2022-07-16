@@ -16,10 +16,6 @@ const store = configureStore({
     }
 });
 
-noteService.getAll().then(notes =>
-    store.dispatch(setNotes(notes))
-);
-
 console.log(store.getState());
 
 ReactDOM.createRoot(document.getElementById("root")).render(
