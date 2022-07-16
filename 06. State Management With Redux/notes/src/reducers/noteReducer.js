@@ -17,7 +17,7 @@ const generateId = () => Number((Math.random() * 1000000).toFixed(0));
 
 const noteSlice = createSlice({
     name: "notes",
-    initialState,
+    initialState: [],
     reducers: {
         createNote(state, action) {
             const content = action.payload;
