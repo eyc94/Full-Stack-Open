@@ -33,9 +33,11 @@ const AnecdoteList = () => {
         setTimeout(() => dispatch(hideNotification()), 5000);
     };
 
+    const sortedAnecdotes = [...anecdotes].sort((a, b) => b.votes - a.votes);
+
     return (
         <div>
-            {anecdotes.sort((a, b) => b.votes - a.votes).map(anecdote =>
+            {sortedAnecdotes.map(anecdote =>
                 <Anecdote key={anecdote.id} anecdote={anecdote} handleClick={() => vote(anecdote.id)} />
             )}
         </div>
