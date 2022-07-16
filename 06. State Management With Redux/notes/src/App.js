@@ -11,7 +11,7 @@ const App = () => {
     useEffect(() => {
         noteService
             .getAll().then(notes => dispatch(setNotes(notes)));
-    }, []);
+    }, [dispatch]);
 
     return (
         <div>
