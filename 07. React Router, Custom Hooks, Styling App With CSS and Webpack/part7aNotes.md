@@ -79,3 +79,59 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App />, document.ge
     - If app grows bigger and we wanted separate views for each user and note, this routing gets complicated.
 
 
+## React Router
+- React has the `React Router` library.
+    - Can manage navigation in a React application.
+- Change above applicatioin to use React Router.
+- Install React Router:
+```
+$ npm install react-router-dom
+```
+- Change application:
+```js
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+
+const App = () => {
+    const padding = {
+        padding: 5
+    };
+
+    return (
+        <Router>
+            <div>
+                <Link style={padding} to="/">Home</Link>
+                <Link style={padding} to="/notes">Notes</Link>
+                <Link style={padding} to="/users">Users</Link>
+            </div>
+
+            <Routes>
+                <Route path="/notes" element={<Notes />} />
+                <Route path="/users" element={<Users />} />
+                <Route path="/" element={<Home />} />
+            </Routes>
+
+            <div>
+                <i>EC Note App 2022</i>
+            </div>
+        </Router>
+    );
+};
+```
+- This is the conditional rendering of components based on url in the browser.
+    - Place components as children of the `Router` component.
+- Notice that `Router` is actually the `BrowserRouter` component.
+    - We renamed the import.
+- According to the manual:
+    - **BrowserRouter is a Router that uses the HTML5 history API (pushState, replaceState, and the popState event) to keep your UI in sync with the URL.**
+- Normally, browser loads new page when URL changes.
+    - With help of HTML5 history API, `BrowserRouter` allows us to use the URL for internal routing in a React app.
+    - So content of page is only manipulated using JS.
+    - Browser does not load new content from the server.
+    - Using back and forth actions and bookmarks still work.
+- We define `Link` to link to a route.
+    - When you click it, the URL changes in the address bar.
+- Components rendered based on URL are defined with `Route` component.
+    - We render a component based on the URL route path.
+    - Wrap the `Route` components in `Routes` component.
+    - The `Routes` work by rendering the first component whose path matches the URL in the browser's address bar.
+
