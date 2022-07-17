@@ -288,3 +288,75 @@ export default connect(
 - The `props.createNote` contains the additional dispatch to the store that was added by connect.
 
 
+## Alternative Way Of Using mapDispatchToProps
+- Defined function for dispatching acionts from `NewNote` like:
+```js
+const NewNote = () => {
+    // ...
+};
+
+export default connect(
+    null,
+    { createNote }
+)(NewNote);
+```
+- The connect expression allows component to dispatch actions to create new note.
+- The functions passed in `mapDispatchToProps` must be `action creators`.
+    - Functions that return Redux actions.
+- Worth noting that `mapDispatchToProps` parameter is a JS object:
+```js
+{
+    createNote
+}
+```
+- The above is shorthand for:
+```js
+{
+    createNote: createNote
+}
+```
+- Alternatively, we can pass the following function as the second parameter to `connect`:
+```js
+const NewNote = (props) => {
+    // ...
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        createNote: value => {
+            dispatch(createNote(value));
+        }
+    };
+};
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(NewNote);
+```
+- The `mapDispatchToProps` is a function that `connect` will call by passing it the `dispatch` function as its parameter.
+- Return value is an object defining a group of functions that get passed to the connected component as props.
+- Example defines the function passed as the `createNote` prop.
+    - Just dispatches the action created with the `createNote` action creator.
+- Component then references the function through its props by calling `props.createNote`:
+```js
+const NewNote = (props) => {
+    const addNote = (event) => {
+        event.preventDefault();
+        const content = event.target.note.value;
+        event.target.note.value = "";
+        props.createNote(content);
+    };
+
+    return (
+        <form onSubmit={addNote}>
+            <input name="note" />
+            <button type="submit">Add</button>
+        </form>
+    );
+};
+```
+- Efficient to use the simpler form of `mapDispatchToProps`.
+- There are situations where the more complex definition is necessary.
+    - If the dispatched actions need to reference the props of the component.
+
