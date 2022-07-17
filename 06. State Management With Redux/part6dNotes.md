@@ -129,3 +129,122 @@ const ConnectedNotes = connect(mapStateToProps)(Notes);
 export default ConnectedNotes;
 ```
 
+
+## mapDispatchToProps
+- We got rid of `useSelector`.
+- However, `Notes` still uses `useDispatch` hook and `dispatch` function returning it.
+- Second parameter of `connect` can be used to define `mapDispatchToProps`.
+    - Group of `action creator` functions passed to the connected component as props.
+    - Make the following changes to our existing connect operation:
+```js
+const mapStateToProps = (state) => {
+    return {
+        notes: state.notes,
+        filter: state.filter
+    };
+};
+
+const mapDispatchToProps = {
+    toggleImportanceOf
+};
+
+const ConnectedNotes = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Notes);
+
+export default ConnectedNotes;
+```
+- Component can now directly dispatch action defined by `toggleImportanceOf` action creator.
+    - Done by calling function through its props.
+```js
+const Notes = (props) => {
+    return (
+        <ul>
+            {props.notes.map(note =>
+                <Note
+                    key={note.id}
+                    note={note}
+                    handleClick={() => props.toggleImportanceOf(note.id)}
+                />
+            )}
+        </ul>
+    );
+};
+```
+- No need to call `dispatch` function separately.
+    - The `connect` function already modified the `toggleImportanceOf` action creator into a form that contains the dispatch.
+- Component also now references a function that can be used for dispatching `notes/toggleImportanceOf` type actions.
+    - Done with its prop.
+- Code for `Notes` is now:
+```js
+import { connect } from "react-redux";
+import { toggleImportanceOf } from "../reducers/noteReducer";
+
+const Notes = (props) => {
+    return (
+        <ul>
+            {props.notes.map(note =>
+                <Note
+                    key={note.id}
+                    note={note}
+                    handleClick={() => props.toggleImportanceOf(note.id)}
+                />
+            )}
+        </ul>
+    );
+};
+
+const mapStateToProps = (state) => {
+    if (state.filter === "ALL") {
+        return {
+            notes: state.notes
+        };
+    }
+
+    return {
+        notes: (state.filter === "IMPORTANT"
+        ? state.notes.filter(note => note.important)
+        : state.notes.filter(note => !note.important);
+        )
+    };
+};
+
+const mapDispatchToProps = {
+    toggleImportanceOf
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Notes);
+```
+- Use `connect` to create new notes:
+```js
+import { connect } from "react-redux";
+import { createNote } from "../reducers/noteReducer";
+
+const NewNote = (props) => {
+    const addNote = (event) => {
+        event.preventDefault();
+        const content = event.target.note.value;
+        event.target.note.value = "";
+        props.createNote(content);
+    };
+
+    return (
+        <form onSubmit={addNote}>
+            <input name="note" />
+            <button type="submit">Add</button>
+        </form>
+    );
+};
+
+export default connect(
+    null,
+    { createNote }
+)(NewNote);
+```
+- Component does not need to access store's state.
+    - Just pass `null` as the first parameter to `connect`.
+
