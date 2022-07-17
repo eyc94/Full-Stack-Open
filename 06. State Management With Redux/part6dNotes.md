@@ -360,3 +360,37 @@ const NewNote = (props) => {
 - There are situations where the more complex definition is necessary.
     - If the dispatched actions need to reference the props of the component.
 
+
+## Presentational/Container Revisited
+- The refactored `Notes` component is entirely focused on rendering notes and is close to being called `presentational component`.
+- According to Dan Abramov, presentation components:
+    - Are concerned with how things look.
+    - May contain both presentational and container components inside. They usually have some DOM markup and styles of their own.
+    - Often allow containment via props.children.
+    - Have no dependencies on the rest of the app, such as Redux actions or stores.
+    - Don't specify how the data is loaded or mutated.
+    - Receive data and callbacks exclusively via props.
+    - Rarely have their own state (when they do, it's UI state rather than data).
+    - Are written as functional components unless they need state, lifecycle hooks, or performance optimizations.
+- The connected component is a `container` component.
+- According to Dan Abramov, container components:
+    - Are concerned with how things work.
+    - May contain both presentational and container components inside but usually don't have any DOM markup of their own except for some wrapping divs, and never have any styles.
+    - Provide the data and behavior to presentational or other container components.
+    - Call Redux actions and provide these as callbacks to the presentational components.
+    - Are often stateful, as they tend to serve as data sources.
+    - Are usually generated using higher order components such as connect from React Redux, rather than written by hand.
+- Dividing presentational and container components is a good way of structuring React apps.
+- The benefits of division according to Dan:
+    - Better separation of concerns. You understand your app and your UI better by writing components this way.
+    - Better reusability. You can use the same presentational component with completely different state sources, and turn those into separate container components that can be further reused.
+    - Presentational components are essentially your app's "palette". You can put them on a single page and let the designer tweak all their variations without touching the app's logic. You can run screenshot regression tests on that page.
+- There is a mention of `high order component`.
+    - `Notes` component is regular component.
+    - The `connect` method is a `high order component`.
+    - A high order component is a function that takes a "regular" component as its parameter.
+    - It returns a new "regular" component as its return value.
+- They are a way of defining generic functionality that can be applied to components.
+- HOCs are generalizations of HOFs.
+- After React hook-api was published, HOCs are less popular.
+
