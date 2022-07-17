@@ -248,3 +248,43 @@ export default connect(
 - Component does not need to access store's state.
     - Just pass `null` as the first parameter to `connect`.
 
+
+## Referencing Action Creators Passed As props
+- Direct attention to one interesting detail in `NewNote` component:
+```js
+import { connect } from "react-redux";
+import { createNote } from "../reducers/noteReducer";
+
+const NewNote = (props) => {
+    const addNote = (event) => {
+        event.preventDefault();
+        const content = event.target.note.value;
+        event.target.note.value = "";
+        props.createNote(content);
+    };
+
+    return (
+        <form onSubmit={addNote}>
+            <input name="note" />
+            <button type="submit">Add</button>
+        </form>
+    );
+};
+
+export default connect(
+    null,
+    { createNote }
+)(NewNote);
+```
+- Notice there are two versions of `createNote` action creator in the component.
+- Function must be referenced as `props.createNote` through the component's props.
+    - This is the version that contains automatic `dispatch` added by `connect`.
+- Can also just directly reference the action creator by calling `createNote` directly.
+    - Don't do this.
+    - This is the unmodified version of the action creator.
+    - Does not have added automatic dispatch.
+- If you print both to the console, we see the differences between the two functions.
+- When you call `createNote` directly, this is a regular `action creator` function.
+- The `props.createNote` contains the additional dispatch to the store that was added by connect.
+
+
