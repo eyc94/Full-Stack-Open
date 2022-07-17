@@ -394,3 +394,10 @@ const NewNote = (props) => {
 - HOCs are generalizations of HOFs.
 - After React hook-api was published, HOCs are less popular.
 
+
+## Redux and the Component State
+- We are using React the "right" way.
+    - React should focus on generating views.
+    - The app state is separated from this and passed to Redux, its actions, and its reducers.
+- You have to decide when it's better to use the `useState` hook or Redux.
+
