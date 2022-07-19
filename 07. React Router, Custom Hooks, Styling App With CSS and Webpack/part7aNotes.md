@@ -135,3 +135,69 @@ const App = () => {
     - Wrap the `Route` components in `Routes` component.
     - The `Routes` work by rendering the first component whose path matches the URL in the browser's address bar.
 
+
+## Parameterized Route
+- Examine modified version from previous example.
+- Code can be found here:
+    - `https://github.com/fullstack-hy2020/misc/blob/master/router-app-v1.js`
+- App now contains five different views whose display is controlled by the router.
+    - The views from the previous example are `Home`, `Notes`, and `Users`.
+    - We now have `Login` representing the login view.
+    - We have `Note` representing the view of a single note.
+- The `Home` and `Users` is not changed.
+    - The `Notes` is more complicated.
+    - Renders the list of notes passed to it as props in a way such that name of each note is clickable.
+- Ability to click name is done with `Link` component.
+    - Clicking note with id of 3 would trigger event that changes address of browser to `notes/3`.
+```js
+const Notes = ({ notes }) => (
+    <div>
+        <h2>Notes</h2>
+        <ul>
+            {notes.map(note =>
+                <li key={note.id}>
+                    <Link to={`/notes/${note.id}`}>{note.content}</Link>
+                </li>
+            )}
+        </ul>
+    </div>
+);
+```
+- Define parameterized urls in routing in `App`:
+```js
+<Router>
+    // ...
+
+    <Routes>
+        <Route path="/notes/:id" element={<Note notes={notes} />} />
+        <Route path="/notes" element={<Note notes={notes} />} />
+        <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} />
+        <Route path="/login" element={<Login onLogin={login} />} />
+        <Route path="/" element={<Home />} />
+    </Routes>
+</Router>
+```
+- Define the route for rendering a specific not like Express.
+- Use a colon.
+- When browser navigates to the url for a specific note, we render the `Note` component:
+```js
+import {
+    // ...
+    useParams
+} from "react-router-dom";
+
+const Note = ({ notes }) => {
+    const id = useParams().id;
+    const note = notes.find(n => n.id === Number(id));
+    return (
+        <div>
+            <h2>{note.content}</h2>
+            <div>{note.user}</div>
+            <div><strong>{note.important ? "important" : ""}</strong></div>
+        </div>
+    );
+};
+```
+- `Note` receives all of the notes as props `notes`.
+    - Access the url (id of note to display) with `useParams` function of React Router.
+
