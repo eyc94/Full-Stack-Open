@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
+import {
+    BrowserRouter as Router,
+    Routes, Route, Link
+} from "react-router-dom";
 
 const Home = () => (
     <div><h2>EC Notes App</h2></div>
@@ -36,15 +40,23 @@ const App = () => {
     };
 
     return (
-        <div>
+        <Router>
             <div>
-                <a href="" onClick={toPage("home")} style={padding}>Home</a>
-                <a href="" onClick={toPage("notes")} style={padding}>Notes</a>
-                <a href="" onClick={toPage("users")} style={padding}>Users</a>
+                <Link style={padding} to="/">Home</Link>
+                <Link style={padding} to="/notes">Notes</Link>
+                <Link style={padding} to="/users">Users</Link>
             </div>
 
-            {content()}
-        </div>
+            <Routes>
+                <Route path="/notes" element={<Notes />} />
+                <Route path="/users" element={<Users />} />
+                <Route path="/" element={<Home />} />
+            </Routes>
+
+            <div>
+                <i>EC Notes App, 2022</i>
+            </div>
+        </Router>
     );
 };
 
