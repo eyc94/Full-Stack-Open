@@ -18,23 +18,6 @@ const Users = () => (
 );
 
 const App = () => {
-    const [page, setPage] = useState("home");
-
-    const toPage = (page) => (event) => {
-        event.preventDefault();
-        setPage(page);
-    };
-
-    const content = () => {
-        if (page === "home") {
-            return <Home />;
-        } else if (page === "notes") {
-            return <Notes />;
-        } else if (page === "users") {
-            return <Users />;
-        }
-    };
-
     const padding = {
         padding: 5
     };
