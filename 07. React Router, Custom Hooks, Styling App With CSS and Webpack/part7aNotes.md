@@ -323,3 +323,75 @@ const App = () => {
 - Defined outside `Router`.
     - Shown regardless of component in routed part of the application.
 
+
+## Parameterized Routes Revisited
+- App has a flaw.
+- The `Note` receives all notes when we only need one.
+- Can we modify app so that `Note` receives only the component it should display?
+```js
+const Note = ({ note }) => (
+    return (
+        <div>
+            <h2>{note.content}</h2>
+            <div>{note.user}</div>
+            <div><strong>{note.important ? "important" : ""}</strong></div>
+        </div>
+    );
+);
+```
+- One way is to use React Router's `useMatch` hook.
+    - Figures out id of the note to be displayed in the `App` component.
+    - Not possible to use this hook in component that defines the routed part of app.
+- Move `Router` component from `App`:
+```js
+ReactDOM.createRoot(document.getElementById("root")).render(
+    <Router>
+        <App />
+    </Router>,
+    document.getElementById("root")
+);
+```
+- The `App` is now:
+```js
+import {
+    // ...
+    useMatch
+} from "react-router-dom";
+
+const App = () => {
+    // ...
+
+    const match = useMatch("/notes/:id");
+    const note = match
+        ? note.find(note => note.id === Number(match.params.id))
+        : null;
+    
+    return (
+        <div>
+            <div>
+                <Link style={padding} to="/">Home</Link>
+                // ...
+            </div>
+
+            <Routes>
+                <Route path="/notes/:id" element={<Notes note={note} />} />
+                <Route path="/notes" element={<Notes notes={notes} />} />
+                <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} />
+                <Route path="/login" element={<Login onLogin={login} />} />
+                <Route path="/" element={<Home />} />
+            </Routes>
+            <div>
+                <i>EC Note App 2022</i>
+            </div>
+        </div>
+    )
+};
+```
+- Every time the component is rendered (i.e. every time browser URL changes).
+    - The `useMatch` command is executed.
+- If URL matches `/notes/:id`:
+    - Match variable will contain an object from which we can access:
+        - The parameterized part of the path.
+        - The id of the note to be displayed.
+    - Then we can fetch the correct note to display.
+
