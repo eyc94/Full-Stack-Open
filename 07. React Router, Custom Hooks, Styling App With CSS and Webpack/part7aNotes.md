@@ -384,7 +384,7 @@ const App = () => {
                 <i>EC Note App 2022</i>
             </div>
         </div>
-    )
+    );
 };
 ```
 - Every time the component is rendered (i.e. every time browser URL changes).
