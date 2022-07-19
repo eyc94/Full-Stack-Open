@@ -201,3 +201,67 @@ const Note = ({ notes }) => {
 - `Note` receives all of the notes as props `notes`.
     - Access the url (id of note to display) with `useParams` function of React Router.
 
+
+## useNavigate
+- We also have a login function for our app.
+- If user is logged in, the user's info is saved to `user` field of state of `App`.
+- Option to navigate to `Login` view is rendered conditionally.
+```js
+<Router>
+    <div>
+        <Link style={padding} to="/">Home</Link>
+        <Link style={padding} to="/notes">Notes</Link>
+        <Link style={padding} to="/users">Users</Link>
+        {user
+            ? <em>{user} logged in</em>
+            : <Link style={padding} to="/login">Login</Link>
+        }
+    </div>
+    // ...
+</Router>
+```
+- If user is already logged in, it does not display the `Login` link.
+    - Shows username.
+- Code for component handling login functionality:
+```js
+import {
+    // ...
+    useNavigate
+} from "react-router-dom";
+
+const Login = (props) => {
+    const navigate = useNavigate();
+
+    const onSubmit = (event) => {
+        event.preventDefault();
+        props.onLogin("echin");
+        navigate("/");
+    };
+
+    return (
+        <div>
+            <h2>Login</h2>
+            <form onSubmit={onSubmit}>
+                <div>
+                    Username: <input />
+                </div>
+                <div>
+                    Password: <input type="password" />
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    );
+};
+```
+- Notice the `useNavigate` function of React Router.
+    - The browser's URL can change programmatically.
+- When user logs in, we call `navigate("/")`.
+    - Causes browser's URL to change to `/`.
+    - App renders `Home` component.
+- The `useParams` and `useNavigate` are hook functions.
+    - Like `useState` and `useEffect`.
+    - There are rules to using hook functions.
+    - One of the rules is not to use hook functions from a conditional statement.
+
+
