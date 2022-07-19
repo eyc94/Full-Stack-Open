@@ -265,3 +265,61 @@ const Login = (props) => {
     - One of the rules is not to use hook functions from a conditional statement.
 
 
+## redirect
+- Interesting detail about `Users` route:
+```js
+<Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} />
+```
+- If user is not logged in, the `Users` component is not rendered.
+    - Instead redirected using `Navigate` component to login view.
+- In reality, it's better to not show links in nav bar requiring login if user is not logged in to application.
+- `App` component in its entirety:
+```js
+const App = () => {
+    const [notes, setNotes] = useState([
+        // ...
+    ]);
+
+    const [user, setUser] = useState(null);
+
+    const login = (user) => {
+        setUser(user);
+    };
+
+    const padding = {
+        padding: 5
+    };
+
+    return (
+        <div>
+            <Router>
+                <div>
+                    <Link style={padding} to="/">Home</Link>
+                    <Link style={padding} to="/notes">Notes</Link>
+                    <Link style={padding} to="/users">Users</Link>
+                    {user
+                        ? <em>{user} logged in</em>
+                        : <Link style={padding} to="/login">Login</Link>
+                    }
+                </div>
+
+                <Routes>
+                    <Route path="/notes/:id" element={<Notes notes={notes} />} />
+                    <Route path="/notes" element={<Notes notes={notes} />} />
+                    <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} />
+                    <Route path="/login" element={<Login onLogin={login} />} />
+                    <Route path="/" element={<Home />} />
+                </Routes>
+            </Router>
+            <footer>
+                <br />
+                <em>EC Note App 2022</em>
+            </footer>
+        </div>
+    );
+};
+```
+- Define `footer` element that is common.
+- Defined outside `Router`.
+    - Shown regardless of component in routed part of the application.
+
