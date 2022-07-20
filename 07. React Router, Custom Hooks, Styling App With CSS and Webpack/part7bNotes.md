@@ -219,3 +219,10 @@ const App = () => {
 - Details related to synchronizing state of form is encapsulated inside custom hook.
 - Custom hooks are not only a tool for reuse, but also provide a better way for dividing our code into smaller modular parts.
 
+
+## More About Hooks
+- Good resources:
+    - Awesome React Hooks Resources: `https://github.com/rehooks/awesome-react-hooks`
+    - Easy to understand React Hook recipes by Gabe Ragland: `https://usehooks.com/`
+    - Why Do React Hooks Rely on Call Order?: `https://overreacted.io/why-do-hooks-rely-on-call-order/`
+
