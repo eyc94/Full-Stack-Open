@@ -60,7 +60,7 @@ const About = () => (
 
 const Footer = () => (
     <div>
-        Anecdote app for <a href="https://fullstackopen.com/en">Full Stack Open</a>
+        Anecdote app for <a href="https://fullstackopen.com/en">Full Stack Open</a>.
 
         See <a href="https://github.com/fullstack-hy2020/routed-anecdotes/blob/main/src/App.js">https://github.com/fullstack-hy2020/routed-anecdotes/blob/main/src/App.js</a> for the source code.
     </div>
