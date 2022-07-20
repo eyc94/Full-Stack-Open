@@ -1,7 +1,8 @@
 import { useState } from "react";
 import {
     BrowserRouter as Router,
-    Routes, Route, Link
+    Routes, Route, Link,
+    useParams
 } from "react-router-dom";
 
 const Menu = () => {
@@ -18,13 +19,25 @@ const Menu = () => {
     );
 };
 
+const Anecdote = ({ anecdotes }) => {
+    const id = useParams().id;
+    const anecdote = anecdotes.find(a => a.id === Number(id));
+    return (
+        <div>
+            <h2>{anecdote.content} by {anecdote.author}</h2>
+            <p>Has {anecdote.votes} votes</p>
+            <p>For more info see: <a href={anecdote.info}>{anecdote.info}</a></p>
+        </div>
+    );
+};
+
 const AnecdoteList = ({ anecdotes }) => (
     <div>
         <h2>Anecdotes</h2>
         <ul>
             {anecdotes.map(anecdote =>
                 <li key={anecdote.id}>
-                    {anecdote.content}
+                    <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
                 </li>
             )}
         </ul>
@@ -47,7 +60,7 @@ const About = () => (
 
 const Footer = () => (
     <div>
-        Anecdote app for <a href="https://fullstackopen.com/en">Full Stack Open</a>
+        Anecdote app for <a href="https://fullstackopen.com/en">Full Stack Open</a>.
 
         See <a href="https://github.com/fullstack-hy2020/routed-anecdotes/blob/main/src/App.js">https://github.com/fullstack-hy2020/routed-anecdotes/blob/main/src/App.js</a> for the source code.
     </div>
@@ -132,6 +145,7 @@ const App = () => {
                 <Menu />
 
                 <Routes>
+                    <Route path="/anecdotes/:id" element={<Anecdote anecdotes={anecdotes} />} />
                     <Route path="/create" element={<CreateNew addNew={addNew} />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
