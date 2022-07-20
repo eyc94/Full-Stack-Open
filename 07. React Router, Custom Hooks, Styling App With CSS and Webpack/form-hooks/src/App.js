@@ -22,11 +22,11 @@ const App = () => {
     return (
         <div>
             <form>
-                Name: <input type={name.type} value={name.value} onChange={name.onChange} />
+                Name: <input {...name} />
                 <br />
-                Birthdate: <input type={born.type} value={born.value} onChange={born.onChange} />
+                Birthdate: <input {...born} />
                 <br />
-                Height: <input type={height.type} value={height.value} onChange={height.onChange} />
+                Height: <input {...height} />
             </form>
             <div>
                 {name.value} {born.value} {height.value}
