@@ -84,7 +84,14 @@ const CreateNew = (props) => {
             votes: 0
         });
         navigate("/");
-    }
+    };
+
+    const handleReset = (event) => {
+        event.preventDefault();
+        content.reset();
+        author.reset();
+        info.reset();
+    };
 
     return (
         <div>
@@ -100,6 +107,7 @@ const CreateNew = (props) => {
                     URL for more info <input {...info} />
                 </div>
                 <button>Create</button>
+                <button onClick={handleReset}>Reset</button>
             </form>
         </div>
     );
