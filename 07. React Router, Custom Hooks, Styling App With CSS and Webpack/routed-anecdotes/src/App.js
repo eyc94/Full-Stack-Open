@@ -2,7 +2,8 @@ import { useState } from "react";
 import {
     BrowserRouter as Router,
     Routes, Route, Link,
-    useParams
+    useParams,
+    useNavigate
 } from "react-router-dom";
 
 const Menu = () => {
@@ -71,6 +72,8 @@ const CreateNew = (props) => {
     const [author, setAuthor] = useState("");
     const [info, setInfo] = useState("");
 
+    const navigate = useNavigate();
+
     const handleSubmit = (e) => {
         e.preventDefault();
         props.addNew({
@@ -79,6 +82,7 @@ const CreateNew = (props) => {
             info,
             votes: 0
         });
+        navigate("/");
     }
 
     return (
