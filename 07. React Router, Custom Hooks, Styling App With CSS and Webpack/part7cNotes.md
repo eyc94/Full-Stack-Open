@@ -111,3 +111,41 @@ import { Table, Form, Button } from "react-bootstrap";
 ```
 - Our app is now improved.
 
+
+#### Notification
+- Improve our app's notification.
+- Add a message for notification when a user logs into the app.
+- Store it in the `message` variable in the `App` component's state:
+```js
+const App = () => {
+    const [notes, setNotes] = useState([
+        // ...
+    ]);
+
+    const [user, setUser] = useState(null);
+    const [message, setMessage] = useState(null);
+
+    const login = (user) => {
+        setUser(user);
+        setMessage(`Welcome ${user}`);
+        setTimeout(() => {
+            setMessage(null);
+        }, 10000);
+    };
+
+    // ...
+};
+```
+- We render message as a Bootstrap `Alert` component.
+- The React Bootstrap library provides us with a matching React component:
+```js
+<div className="container">
+    {(message &&
+        <Alert variant="success">
+            {message}
+        </Alert>
+    )}
+    // ...
+</div>
+```
+
