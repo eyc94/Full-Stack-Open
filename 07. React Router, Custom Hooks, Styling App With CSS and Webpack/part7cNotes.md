@@ -399,3 +399,15 @@ const Login = (props) => {
         - It is an official React integration library.
 - It is people's opinions.
 
+
+## Other UI Frameworks
+- There are many other frameworks.
+- Here is a list of some of them:
+    - `https://bulma.io/`
+    - `https://ant.design/`
+    - `https://get.foundation/`
+    - `https://chakra-ui.com/`
+    - `https://tailwindcss.com/`
+    - `https://semantic-ui.com/`
+    - `https://mantine.dev/`
+
