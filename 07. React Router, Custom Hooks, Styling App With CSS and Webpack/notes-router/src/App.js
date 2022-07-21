@@ -33,9 +33,14 @@ const App = () => {
     ]);
 
     const [user, setUser] = useState(null);
+    const [message, setMessage] = useState(null);
 
     const login = (user) => {
         setUser(user);
+        setMessage(`Welcome ${user}`);
+        setTimeout(() => {
+            setMessage(null);
+        }, 10000);
     };
 
     const padding = {
