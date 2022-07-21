@@ -9,7 +9,7 @@ import Note from "./components/Note";
 import Notes from "./components/Notes";
 import Users from "./components/Users";
 import Login from "./components/Login";
-import { Container, Alert } from "@mui/material";
+import { Container, Alert, AppBar, IconButton, Button, Toolbar } from "@mui/material";
 
 const App = () => {
     const [notes, setNotes] = useState([
@@ -62,28 +62,27 @@ const App = () => {
                     </Alert>
                 )}
 
-                <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-                    <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                    <Navbar.Collapse id="responsive-navbar-nav">
-                        <Nav className="me-auto">
-                            <Nav.Link href="#" as="span">
-                                <Link style={padding} to="/">Home</Link>
-                            </Nav.Link>
-                            <Nav.Link href="#" as="span">
-                                <Link style={padding} to="/notes">Notes</Link>
-                            </Nav.Link>
-                            <Nav.Link href="#" as="span">
-                                <Link style={padding} to="/users">Users</Link>
-                            </Nav.Link>
-                            <Nav.Link href="#" as="span">
-                                {user
-                                    ? <em style={padding}>{user} loggged in</em>
-                                    : <Link style={padding} to="/login">Login</Link>
-                                }
-                            </Nav.Link>
-                        </Nav>
-                    </Navbar.Collapse>
-                </Navbar>
+                <AppBar position="static">
+                    <Toolbar>
+                        <IconButton edge="start" color="inherit" aria-label="menu">
+                        </IconButton>
+                        <Button color="inherit">
+                            <Link to="/">Home</Link>
+                        </Button>
+                        <Button color="inherit">
+                            <Link to="/notes">Notes</Link>
+                        </Button>
+                        <Button color="inherit">
+                            <Link to="/users">Users</Link>
+                        </Button>
+                        <Button color="inherit">
+                            {user
+                                ? <em>{user} logged in</em>
+                                : <Link to="/">Home</Link>
+                            }
+                        </Button>
+                    </Toolbar>
+                </AppBar>
 
                 <Routes>
                     <Route path="/notes/:id" element={<Note note={note} />} />
