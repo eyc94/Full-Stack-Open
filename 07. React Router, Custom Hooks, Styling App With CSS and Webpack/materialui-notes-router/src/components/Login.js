@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Table, Form, Button } from "react-bootstrap";
+import { TextField, Button } from "@mui/material";
 
 const Login = (props) => {
     const navigate = useNavigate();
@@ -14,15 +14,19 @@ const Login = (props) => {
     return (
         <div>
             <h2>Login</h2>
-            <Form onSubmit={onSubmit}>
-                <Form.Group>
-                    <Form.Label>Username:</Form.Label>
-                    <Form.Control type="text" name="username" />
-                    <Form.Label>Password:</Form.Label>
-                    <Form.Control type="password" />
-                    <Button variant="primary" type="submit">Login</Button>
-                </Form.Group>
-            </Form>
+            <form onSubmit={onSubmit}>
+                <div>
+                    <TextField label="Username" />
+                </div>
+                <div>
+                    <TextField label="Password" type="password" />
+                </div>
+                <div>
+                    <Button variant="contained" color="primary" type="submit">
+                        Login
+                    </Button>
+                </div>
+            </form>
         </div>
     );
 };
