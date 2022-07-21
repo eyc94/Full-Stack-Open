@@ -113,7 +113,7 @@ const App = () => {
         : null;
 
     return (
-        <div>
+        <div className="container">
             <div>
                 <Link style={padding} to="/">Home</Link>
                 <Link style={padding} to="/notes">Notes</Link>
