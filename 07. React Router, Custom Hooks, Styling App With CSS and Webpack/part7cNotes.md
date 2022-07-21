@@ -258,3 +258,40 @@ import {
 } from "@mui/material";
 ```
 
+
+#### Form
+- Make login form in `Login` view better using `TextField` and `Button` components:
+```js
+const Login = (props) => {
+    const navigate = useNavigate();
+
+    const onSubmit = (event) => {
+        event.preventDefault();
+        props.onLogin("jdoe");
+        navigate("/");
+    };
+
+    return (
+        <div>
+            <h2>Login</h2>
+            <form onSubmit={onSubmit}>
+                <div>
+                    <TextField label="username" />
+                </div>
+                <div>
+                    <TextField label="password" type="password" />
+                </div>
+                <div>
+                    <Button variant="contained" color="primary" type="submit">
+                        Login
+                    </Button>
+                </div>
+            </form>
+        </div>
+    );
+};
+```
+- MaterialUI does not provide a component for the form itself.
+- Form is ordinary `form` element.
+- Remember to import all components used.
+
