@@ -9,16 +9,7 @@ import {
     useMatch
 } from "react-router-dom";
 import Home from "./components/Home";
-
-const Note = ({ note }) => {
-    return (
-        <div>
-            <h2>{note.content}</h2>
-            <div>{note.user}</div>
-            <div><strong>{note.important ? "important" : ""}</strong></div>
-        </div>
-    );
-};
+import Note from "./components/Note";
 
 const Notes = ({ notes }) => (
     <div>
