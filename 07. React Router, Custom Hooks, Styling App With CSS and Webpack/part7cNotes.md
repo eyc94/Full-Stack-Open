@@ -188,3 +188,73 @@ const App = () => {
 - Chrome dev tools can help simulate our app in browser of different mobile clients.
 - Complete code is here: `https://github.com/fullstack-hy2020/misc/blob/master/notes-bootstrap.js`
 
+
+## Material UI
+- Our second example looks into the `MaterialUI` React library.
+    - Implements `Material design` visual language developed by Google.
+- Install library:
+```
+$ npm install @mui/material @emotion/react @emotion/styled
+```
+- Add the following line to the `head` tag in `public/index.html` file.
+    - The line loads Google's font `Roboto`.
+```html
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    // ...
+</head>
+```
+- Use MaterialUI to do the same modifications to code like we did with bootstrap.
+- Render contents of whole app in `Container`:
+```js
+import { Container } from "@mui/material";
+
+const App = () => {
+    // ...
+    return (
+        <Container>
+            // ...
+        </Container>
+    );
+};
+```
+- Start with `Notes` component.
+- Render list of notes as a `table`.
+```js
+const Notes = ({ notes }) => (
+    <div>
+        <h2>Notes</h2>
+
+        <TableContainer component={Paper}>
+            <Table>
+                <TableBody>
+                    {notes.map(note => (
+                        <TableRow key={note.id}>
+                            <TableCell>
+                                <Link to={`/notes/${note.id}`}>{note.content}</Link>
+                            </TableCell>
+                            <TableCell>
+                                {note.user}
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    </div>
+);
+```
+- Table looks better.
+- Only downside is that you have to import so many things:
+```js
+import {
+    Container,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableRow,
+    Paper
+} from "@mui/material";
+```
+
