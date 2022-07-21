@@ -9,6 +9,7 @@ import Note from "./components/Note";
 import Notes from "./components/Notes";
 import Users from "./components/Users";
 import Login from "./components/Login";
+import { Alert } from "react-bootstrap";
 
 const App = () => {
     const [notes, setNotes] = useState([
@@ -54,6 +55,11 @@ const App = () => {
 
     return (
         <div className="container">
+            {(message &&
+                <Alert variant="success">
+                    {message}
+                </Alert>
+            )}
             <div>
                 <Link style={padding} to="/">Home</Link>
                 <Link style={padding} to="/notes">Notes</Link>
