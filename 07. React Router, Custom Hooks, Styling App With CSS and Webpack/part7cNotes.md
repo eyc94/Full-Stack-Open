@@ -370,3 +370,32 @@ const Login = (props) => {
 - It looks better now.
 - Code is here: `https://github.com/fullstack-hy2020/misc/blob/master/notes-materialui.js`
 
+
+## Closing Thoughts
+- Difference between react-bootstrap and MaterialUI is not that big.
+- Up to you to decide what's better.
+- According to `https://www.npmtrends.com/`, MaterialUI surpassed react-bootstrap in popularity at the end of 2018.
+- We used React-integration libraries in the previous two examples.
+- We can just as well use CSS classes to our HTML elements instead.
+- Instead of:
+```js
+<Table striped>
+    // ...
+</Table>
+```
+- We can just tdo:
+```html
+<table className="table striped">
+    // ...
+</table>
+```
+- Benefit of React UI frameworks.
+    - Compact and readable.
+    - They include JS that is needed to make specific components work.
+    - Some libraries require a few unpleasant JS dependencies we do not prefer to have in our React apps.
+- Some downsides:
+    - Libraries may have unstable APIs and poor documentation.
+    - The `Semantic UI React` is a lot better than with many other UI frameworks.
+        - It is an official React integration library.
+- It is people's opinions.
+
