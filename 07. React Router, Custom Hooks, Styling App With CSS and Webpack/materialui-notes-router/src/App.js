@@ -64,23 +64,22 @@ const App = () => {
 
                 <AppBar position="static">
                     <Toolbar>
-                        <IconButton edge="start" color="inherit" aria-label="menu">
-                        </IconButton>
-                        <Button color="inherit">
-                            <Link to="/">Home</Link>
+                        <Button color="inherit" component={Link} to="/">
+                            Home
                         </Button>
-                        <Button color="inherit">
-                            <Link to="/notes">Notes</Link>
+                        <Button color="inherit" component={Link} to="/notes">
+                            Notes
                         </Button>
-                        <Button color="inherit">
-                            <Link to="/users">Users</Link>
+                        <Button color="inherit" component={Link} to="/users">
+                            Users
                         </Button>
-                        <Button color="inherit">
-                            {user
-                                ? <em>{user} logged in</em>
-                                : <Link to="/">Home</Link>
-                            }
-                        </Button>
+                        {user
+                            ? <em>{user} logged in</em>
+                            :
+                            <Button color="inherit" component={Link} to="/login">
+                                Login
+                            </Button>
+                        }
                     </Toolbar>
                 </AppBar>
 
