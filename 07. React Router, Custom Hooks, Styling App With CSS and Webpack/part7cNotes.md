@@ -411,3 +411,109 @@ const Login = (props) => {
     - `https://semantic-ui.com/`
     - `https://mantine.dev/`
 
+
+## Styled Components
+- Other ways of styling React apps.
+- The `style components` library offers an interesting way.
+    - Style through `tagged template literals`.
+- Install package:
+```
+$ npm install styled-components
+```
+- Define two components with styles:
+```js
+import styled from "styled-components";
+
+const Button = styled.button`
+    background: Bisque;
+    font-size: 1em;
+    margin: 1em;
+    padding: 0.25em 1em;
+    border: 2px solid Chocolate;
+    border-radius: 3px;
+`;
+
+const Input = styled.input`
+    margin: 0.25em;
+`
+```
+- Code creates styled versions of `button` and `input` HTML elements.
+    - Then assigns to `Button` and `Input` variables.
+- Syntax for defining styles is quite interesting.
+    - CSS rules are inside backticks.
+- Styled components we defined work like regular `button` and `input` elements:
+```js
+const Login = (props) => {
+    // ...
+    return (
+        <div>
+            <h2>Login</h2>
+            <form onSubmit={onSubmit}>
+                <div>
+                    Username:
+                    <Input />
+                </div>
+                <div>
+                    Password:
+                    <Input type="password" />
+                </div>
+                <Button type="submit" primary="">Login</Button>
+            </form>
+        </div>
+    );
+};
+```
+- Create more components for styling that application which will be styled versions of `div` elements:
+```js
+const Page = styled.div`
+    padding: 1em;
+    background: papayawhip;
+`;
+
+const Navigation = styled.div`
+    background: BurlyWood;
+    padding: 1em;
+`;
+
+const Footer = styled.div`
+    background: Chocolate;
+    padding: 1em;
+    margin-top: 1em;
+`;
+```
+- Use components in our app:
+```js
+const App = () => {
+    // ...
+
+    return (
+        <Page>
+            <Navigation>
+                <Link style={padding} to="/">Home</Link>
+                <Link style={padding} to="/notes">Notes</Link>
+                <Link style={padding} to="/users">Users</Link>
+                {user
+                    ? <em>{user} logged in</em>
+                    : <Link style={padding} to="/login">Login</Link>
+                }
+            </Navigation>
+
+            <Routes>
+                <Route path="/notes/:id" element={<Note note={note} />} />
+                <Route path="/notes" element={<Note notes={notes} />} />
+                <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} />
+                <Route path="/login" element={<Login onLogin={login} />} />
+                <Route path="/" element={<Home />} />
+            </Routes>
+
+            <Footer>
+                <em>EC Notes App 2022</em>
+            </Footer>
+        </Page>
+    );
+};
+```
+- Appearance is good.
+- Styled components have seen a consistent growth in recent times.
+- Some people consider this the best way of defining styles in React components.
+
