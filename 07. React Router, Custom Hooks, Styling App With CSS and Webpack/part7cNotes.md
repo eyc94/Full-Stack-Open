@@ -295,3 +295,17 @@ const Login = (props) => {
 - Form is ordinary `form` element.
 - Remember to import all components used.
 
+
+## Notification
+- Can use `Alert` component like in bootstrap.
+```js
+<div>
+    {(message &&
+        <Alert severity="success">
+            {message}
+        </Alert>
+    )}
+</div>
+```
+- Very stylish.
+
