@@ -9,7 +9,7 @@ import Note from "./components/Note";
 import Notes from "./components/Notes";
 import Users from "./components/Users";
 import Login from "./components/Login";
-import { Container, Alert, AppBar, IconButton, Button, Toolbar } from "@mui/material";
+import { Container, Alert, AppBar, Button, Toolbar } from "@mui/material";
 
 const App = () => {
     const [notes, setNotes] = useState([
