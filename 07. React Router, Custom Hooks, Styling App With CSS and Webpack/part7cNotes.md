@@ -296,7 +296,7 @@ const Login = (props) => {
 - Remember to import all components used.
 
 
-## Notification
+#### Notification
 - Can use `Alert` component like in bootstrap.
 ```js
 <div>
@@ -308,4 +308,65 @@ const Login = (props) => {
 </div>
 ```
 - Very stylish.
+
+
+#### Navigation Structure
+- Implement navigation using the `AppBar` component.
+- Use example code from documentation:
+```js
+<AppBar position="static">
+    <Toolbar>
+        <IconButton edge="start" color="inherit" aria-label="menu">
+        </IconButton>
+        <Button color="inherit">
+            <Link to="/">Home</Link>
+        </Button>
+        <Button color="inherit">
+            <Link to="/notes">Notes</Link>
+        </Button>
+        <Button color="inherit">
+            <Link to="/users">Users</Link>
+        </Button>
+        <Button color="inherit">
+            {user
+                ? <em>{user} logged in</em>
+                : <Link to="/login">Login</Link>
+            }
+        </Button>
+    </Toolbar>
+</AppBar>
+```
+- The navbar can look a lot better.
+- Can find a better way from documentation.
+- We can use `component props` to define how root element of a MaterialUI component is rendered:
+```js
+<Button color="inherit" component={Link} to="/">
+    Home
+</Button>
+```
+- The `Button` is rendered so that its root component is `react-router-dom`'s `Link` which receives its path as prop field `to`.
+- Code for navbar is:
+```js
+<AppBar position="static">
+    <Toolbar>
+        <Button color="inherit" component={Link} to="/">
+            Home
+        </Button>
+        <Button color="inherit" component={Link} to="/notes">
+            Notes
+        </Button>
+        <Button color="inherit" component={Link} to="/users">
+            Users
+        </Button>
+        {user
+            ? <em>{user} logged in</em>
+            : <Button color="inherit" component={Link} to="/login">
+                  Login
+              </Button>
+        }
+    </Toolbar>
+</AppBar>
+```
+- It looks better now.
+- Code is here: `https://github.com/fullstack-hy2020/misc/blob/master/notes-materialui.js`
 
