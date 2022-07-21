@@ -9,7 +9,7 @@ import Note from "./components/Note";
 import Notes from "./components/Notes";
 import Users from "./components/Users";
 import Login from "./components/Login";
-import { Container } from "@mui/material";
+import { Container, Alert } from "@mui/material";
 
 const App = () => {
     const [notes, setNotes] = useState([
@@ -57,7 +57,7 @@ const App = () => {
         <Container>
             <div className="container">
                 {(message &&
-                    <Alert variant="success">
+                    <Alert severity="success">
                         {message}
                     </Alert>
                 )}
