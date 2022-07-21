@@ -149,3 +149,42 @@ const App = () => {
 </div>
 ```
 
+
+#### Navigation Structure
+- Alter app's navigation menu to use Bootstrap's `Navbar` component.
+- React Bootstrap library provides us with matching built-in components.
+- We now have a working solution:
+```js
+<Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+    <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+    <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="me-auto">
+            <Nav.Link href="#" as="span">
+                <Link style={padding} to="/">Home</Link>
+            </Nav.Link>
+
+            <Nav.Link href="#" as="span">
+                <Link style={padding} to="/notes">Notes</Link>
+            </Nav.Link>
+
+            <Nav.Link href="#" as="span">
+                <Link style={padding} to="/users">Users</Link>
+            </Nav.Link>
+
+            <Nav.Link href="#" as="span">
+                {user
+                    ? <em style={padding}>{user} logged in</em>
+                    : <Link style={padding} to="/login">Login</Link>
+                }
+            </Nav.Link>
+        </Nav>
+    </Navbar.Collapse>
+</Navbar>
+```
+- Resulting layout is clean.
+- If viewport is narrowed, menu collapses into a "hamburger".
+- Bootstrap and majority of existing UI frameworks produce `responsive` designs.
+    - Works on variety of different screen sizes.
+- Chrome dev tools can help simulate our app in browser of different mobile clients.
+- Complete code is here: `https://github.com/fullstack-hy2020/misc/blob/master/notes-bootstrap.js`
+
