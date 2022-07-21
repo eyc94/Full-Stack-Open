@@ -11,42 +11,8 @@ import {
 import Home from "./components/Home";
 import Note from "./components/Note";
 import Notes from "./components/Notes";
-
-const Users = () => (
-    <div>
-        <h2>Users</h2>
-        <ul>
-            <li>John Doe</li>
-            <li>Jane Doe</li>
-            <li>Sample Name</li>
-        </ul>
-    </div>
-);
-
-const Login = (props) => {
-    const navigate = useNavigate();
-
-    const onSubmit = (event) => {
-        event.preventDefault();
-        props.onLogin("jdoe");
-        navigate("/");
-    };
-
-    return (
-        <div>
-            <h2>Login</h2>
-            <form onSubmit={onSubmit}>
-                <div>
-                    Username: <input />
-                </div>
-                <div>
-                    Password: <input type="password" />
-                </div>
-                <button type="submit">Login</button>
-            </form>
-        </div>
-    );
-};
+import Users from "./components/Users";
+import Login from "./components/Login";
 
 const App = () => {
     const [notes, setNotes] = useState([
