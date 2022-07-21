@@ -80,3 +80,34 @@ const Notes = ({ notes }) => {
 ```js
 import { Table } from "react-bootstrap";
 ```
+
+
+#### Forms
+- Improve form in `Login` view with help of Bootstrap `forms`.
+- React Bootstrap provides built-in `components` for creating forms.
+    - Documentation is slightly lacking.
+```js
+let login = (props) => {
+    // ...
+    return (
+        <div>
+            <h2>Login</h2>
+            <Form onSubmit={onSubmit}>
+                <Form.Group>
+                    <Form.Label>Username:</Form.Label>
+                    <Form.Control type="text" name="username" />
+                    <Form.Label>Password:</Form.Label>
+                    <Form.Control type="password" />
+                    <Button variant="primary" type="submit">Login</Button>
+                </Form.Group>
+            </Form>
+        </div>
+    );
+};
+```
+- Number of components to import increases:
+```js
+import { Table, Form, Button } from "react-bootstrap";
+```
+- Our app is now improved.
+
